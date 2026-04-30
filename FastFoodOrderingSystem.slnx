@@ -1,2 +1,8 @@
 <Solution>
+  <Folder Name="/src/">
+    <Project Path="src/FastFoodOrderingSystem.Api/FastFoodOrderingSystem.Api.csproj" />
+    <Project Path="src/FastFoodOrderingSystem.Application/FastFoodOrderingSystem.Application.csproj" />
+    <Project Path="src/FastFoodOrderingSystem.Domain/FastFoodOrderingSystem.Domain.csproj" />
+    <Project Path="src/FastFoodOrderingSystem.Infrastructure/FastFoodOrderingSystem.Infrastructure.csproj" />
+  </Folder>
 </Solution>
