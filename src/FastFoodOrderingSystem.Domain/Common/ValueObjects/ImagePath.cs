@@ -1,0 +1,43 @@
+using System.Text.RegularExpressions;
+using FastFoodOrderingSystem.Domain.Common.ValueObjects.Exceptions;
+
+namespace FastFoodOrderingSystem.Domain.Common.ValueObjects;
+
+public record ImagePath
+{
+    public const int MaxLength = 255;
+
+    private static readonly string[] SupportedExtensions =
+    [
+        ".jpg",
+        ".jpeg",
+        ".png",
+        ".webp"
+    ];
+
+    public string Value { get; }
+
+    private ImagePath(string value)
+    {
+        Value = value.Trim();
+    }
+
+    public static ImagePath Create(string path)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+            throw InvalidImagePathException.Empty();
+
+        path = path.Trim();
+        if (path.Length > MaxLength)
+            throw InvalidImagePathException.ExceedsMaxLength(MaxLength);
+
+        string extension = Path.GetExtension(path);
+        if (!SupportedExtensions.Contains(extension))
+            throw InvalidImagePathException.UnsupportExtension(extension);
+        
+        if (!Regex.IsMatch(path, $"^images/(?:[A-Za-z0-9_-]+/)*[A-Za-z0-9_-]+{Regex.Escape(extension)}$"))
+            throw InvalidImagePathException.InvalidImagePathFormat();
+            
+        return new ImagePath(path);
+    }
+}
