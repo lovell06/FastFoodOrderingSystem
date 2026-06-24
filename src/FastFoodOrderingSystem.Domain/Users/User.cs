@@ -24,7 +24,7 @@ public class User : AggregateRoot<Guid>
     public bool IsDeleted => DeletedAt is not null;
     public bool IsLocked => LockedAt is not null;
 
-    private User()
+    protected User()
     {
     }
 
