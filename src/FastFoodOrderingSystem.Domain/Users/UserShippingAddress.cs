@@ -9,6 +9,10 @@ public class UserShippingAddress : Entity<long>
     public PhoneNumber PhoneNumber { get; private set; }
     public Address Address { get; private set; }
 
+    protected UserShippingAddress()
+    {
+    }
+    
     private UserShippingAddress(FullName recipientName, PhoneNumber phoneNumber, Address address)
     {
         RecipientName = recipientName;

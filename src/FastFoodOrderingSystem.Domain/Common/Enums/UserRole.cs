@@ -11,4 +11,5 @@ public sealed class UserRole : SmartEnum<UserRole>
     private UserRole(int id, string roleCode) : base(id, roleCode)
     {
     }
+
 }

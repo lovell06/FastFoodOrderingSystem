@@ -7,10 +7,10 @@ namespace FastFoodOrderingSystem.Domain.Users;
 
 public class User : AggregateRoot<Guid>
 {
-    public FullName? FullName { get; private set; }
-    public Email? Email { get; private set; }
-    public PasswordHash? PasswordHash { get; private set; }
-    public PhoneNumber? PhoneNumber { get; private set; }
+    public FullName FullName { get; private set; }
+    public Email Email { get; private set; }
+    public PasswordHash PasswordHash { get; private set; }
+    public PhoneNumber PhoneNumber { get; private set; }
     private readonly List<UserShippingAddress> _shippingAddresses = [];
     public IReadOnlyCollection<UserShippingAddress> ShippingAddresses => _shippingAddresses.AsReadOnly();
     private readonly Queue<UserPasswordHistory> _passwordHistories = [];

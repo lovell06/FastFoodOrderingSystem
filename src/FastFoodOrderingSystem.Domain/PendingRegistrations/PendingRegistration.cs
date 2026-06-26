@@ -1,7 +1,6 @@
 using FastFoodOrderingSystem.Domain.Common.Abstractions;
 using FastFoodOrderingSystem.Domain.Common.Enums;
 using FastFoodOrderingSystem.Domain.Common.ValueObjects;
-using FastFoodOrderingSystem.Domain.Users;
 
 namespace FastFoodOrderingSystem.Domain.PendingRegistrations;
 

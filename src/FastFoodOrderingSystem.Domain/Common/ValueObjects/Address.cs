@@ -39,6 +39,24 @@ public sealed record Address
 
     public override string ToString()
     {
-        return $"{ProvinceCity}, {WardCommune}, {Detail}";
+        return $"{Detail}, {WardCommune}, {ProvinceCity}";
+    }
+
+    public string ToDatabaseString()
+    {
+        return $"{Detail}|{WardCommune}|{ProvinceCity}";
+    }
+
+    public static Address ParseFromDatabase(string value)
+    {
+        var parts = value.Split("|");
+
+        if (parts.Length != 3)
+            throw new FormatException("Invalid address format.");
+
+        return Create(
+            detail: parts[0],
+            wardCommune: parts[1],
+            provinceCity: parts[2]);
     }
 }
