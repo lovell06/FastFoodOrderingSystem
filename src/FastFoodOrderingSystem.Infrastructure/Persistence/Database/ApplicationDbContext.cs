@@ -4,15 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FastFoodOrderingSystem.Infrastructure.Persistence.Database;
 
-public sealed class ApplicationDbContext : DbContext
+public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
 {
     public DbSet<User> Users { get; }
     public DbSet<PendingRegistration> PendingRegistrations { get; }
-
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-    {
-    }
-
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
