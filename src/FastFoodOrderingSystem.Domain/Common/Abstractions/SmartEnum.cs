@@ -3,12 +3,10 @@ namespace FastFoodOrderingSystem.Domain.Common.Abstractions;
 public abstract class SmartEnum<TEnum> where TEnum : SmartEnum<TEnum>
 {
     public const int MaxLengthCode = 20;
-    public readonly int Id;
     public readonly string Code;
 
-    protected SmartEnum(int id, string code)
+    protected SmartEnum(string code)
     {
-        Id = id;
         Code = code;
     }
 
