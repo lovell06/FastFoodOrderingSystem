@@ -37,6 +37,9 @@ public static class DependencyInjection
         services.AddOptions<EmailOption>()
             .Bind(configuration.GetSection(EmailOption.SectionName))
             .ValidateOnStart();
+        services.AddOptions<RedisOption>()
+            .Bind(configuration.GetSection(RedisOption.SectionName))
+            .ValidateOnStart();
 
         /*
          * Add Dependency For Services
@@ -53,7 +56,7 @@ public static class DependencyInjection
          * Register Repositories
          */
         services.AddScoped<IUnitWork, UnitWork>();
-        services.AddScoped<IUserRepository, IUserRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
         return services;
     }
 }
