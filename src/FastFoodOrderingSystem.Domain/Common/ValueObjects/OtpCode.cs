@@ -5,7 +5,7 @@ namespace FastFoodOrderingSystem.Domain.Common.ValueObjects;
 public sealed record OtpCode
 {
     public const int Length = 6;
-    public string Value { get; }
+    public string Value { get; init; }
 
     private OtpCode(string value)
     {

@@ -2,10 +2,10 @@ using FastFoodOrderingSystem.Domain.Common.ValueObjects.Exceptions;
 
 namespace FastFoodOrderingSystem.Domain.Common.ValueObjects;
 
-public record PasswordHash
+public sealed record PasswordHash
 {
     public const int MaxLength = 256;
-    public string Value { get; }
+    public string Value { get; init; }
 
     private PasswordHash(string value)
     {

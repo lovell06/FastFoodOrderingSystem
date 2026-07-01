@@ -5,7 +5,7 @@ namespace FastFoodOrderingSystem.Domain.Common.ValueObjects;
 public sealed record Password
 {
     public const int MinLength = 8;
-    public string Value { get; }
+    public string Value { get; init; }
     private Password(string value)
     {
         Value = value;

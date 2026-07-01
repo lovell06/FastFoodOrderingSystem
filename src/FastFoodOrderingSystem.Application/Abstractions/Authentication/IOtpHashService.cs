@@ -4,6 +4,6 @@ namespace FastFoodOrderingSystem.Application.Abstractions.Authentication;
 
 public interface IOtpHashService
 {
-    OtpCodeHash Hash(string raw);
+    OtpCodeHash Hash(OtpCode code);
     bool Verify(OtpCode otpCode, OtpCodeHash otpCodeHash);
 }

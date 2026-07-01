@@ -15,7 +15,7 @@ public record ImagePath
         ".webp"
     ];
 
-    public string Value { get; }
+    public string Value { get; init; }
 
     private ImagePath(string value)
     {

@@ -5,7 +5,7 @@ namespace FastFoodOrderingSystem.Domain.Common.ValueObjects;
 public sealed record Email
 {
     public const int MaxLength = 255;
-    public string Value { get; }
+    public string Value { get; init; }
 
     private Email(string value)
     {

@@ -6,7 +6,7 @@ namespace FastFoodOrderingSystem.Domain.Common.ValueObjects;
 public sealed record FullName
 {
     public const int MaxLength = 255;
-    public string Value { get; }
+    public string Value { get; init; }
 
     private FullName(string value)
     {

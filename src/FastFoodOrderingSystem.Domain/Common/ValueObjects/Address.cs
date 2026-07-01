@@ -5,8 +5,8 @@ namespace FastFoodOrderingSystem.Domain.Common.ValueObjects;
 public sealed record Address
 {
     public const int MaxLength = 300;
-    public string ProvinceCity { get; }
-    public string WardCommune { get; }
+    public string ProvinceCity { get; init; }
+    public string WardCommune { get; init; }
     public string Detail { get; }
 
     private Address(string provinceCity, string wardCommune, string detail)

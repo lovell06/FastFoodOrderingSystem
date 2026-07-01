@@ -5,7 +5,7 @@ namespace FastFoodOrderingSystem.Domain.Common.ValueObjects;
 public sealed record OtpCodeHash
 {
     public const int MaxLength = 256;
-    public string Value { get; }
+    public string Value { get; init; }
 
     private OtpCodeHash(string value)
     {
