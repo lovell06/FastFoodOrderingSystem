@@ -1,8 +1,10 @@
 using FastFoodOrderingSystem.Application.Abstractions.Authentication;
+using FastFoodOrderingSystem.Application.Abstractions.Persistence;
 using FastFoodOrderingSystem.Domain.Users;
 using FastFoodOrderingSystem.Infrastructure.Authentication;
 using FastFoodOrderingSystem.Infrastructure.Options;
 using FastFoodOrderingSystem.Infrastructure.Persistence.Database;
+using FastFoodOrderingSystem.Infrastructure.Persistence.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -46,6 +48,12 @@ public static class DependencyInjection
          */
         services.AddScoped<IPasswordHashService, PasswordHashService>();
         services.AddScoped<IOtpHashService, OtpHashService>();
+
+        /*
+         * Register Repositories
+         */
+        services.AddScoped<IUnitWork, UnitWork>();
+        services.AddScoped<IUserRepository, IUserRepository>();
         return services;
     }
 }
