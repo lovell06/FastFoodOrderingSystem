@@ -1,9 +1,10 @@
 using System.Security.Cryptography;
+using FastFoodOrderingSystem.Application.Abstractions.Authentication;
 using FastFoodOrderingSystem.Domain.Common.ValueObjects;
 
 namespace FastFoodOrderingSystem.Infrastructure.Authentication;
 
-public class OtpService
+public class OtpService : IOtpService
 {    
     public OtpCode GenerateCode(int length)
     {

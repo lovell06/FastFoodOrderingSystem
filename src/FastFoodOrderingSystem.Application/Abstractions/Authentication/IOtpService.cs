@@ -4,5 +4,5 @@ namespace FastFoodOrderingSystem.Application.Abstractions.Authentication;
 
 public interface IOtpService
 {
-    OtpCode Generate();
+    OtpCode GenerateCode(int length);
 }

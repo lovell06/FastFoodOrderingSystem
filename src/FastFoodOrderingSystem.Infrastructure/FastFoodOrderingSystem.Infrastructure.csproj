@@ -26,7 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Caching\" />
     <Folder Include="Email\" />
     <Folder Include="Persistence\Database\Migrations\" />
   </ItemGroup>
