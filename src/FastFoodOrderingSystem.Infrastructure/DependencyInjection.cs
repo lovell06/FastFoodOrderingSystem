@@ -2,6 +2,7 @@ using FastFoodOrderingSystem.Application.Abstractions.Authentication;
 using FastFoodOrderingSystem.Application.Abstractions.Persistence;
 using FastFoodOrderingSystem.Domain.Users;
 using FastFoodOrderingSystem.Infrastructure.Authentication;
+using FastFoodOrderingSystem.Infrastructure.Cache.Redis;
 using FastFoodOrderingSystem.Infrastructure.Options;
 using FastFoodOrderingSystem.Infrastructure.Persistence.Database;
 using FastFoodOrderingSystem.Infrastructure.Persistence.Repositories;
@@ -9,6 +10,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using StackExchange.Redis;
 
 namespace FastFoodOrderingSystem.Infrastructure;
 
@@ -23,6 +26,12 @@ public static class DependencyInjection
         services.AddDbContext<ApplicationDbContext>(options =>
         {
             options.UseNpgsql(connectionString);
+        });
+
+        services.AddSingleton<IConnectionMultiplexer>(sp =>
+        {
+            var option = sp.GetRequiredService<IOptions<RedisOption>>().Value;
+            return ConnectionMultiplexer.Connect(option.ConnectionStrings);
         });
 
         /*
@@ -45,6 +54,7 @@ public static class DependencyInjection
          * Add Dependency For Services
          */
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+        services.AddScoped<RedisKeyProvider>();
 
         /*
          * Register Services

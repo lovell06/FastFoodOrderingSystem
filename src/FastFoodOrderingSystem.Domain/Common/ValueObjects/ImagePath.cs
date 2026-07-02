@@ -22,7 +22,7 @@ public record ImagePath
         Value = value.Trim();
     }
 
-    public static ImagePath Create(string path)
+    private static void Validate(string path)
     {
         if (string.IsNullOrWhiteSpace(path))
             throw InvalidImagePathException.Empty();
@@ -34,10 +34,19 @@ public record ImagePath
         string extension = Path.GetExtension(path);
         if (!SupportedExtensions.Contains(extension))
             throw InvalidImagePathException.UnsupportExtension(extension);
-        
+
         if (!Regex.IsMatch(path, $"^images/(?:[A-Za-z0-9_-]+/)*[A-Za-z0-9_-]+{Regex.Escape(extension)}$"))
             throw InvalidImagePathException.InvalidImagePathFormat();
-            
+    }
+
+    public static ImagePath Create(string path)
+    {
+        Validate(path);
         return new ImagePath(path);
+    }
+
+    public static ImagePath Default()
+    {
+        return new ImagePath("default");
     }
 }

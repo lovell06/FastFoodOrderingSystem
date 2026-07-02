@@ -7,9 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="PendingRegistrations\Events\" />
-    <Folder Include="PendingRegistrations\Exceptions\" />
-    <Folder Include="PendingRegistrations\Handlers\" />
     <Folder Include="Users\Events\" />
     <Folder Include="Users\Handlers\" />
   </ItemGroup>

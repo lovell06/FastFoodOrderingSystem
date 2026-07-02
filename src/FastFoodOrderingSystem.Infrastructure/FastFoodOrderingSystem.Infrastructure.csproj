@@ -18,6 +18,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.9" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.9" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.2" />
+    <PackageReference Include="StackExchange.Redis" Version="3.0.11" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,7 +28,6 @@
   <ItemGroup>
     <Folder Include="Caching\" />
     <Folder Include="Email\" />
-    <Folder Include="Persistence\Cache\" />
     <Folder Include="Persistence\Database\Migrations\" />
   </ItemGroup>
 
