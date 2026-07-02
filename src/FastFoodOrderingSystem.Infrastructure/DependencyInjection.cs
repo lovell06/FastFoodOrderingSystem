@@ -1,10 +1,12 @@
 using FastFoodOrderingSystem.Application.Abstractions.Authentication;
 using FastFoodOrderingSystem.Application.Abstractions.Configurations;
+using FastFoodOrderingSystem.Application.Abstractions.Emails;
 using FastFoodOrderingSystem.Application.Abstractions.Persistence;
 using FastFoodOrderingSystem.Domain.Users;
 using FastFoodOrderingSystem.Infrastructure.Authentication;
 using FastFoodOrderingSystem.Infrastructure.Cache.Redis;
 using FastFoodOrderingSystem.Infrastructure.Configurations;
+using FastFoodOrderingSystem.Infrastructure.Emails;
 using FastFoodOrderingSystem.Infrastructure.Options;
 using FastFoodOrderingSystem.Infrastructure.Persistence.Database;
 using FastFoodOrderingSystem.Infrastructure.Persistence.Repositories;
@@ -63,6 +65,7 @@ public static class DependencyInjection
          */
         services.AddScoped<IPasswordHashService, PasswordHashService>();
         services.AddScoped<IOtpHashService, OtpHashService>();
+        services.AddScoped<IEmailSender, GmailSender>();
 
         /*
          * Register Repositories

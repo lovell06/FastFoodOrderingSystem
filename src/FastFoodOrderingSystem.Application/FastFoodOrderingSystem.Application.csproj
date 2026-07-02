@@ -5,7 +5,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Abstractions\Email\" />
     <Folder Include="Features\Auth\Login\" />
     <Folder Include="Features\Auth\RefreshToken\" />
     <Folder Include="Features\Auth\VerifyOtp\" />

@@ -1,6 +1,7 @@
 using FastFoodOrderingSystem.Application.Abstractions.Authentication;
 using FastFoodOrderingSystem.Application.Abstractions.Cache;
 using FastFoodOrderingSystem.Application.Abstractions.Configurations;
+using FastFoodOrderingSystem.Application.Abstractions.Emails;
 using FastFoodOrderingSystem.Application.Abstractions.Persistence;
 using FastFoodOrderingSystem.Application.Common.Errors;
 using FastFoodOrderingSystem.Application.Common.Results;
@@ -19,7 +20,9 @@ public sealed class RegisterHandler
     private readonly IOtpService _otpService;
     private readonly IOtpHashService _otpHashService;
     private readonly IOtpConfiguration _otpConfiguration;
+    private readonly IEmailConfiguration _emailConfiguration;
     private readonly ILogger<RegisterHandler> _logger;
+    private readonly IEmailSender _emailSender;
     public RegisterHandler(
         IUserRepository userRepository, 
         IPendingRegistrationStore pendingRegistrationStore,
@@ -27,7 +30,9 @@ public sealed class RegisterHandler
         IOtpService otpService,
         IOtpHashService otpHashService,
         IOtpConfiguration otpConfiguration,
-        ILogger<RegisterHandler> logger)
+        ILogger<RegisterHandler> logger,
+        IEmailSender emailSender, 
+        IEmailConfiguration emailConfiguration)
     {
         _userRepository = userRepository;
         _pendingRegistrationStore = pendingRegistrationStore;
@@ -36,6 +41,8 @@ public sealed class RegisterHandler
         _otpHashService = otpHashService;
         _otpConfiguration = otpConfiguration;
         _logger = logger;
+        _emailSender = emailSender;
+        _emailConfiguration = emailConfiguration;
     }
     public async Task<Result<RegisterResponse>> HandleAsync(RegisterCommand command)
     {
@@ -71,8 +78,15 @@ public sealed class RegisterHandler
             {
                 _logger.LogError($"Pending registration store {email.Value} failed {now}.");
             }
-
             _logger.LogInformation($"Pending registration store {email.Value} successful {now}.");
+
+            await _emailSender.SendAsync(
+                EmailContent.Create(
+                    from: _emailConfiguration.SenderAddress,
+                    to: email.Value,
+                    "Verify email",
+                    $"This is OTP verification code: {otpCode.Value}. Expiration after {_otpConfiguration.Expiration} minutes."));
+            _logger.LogInformation($"Send OTP code from {_emailConfiguration.SenderAddress} to {email.Value} successful {now}.");
             return Result<RegisterResponse>.Success(new RegisterResponse($"OTP code sent to email {email.Value}."));
         }
         catch (InvalidEmailException exception)
