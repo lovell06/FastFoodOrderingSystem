@@ -47,7 +47,7 @@ public sealed class RegisterHandler
             if (await _userRepository.EmailAlreadyExistedAsync(email))
             {
                 var err = RegisterError.EmailAlreadyExisted(email);
-                _logger.LogError($"{now} RegisterHandler: Code({err.Code}); Message({err.Message}).");
+                _logger.LogError($"Code: {err.Code} | Message: {err.Message} | Occured at: {now}.");
                 return Result<RegisterResponse>.Failure(err);
             }
 
@@ -69,40 +69,40 @@ public sealed class RegisterHandler
 
             if (!await _pendingRegistrationStore.SaveAsync(pendingRegistration: pending))
             {
-                _logger.LogError($"{now} RegisterHandler: Pending registration store {email.Value} failed.");
+                _logger.LogError($"Pending registration store {email.Value} failed {now}.");
             }
 
-            _logger.LogInformation($"{now} RegisterHandler: Pending registration store {email.Value} successful.");
+            _logger.LogInformation($"Pending registration store {email.Value} successful {now}.");
             return Result<RegisterResponse>.Success(new RegisterResponse($"OTP code sent to email {email.Value}."));
         }
         catch (InvalidEmailException exception)
         {
-            _logger.LogError($"{now} RegisterHandler: Code({exception.Code}); Message({exception.Message}).");
+            _logger.LogError($"Code: {exception.Code} | Message: {exception.Message} | Occured at: {now}.");
             return Result<RegisterResponse>.Failure(RegisterError.InvalidEmail(exception));
         }
         catch (InvalidFullNameException exception)
         {
-            _logger.LogError($"{now} RegisterHandler: Code({exception.Code}); Message({exception.Message}).");
+            _logger.LogError($"Code: {exception.Code} | Message: {exception.Message} | Occured at: {now}.");
             return Result<RegisterResponse>.Failure(RegisterError.InvalidFullName(exception));
         }
         catch (InvalidPasswordException exception)
         {
-            _logger.LogError($"{now} RegisterHandler: Code({exception.Code}); Message({exception.Message}).");
+            _logger.LogError($"Code: {exception.Code} | Message: {exception.Message} | Occured at: {now}.");
             return Result<RegisterResponse>.Failure(RegisterError.InvalidPassword(exception));
         }
         catch (InvalidPhoneNumberException exception)
         {
-            _logger.LogError($"{now} RegisterHandler: Code({exception.Code}); Message({exception.Message}).");
+            _logger.LogError($"Code: {exception.Code} | Message: {exception.Message} | Occured at: {now}.");
             return Result<RegisterResponse>.Failure(RegisterError.InvalidPhoneNumber(exception));
         }
         catch (InvalidOtpCodeException exception)
         {
-            _logger.LogError($"{now} RegisterHandler: Code({exception.Code}); Message({exception.Message}).");
+            _logger.LogError($"Code: {exception.Code} | Message: {exception.Message} | Occured at: {now}.");
             return Result<RegisterResponse>.Failure(RegisterError.InvalidOtpCode(exception));
         }
         catch (Exception exception)
         {
-            _logger.LogError($"{now} RegisterHandler: Message({exception.Message}).");
+            _logger.LogError($"Message: {exception.Message} | Occured at: {now}.");
             return Result<RegisterResponse>.Failure(SystemError.Unexpected);
         }
     }
