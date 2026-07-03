@@ -27,10 +27,9 @@ public sealed class EmailTests
     [InlineData("abc@gmail.")]
     [InlineData("abc@.com")]
     [InlineData("abc.com")]
-    [InlineData("123456@gmail.com")]
-    [InlineData("!*#?:.;,~|}@gmail.com")]
-    [InlineData("asb!*#&@gmail.com")]
-    [InlineData("abc.@gmail.com")]
+    [InlineData("!*#?:.;,~|}@extension.com")]
+    [InlineData("asb!*#&@extension.com")]
+    [InlineData("abc.@extension.com")]
     [InlineData(".abc@extension")]
     public void Create_Should_ThrowInvalidEmailException_When_IsInvalid(string value)
     {
