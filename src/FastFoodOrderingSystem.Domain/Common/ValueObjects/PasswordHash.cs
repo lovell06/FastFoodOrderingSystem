@@ -14,12 +14,17 @@ public sealed record PasswordHash
 
     public static PasswordHash Create(string passwordHash)
     {
+        Validate(passwordHash);
+        
+        return new PasswordHash(passwordHash);
+    }
+
+    private static void Validate(string passwordHash)
+    {
         if (string.IsNullOrWhiteSpace(passwordHash))
             throw InvalidPasswordHashException.Empty();
 
         if (passwordHash.Length > MaxLength)
             throw InvalidPasswordHashException.ExceedsMaxLength(MaxLength);
-        
-        return new PasswordHash(passwordHash);
     }
 }

@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using FastFoodOrderingSystem.Domain.Common.Validations;
 using FastFoodOrderingSystem.Domain.Common.ValueObjects.Exceptions;
 
 namespace FastFoodOrderingSystem.Domain.Common.ValueObjects;
@@ -35,7 +36,7 @@ public record ImagePath
         if (!SupportedExtensions.Contains(extension))
             throw InvalidImagePathException.UnsupportExtension(extension);
 
-        if (!Regex.IsMatch(path, $"^images/(?:[A-Za-z0-9_-]+/)*[A-Za-z0-9_-]+{Regex.Escape(extension)}$"))
+        if (!Regex.IsMatch(path, ValidationPatterns.ImagePath(extension)))
             throw InvalidImagePathException.InvalidImagePathFormat();
     }
 

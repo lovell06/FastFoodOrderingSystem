@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using FastFoodOrderingSystem.Domain.Common.Validations;
 using FastFoodOrderingSystem.Domain.Common.ValueObjects.Exceptions;
 
 namespace FastFoodOrderingSystem.Domain.Common.ValueObjects;
@@ -15,19 +16,24 @@ public sealed record PhoneNumber
 
     public static PhoneNumber Create(string phone)
     {
+        Validate(phone);
+
+        return new PhoneNumber(phone);
+    }
+
+    private static void Validate(string phone)
+    {
         if (string.IsNullOrWhiteSpace(phone))
             throw InvalidPhoneNumberException.Empty();
 
         phone = phone.Trim();
         if (phone.Length > MaxLength)
             throw InvalidPhoneNumberException.ExceedsMaxLength(MaxLength);
-        
-        if (Regex.IsMatch(phone, @"\D"))
+
+        if (Regex.IsMatch(phone, ValidationPatterns.PhoneNumber))
             throw InvalidPhoneNumberException.ContainsNonDigitCharacters();
-        
+
         if (phone.Any(char.IsWhiteSpace))
             throw InvalidPhoneNumberException.ContainsWhitespace();
-
-        return new PhoneNumber(phone);
     }
 }

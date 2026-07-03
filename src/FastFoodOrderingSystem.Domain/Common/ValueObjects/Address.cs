@@ -22,6 +22,13 @@ public sealed record Address
         wardCommune = wardCommune.Trim();
         detail = detail.Trim();
 
+        Validate(provinceCity, wardCommune, detail);
+        
+        return new Address(provinceCity, wardCommune, detail);
+    }
+
+    private static void Validate(string provinceCity, string wardCommune, string detail)
+    {
         if (string.IsNullOrWhiteSpace(provinceCity))
             throw InvalidAddressException.ProvinceOrCityEmpty();
 
@@ -33,8 +40,6 @@ public sealed record Address
 
         if (provinceCity.Length + wardCommune.Length + detail.Length > MaxLength)
             throw InvalidAddressException.ExceedsMaxLength(MaxLength);
-        
-        return new Address(provinceCity, wardCommune, detail);
     }
 
     public override string ToString()
