@@ -20,7 +20,7 @@ public sealed class GmailSender : IEmailSender
         using var client = new SmtpClient();
         client.Host = _option.Host;
         client.Port = _option.Port;
-        client.Credentials = new NetworkCredential(_option.UserName, _option.Password);
+        client.Credentials = new NetworkCredential(_option.Email, _option.Password);
         client.EnableSsl = true;
 
         var mailMessage = new MailMessage()

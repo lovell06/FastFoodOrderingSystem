@@ -1,3 +1,4 @@
+using System.Text.Json;
 using FastFoodOrderingSystem.Application.Abstractions.Authentication;
 using FastFoodOrderingSystem.Application.Abstractions.Cache;
 using FastFoodOrderingSystem.Application.Abstractions.Configurations;
@@ -12,6 +13,8 @@ using FastFoodOrderingSystem.Infrastructure.Emails;
 using FastFoodOrderingSystem.Infrastructure.Options;
 using FastFoodOrderingSystem.Infrastructure.Persistence.Database;
 using FastFoodOrderingSystem.Infrastructure.Persistence.Repositories;
+using FastFoodOrderingSystem.Infrastructure.Serialization.Enums;
+using FastFoodOrderingSystem.Infrastructure.Serialization.ValueObjects;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -55,6 +58,28 @@ public static class DependencyInjection
         services.AddOptions<RedisOption>()
             .Bind(configuration.GetSection(RedisOption.SectionName))
             .ValidateOnStart();
+        
+        /*
+         * Add Serializer Options
+         */
+        services.AddSingleton(sp  =>
+        {
+            var options = new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+
+            options.Converters.Add(new AddressJsonConverter());
+            options.Converters.Add(new EmailJsonConverter());
+            options.Converters.Add(new FullNameJsonConverter());
+            options.Converters.Add(new ImagePathJsonConverter());
+            options.Converters.Add(new OtpCodeHashJsonConverter());
+            options.Converters.Add(new PasswordHashJsonConverter());
+            options.Converters.Add(new PhoneNumberJsonConverter());
+            options.Converters.Add(new UserRoleJsonConverter());
+
+            return options;
+        });
 
         /*
          * Add Dependency For Services
