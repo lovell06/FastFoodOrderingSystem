@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using FastFoodOrderingSystem.Domain.Common.ValueObjects.Exceptions;
 
 namespace FastFoodOrderingSystem.Domain.Common.ValueObjects;
@@ -24,7 +25,7 @@ public sealed record Email
         if (email.Any(char.IsWhiteSpace))
             throw InvalidEmailException.ContainsWhitespace();
 
-        if (!email.Contains('@'))
+        if (!Regex.IsMatch(email, @"^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+$"))
             throw InvalidEmailException.InvalidFormat();
 
         return new Email(email);

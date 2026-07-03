@@ -19,4 +19,12 @@
     <ProjectReference Include="..\FastFoodOrderingSystem.Infrastructure\FastFoodOrderingSystem.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Contracts\" />
+    <Folder Include="Controllers\Authentication\" />
+    <Folder Include="Extensions\" />
+    <Folder Include="Mapping\" />
+    <Folder Include="Middlewares\" />
+  </ItemGroup>
+
 </Project>
