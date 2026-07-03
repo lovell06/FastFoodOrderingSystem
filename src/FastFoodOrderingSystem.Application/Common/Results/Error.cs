@@ -2,9 +2,9 @@ namespace FastFoodOrderingSystem.Application.Common.Results;
 
 public class Error
 {
-    public string Code;
-    public string Message;
-    public ErrorType Type;
+    public string Code { get; init; }
+    public string Message { get; init; }
+    public ErrorType Type { get; init; }
 
     private Error(string code, string message, ErrorType type)
     {
