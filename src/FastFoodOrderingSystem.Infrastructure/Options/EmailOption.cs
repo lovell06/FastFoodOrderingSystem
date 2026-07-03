@@ -1,11 +1,11 @@
 namespace FastFoodOrderingSystem.Infrastructure.Options;
 
-public sealed record EmailOption(
-    string DisplayName,
-    string UserName,
-    string Password,
-    string Host,
-    int Port)
+public sealed class EmailOption
 {
     public const string SectionName = "EmailOption";
+    public string DisplayName { get; }
+    public string UserName { get; }
+    public string Password { get; }
+    public string Host { get; }
+    public int Port { get; }
 }

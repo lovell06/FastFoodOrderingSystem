@@ -1,10 +1,10 @@
 namespace FastFoodOrderingSystem.Infrastructure.Options;
 
-public sealed record JwtOption(
-    string Issuer,
-    string Audience,
-    string Key,
-    int ExpireMinutes)
+public sealed class JwtOption
 {
     public const string SectionName = "JwtOption";
+    public string Issuer { get; }
+    public string Audience { get; }
+    public string Key { get; }
+    public int ExpireMinutes { get; }
 }

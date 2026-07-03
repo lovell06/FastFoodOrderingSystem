@@ -1,10 +1,12 @@
 using FastFoodOrderingSystem.Application.Abstractions.Authentication;
+using FastFoodOrderingSystem.Application.Abstractions.Cache;
 using FastFoodOrderingSystem.Application.Abstractions.Configurations;
 using FastFoodOrderingSystem.Application.Abstractions.Emails;
 using FastFoodOrderingSystem.Application.Abstractions.Persistence;
 using FastFoodOrderingSystem.Domain.Users;
 using FastFoodOrderingSystem.Infrastructure.Authentication;
 using FastFoodOrderingSystem.Infrastructure.Cache.Redis;
+using FastFoodOrderingSystem.Infrastructure.Cache.Redis.PendingRegistration;
 using FastFoodOrderingSystem.Infrastructure.Configurations;
 using FastFoodOrderingSystem.Infrastructure.Emails;
 using FastFoodOrderingSystem.Infrastructure.Options;
@@ -64,8 +66,10 @@ public static class DependencyInjection
          * Register Services
          */
         services.AddScoped<IPasswordHashService, PasswordHashService>();
+        services.AddScoped<IOtpService, OtpService>();
         services.AddScoped<IOtpHashService, OtpHashService>();
         services.AddScoped<IEmailSender, GmailSender>();
+        services.AddScoped<IPendingRegistrationStore, RedisPendingRegistrationCache>();
 
         /*
          * Register Repositories
@@ -77,6 +81,7 @@ public static class DependencyInjection
          * Register Configurations
          */
         services.AddScoped<IOtpConfiguration, OtpConfiguration>();
+        services.AddScoped<IEmailConfiguration, GmailConfiguration>();
         return services;
     }
 }
