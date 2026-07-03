@@ -1,3 +1,4 @@
+using System.Net;
 using FastFoodOrderingSystem.Api.Contracts.Authentication;
 using FastFoodOrderingSystem.Application.Common.Results;
 using FastFoodOrderingSystem.Application.Features.Auth.Register;
@@ -25,9 +26,14 @@ namespace FastFoodOrderingSystem.Api.Controllers.Authentication
                 return Ok(result.Value);
 
             var err = new { result.Error?.Code, result.Error?.Message, Type = result.Error?.Type.Value };
+            
             if (result.Error?.Type == ErrorType.Conflict)
                 return Conflict(err);
-            return BadRequest(err);
+            
+            if (result.Error?.Type == ErrorType.Validtion)
+                return BadRequest(err);
+            
+            return StatusCode(500, err);
         }
     }
 }
