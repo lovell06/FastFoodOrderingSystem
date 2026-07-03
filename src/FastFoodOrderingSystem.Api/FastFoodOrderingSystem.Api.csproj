@@ -13,6 +13,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Scalar.AspNetCore" Version="2.16.9" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,9 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Contracts\" />
     <Folder Include="Controllers\Authentication\" />
-    <Folder Include="Extensions\" />
     <Folder Include="Mapping\" />
     <Folder Include="Middlewares\" />
   </ItemGroup>
