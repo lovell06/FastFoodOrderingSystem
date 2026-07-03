@@ -23,7 +23,6 @@ public class PendingRegistration : Entity<Email>
         PasswordHash passwordHash,
         FullName fullName,
         PhoneNumber phone,
-        UserRole role,
         OtpCodeHash otpCodeHash,
         DateTime expiresAt,
         int attemptCount) : base(email)
@@ -31,7 +30,7 @@ public class PendingRegistration : Entity<Email>
         FullName = fullName;
         PasswordHash = passwordHash;
         PhoneNumber = phone;
-        Role = role;
+        Role = UserRole.Customer;
         OtpCodeHash = otpCodeHash;
         ExpiresAt = expiresAt;
         AttemptCount = attemptCount;
@@ -50,7 +49,6 @@ public class PendingRegistration : Entity<Email>
             email: email,
             passwordHash: passwordHash,
             phone: phone,
-            role: UserRole.Customer,
             otpCodeHash: otpCodeHash,
             expiresAt: expiresAt,
             attemptCount: 0);
