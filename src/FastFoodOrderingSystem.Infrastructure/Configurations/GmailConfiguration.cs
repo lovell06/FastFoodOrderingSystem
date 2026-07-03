@@ -8,7 +8,7 @@ public class GmailConfiguration : IEmailConfiguration
 {
     public GmailConfiguration(IOptions<EmailOption> options)
     {
-        SenderAddress = options.Value.Email;
+        SenderAddress = options.Value.UserName;
     }
 
     public string SenderAddress { get; }
