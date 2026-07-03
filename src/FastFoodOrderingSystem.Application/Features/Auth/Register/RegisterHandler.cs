@@ -77,6 +77,7 @@ public sealed class RegisterHandler
             if (!await _pendingRegistrationStore.SaveAsync(pendingRegistration: pending))
             {
                 _logger.LogError($"Pending registration store {email.Value} failed {now}.");
+                return Result<RegisterResponse>.Failure(SystemError.Unexpected);
             }
             _logger.LogInformation($"Pending registration store {email.Value} successful {now}.");
 
