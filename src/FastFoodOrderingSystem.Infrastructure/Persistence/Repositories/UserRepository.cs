@@ -14,41 +14,40 @@ public class UserRepository : IUserRepository
         _context = context;
     }
 
-    public async Task<IReadOnlyCollection<User>> GetAllAsync()
+    public async Task<IReadOnlyCollection<User>> GetAllAsync(CancellationToken cancellationToken)
     {
         var users = await _context.Users
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         return users.AsReadOnly();
     }
 
-    public async Task<User?> GetByIdAsync(Guid id)
+    public async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        var user = await _context.Users
-            .SingleAsync(u => u.Id == id);
-
-        return user;
+        return await _context.Users
+            .SingleAsync(u => u.Id == id, cancellationToken);
     }
 
-    public async Task InsertAsync(User user)
+    public async Task InsertAsync(User user, CancellationToken cancellationToken)
     {
-        await _context.AddAsync(user);
+        await _context.AddAsync(user, cancellationToken);
     }
 
-    public async Task<bool> EmailAlreadyExistedAsync(Email email)
+    public async Task<bool> EmailAlreadyExistedAsync(Email email, CancellationToken cancellationToken)
     {
-        var result = await _context.Users
-            .AnyAsync(u => u.Email == email);
-
-        return result;
+        return await _context.Users
+            .AnyAsync(u => u.Email == email, cancellationToken);
     }
 
-    public async Task<User?> GetWithShippingAddressesAsync(Guid id)
+    public async Task<User?> GetWithShippingAddressesAsync(Guid id, CancellationToken cancellationToken)
     {
-        var user = await _context.Users
+        return await _context.Users
             .Include(u => u.ShippingAddresses)
-            .SingleAsync(u => u.Id == id);
+            .SingleAsync(u => u.Id == id, cancellationToken);
+    }
 
-        return user;
+    public async Task<User?> GetByEmailAsync(Email email, CancellationToken cancellationToken)
+    {
+        return await _context.Users.SingleAsync(u => u.Email == email, cancellationToken);
     }
 }

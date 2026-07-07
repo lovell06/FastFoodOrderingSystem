@@ -63,7 +63,7 @@ public sealed class RegisterHandler : ICommandHandler<RegisterCommand, Result<Re
             return Result<RegisterResponse>.Failure(err);
         }
 
-        if (await _userRepository.EmailAlreadyExistedAsync(emailResult.Value!))
+        if (await _userRepository.EmailAlreadyExistedAsync(emailResult.Value!, cancellationToken))
         {
             var err = RegisterError.EmailAlreadyExisted(emailResult.Value!);
             _logger.LogError($"Code: {err.Code} | Message: {err.Message} | Occured at: {now}.");

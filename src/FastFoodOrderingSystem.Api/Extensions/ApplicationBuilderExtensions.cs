@@ -13,6 +13,10 @@ public static class ApplicationBuilderExtensions
             app.MapScalarApiReference();
         }
 
+        app.UseAuthentication();
+
+        app.UseAuthorization();
+
         app.UseMiddleware<ExceptionMiddleware>();
 
         app.MapControllers();

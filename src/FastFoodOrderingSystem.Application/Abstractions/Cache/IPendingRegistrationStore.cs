@@ -11,7 +11,7 @@ public interface IPendingRegistrationStore
         IDateTimeProvider clock,
         CancellationToken cancellationToken = default);
 
-    public Task<PendingRegistration?> GetAsync(
+    public Task<PendingRegistration?> GetByEmailAsync(
         Email email,
         CancellationToken cancellationToken = default);
 

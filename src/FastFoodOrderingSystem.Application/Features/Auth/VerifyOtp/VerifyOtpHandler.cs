@@ -49,6 +49,7 @@ public sealed class VerifyOtpHandler : ICommandHandler<VerifyOtpCommand, Result<
             _logger.LogError($"Code: {err.Code} | Message: {err.Message} | Occured at {now}");
             return Result<VerifyOtpResponse>.Failure(err);
         }
+
         if (otpCodeResult.IsFailure)
         {
             var err = Error.Validation(otpCodeResult.Error!.Code, otpCodeResult.Error.Message);
@@ -59,7 +60,7 @@ public sealed class VerifyOtpHandler : ICommandHandler<VerifyOtpCommand, Result<
         Email email = emailResult.Value!;
         OtpCode otpCode = otpCodeResult.Value!;
 
-        var pending = await _pendingRegistrationStore.GetAsync(email);
+        var pending = await _pendingRegistrationStore.GetByEmailAsync(email);
         if (pending is null)
         {
             _logger.LogError(
@@ -85,7 +86,7 @@ public sealed class VerifyOtpHandler : ICommandHandler<VerifyOtpCommand, Result<
             $"Verify OTP Successful. Email: {email.Value}. At {now}");
 
         var user = User.CreateFromPending(pending, now);
-        await _userRepository.InsertAsync(user);
+        await _userRepository.InsertAsync(user, cancellationToken);
         await _unitWork.SaveChangeAsync(cancellationToken);
 
         await _pendingRegistrationStore.RemoveAsync(email, cancellationToken);

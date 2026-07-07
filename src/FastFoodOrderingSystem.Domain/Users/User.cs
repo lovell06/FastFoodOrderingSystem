@@ -14,7 +14,7 @@ public class User : AggregateRoot<Guid>
     public PhoneNumber PhoneNumber { get; private set; }
     private readonly List<UserShippingAddress> _shippingAddresses = [];
     public IReadOnlyCollection<UserShippingAddress> ShippingAddresses => _shippingAddresses.AsReadOnly();
-    private readonly Queue<UserPasswordHistory> _passwordHistories = [];
+    private readonly List<UserPasswordHistory> _passwordHistories = [];
     public IReadOnlyCollection<UserPasswordHistory> PasswordHistories => _passwordHistories.ToArray();
     public ImagePath AvatarImagePath { get; private set; } = ImagePath.Default();
     public UserRole Role { get; private set; } = UserRole.Customer;
@@ -104,13 +104,13 @@ public class User : AggregateRoot<Guid>
 
     private void AddCurrentPasswordToHistory(PasswordHash passwordHash, DateTime changedAt)
     {
-        _passwordHistories.Enqueue(UserPasswordHistory.Create(passwordHash, changedAt));
+        _passwordHistories.Add(UserPasswordHistory.Create(passwordHash, changedAt));
         UpdatedAt = changedAt;
     }
     private void RemoveExcessPasswordHistories(DateTime changedAt)
     {
         if (_passwordHistories.Count != UserPasswordHistory.MaxStoredPasswordCount) return;
-        _passwordHistories.Dequeue();
+        _passwordHistories.RemoveAt(0);
         UpdatedAt = changedAt;
     }
 

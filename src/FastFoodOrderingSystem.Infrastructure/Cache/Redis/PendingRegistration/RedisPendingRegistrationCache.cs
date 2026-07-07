@@ -16,7 +16,7 @@ public class RedisPendingRegistrationCache : IPendingRegistrationStore
 
     public RedisPendingRegistrationCache(
         IConnectionMultiplexer connectionMultiplexer,
-        RedisKeyProvider redisKeyProvider, 
+        RedisKeyProvider redisKeyProvider,
         JsonSerializerOptions options)
     {
         _database = connectionMultiplexer.GetDatabase();
@@ -24,7 +24,7 @@ public class RedisPendingRegistrationCache : IPendingRegistrationStore
         _options = options;
     }
 
-    public async Task<Domain.Users.PendingRegistration?> GetAsync(Email email,
+    public async Task<Domain.Users.PendingRegistration?> GetByEmailAsync(Email email,
         CancellationToken cancellationToken = default)
     {
         var key = _redisKeyProvider.PendingRegistration(email);
@@ -56,14 +56,17 @@ public class RedisPendingRegistrationCache : IPendingRegistrationStore
         CancellationToken cancellationToken = default)
     {
         var key = _redisKeyProvider.PendingRegistration(pendingRegistration.Id);
-        var value = JsonSerializer.Serialize(
+        var json = JsonSerializer.Serialize(
             value: pendingRegistration,
             options: _options);
+        
         var ttl = pendingRegistration.ExpiresAt - clock.UtcNow;
+        if (ttl < TimeSpan.Zero)
+            return false;
 
         return await _database.StringSetAsync(
-            key,
-            value,
-            ttl);
+            key: key,
+            value: json,
+            expiry: ttl);
     }
 }

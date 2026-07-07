@@ -9,6 +9,7 @@ using FastFoodOrderingSystem.Domain.Users;
 using FastFoodOrderingSystem.Infrastructure.Authentication;
 using FastFoodOrderingSystem.Infrastructure.Cache.Redis;
 using FastFoodOrderingSystem.Infrastructure.Cache.Redis.PendingRegistration;
+using FastFoodOrderingSystem.Infrastructure.Cache.Redis.RefreshToken;
 using FastFoodOrderingSystem.Infrastructure.Configurations;
 using FastFoodOrderingSystem.Infrastructure.Emails;
 using FastFoodOrderingSystem.Infrastructure.Options;
@@ -60,11 +61,14 @@ public static class DependencyInjection
         services.AddOptions<RedisOption>()
             .Bind(configuration.GetSection(RedisOption.SectionName))
             .ValidateOnStart();
+        services.AddOptions<RefreshTokenOption>()
+            .Bind(configuration.GetSection(RefreshTokenOption.SectionName))
+            .ValidateOnStart();
         
         /*
          * Add Serializer Options
          */
-        services.AddSingleton(sp  =>
+        services.AddSingleton(_  =>
         {
             var options = new JsonSerializerOptions()
             {
@@ -97,7 +101,10 @@ public static class DependencyInjection
         services.AddScoped<IOtpHashService, OtpHashService>();
         services.AddScoped<IEmailSender, GmailSender>();
         services.AddScoped<IPendingRegistrationStore, RedisPendingRegistrationCache>();
+        services.AddScoped<IRefreshTokenStore, RedisRefreshTokenCache>();
         services.AddScoped<IDateTimeProvider, DateTimeProvider>();
+        services.AddScoped<IAccessTokenProvider, JwtProvider>();
+        services.AddScoped<IRefreshTokenGenerator, RefreshTokenGenerator>();
 
         /*
          * Register Repositories
@@ -106,10 +113,11 @@ public static class DependencyInjection
         services.AddScoped<IUserRepository, UserRepository>();
 
         /*
-         * Register Configurations
+         * Configurations
          */
         services.AddScoped<IOtpConfiguration, OtpConfiguration>();
         services.AddScoped<IEmailConfiguration, GmailConfiguration>();
+        services.AddScoped<IRefreshTokenConfiguration, RefreshTokenConfiguration>();
         return services;
     }
 }

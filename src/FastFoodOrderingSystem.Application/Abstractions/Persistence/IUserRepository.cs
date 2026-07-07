@@ -5,9 +5,10 @@ namespace FastFoodOrderingSystem.Application.Abstractions.Persistence;
 
 public interface IUserRepository
 {
-    Task<IReadOnlyCollection<User>> GetAllAsync();
-    Task<User?> GetByIdAsync(Guid id);
-    Task<bool> EmailAlreadyExistedAsync(Email email);
-    Task<User?> GetWithShippingAddressesAsync(Guid id);
-    Task InsertAsync(User user);
+    Task<IReadOnlyCollection<User>> GetAllAsync(CancellationToken cancellationToken);
+    Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<User?> GetByEmailAsync(Email email, CancellationToken cancellationToken);
+    Task<bool> EmailAlreadyExistedAsync(Email email, CancellationToken cancellationToken);
+    Task<User?> GetWithShippingAddressesAsync(Guid id, CancellationToken cancellationToken);
+    Task InsertAsync(User user, CancellationToken cancellationToken);
 }
