@@ -22,7 +22,9 @@ public static class ServiceCollectionExtensions
             handler = new TransactionCommandDecorator<RegisterCommand, Result<RegisterResponse>>(
                 handler,
                 sp.GetRequiredService<IUnitWork>());
-            handler = new PerformanceHandlerDecorator<RegisterCommand, Result<RegisterResponse>>(handler);
+            handler = new PerformanceHandlerDecorator<RegisterCommand, Result<RegisterResponse>>(
+                handler,
+                sp.GetRequiredService<ILogger<IHandler<RegisterCommand, Result<RegisterResponse>>>>());
             handler = new LoggingHandlerDecorator<RegisterCommand, Result<RegisterResponse>>(
                 handler,
                 sp.GetRequiredService<ILogger<IHandler<RegisterCommand, Result<RegisterResponse>>>>());
@@ -37,7 +39,9 @@ public static class ServiceCollectionExtensions
             handler = new TransactionCommandDecorator<VerifyOtpCommand, Result<VerifyOtpResponse>>(
                 handler,
                 sp.GetRequiredService<IUnitWork>());
-            handler = new PerformanceHandlerDecorator<VerifyOtpCommand, Result<VerifyOtpResponse>>(handler);
+            handler = new PerformanceHandlerDecorator<VerifyOtpCommand, Result<VerifyOtpResponse>>(
+                handler,
+                sp.GetRequiredService<ILogger<IHandler<VerifyOtpCommand, Result<VerifyOtpResponse>>>>());
             handler = new LoggingHandlerDecorator<VerifyOtpCommand, Result<VerifyOtpResponse>>(
                 handler,
                 sp.GetRequiredService<ILogger<IHandler<VerifyOtpCommand, Result<VerifyOtpResponse>>>>());
