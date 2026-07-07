@@ -1,11 +1,14 @@
 using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 
 namespace FastFoodOrderingSystem.Application.Common.Handlers.HandlerDecorators;
 
 public sealed class PerformanceHandlerDecorator<TRequest, TResult> : HandlerDecorator<TRequest, TResult>
 {
-    public PerformanceHandlerDecorator(IHandler<TRequest, TResult> handler) : base(handler)
+    private readonly ILogger<IHandler<TRequest, TResult>> _logger;
+    public PerformanceHandlerDecorator(IHandler<TRequest, TResult> handler, ILogger<IHandler<TRequest, TResult>> logger) : base(handler)
     {
+        _logger = logger;
     }
     public override async Task<TResult> HandleAsync(TRequest request, CancellationToken cancellationToken)
     {
@@ -16,14 +19,12 @@ public sealed class PerformanceHandlerDecorator<TRequest, TResult> : HandlerDeco
 
             var result = await Handler.HandleAsync(request, cancellationToken);
 
-            sw.Stop();
-
             return result;
         }
-        catch (Exception)
+        finally
         {
             sw.Stop();
-            throw;
+            _logger.LogInformation($"{typeof(TRequest).Name} execute in {sw.ElapsedMilliseconds}ms.");
         }
     }
 }

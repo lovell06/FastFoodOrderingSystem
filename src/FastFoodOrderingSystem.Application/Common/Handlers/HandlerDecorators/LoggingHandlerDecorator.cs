@@ -13,12 +13,16 @@ public class LoggingHandlerDecorator<TRequest, TResult> : HandlerDecorator<TRequ
 
     public override async Task<TResult> HandleAsync(TRequest request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Start");
+        _logger.LogInformation($"Handling {typeof(TRequest).Name}...");
 
-        var result = await Handler.HandleAsync(request, cancellationToken);
+        try
+        {
+            return await Handler.HandleAsync(request, cancellationToken);
+        }
+        finally
+        {
+            _logger.LogInformation($"Handled {typeof(TRequest).Name}.");
+        }
 
-        _logger.LogInformation("End");
-
-        return result;
     }
 }
