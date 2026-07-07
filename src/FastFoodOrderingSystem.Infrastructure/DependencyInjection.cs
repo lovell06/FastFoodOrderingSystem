@@ -4,6 +4,7 @@ using FastFoodOrderingSystem.Application.Abstractions.Cache;
 using FastFoodOrderingSystem.Application.Abstractions.Configurations;
 using FastFoodOrderingSystem.Application.Abstractions.Emails;
 using FastFoodOrderingSystem.Application.Abstractions.Persistence;
+using FastFoodOrderingSystem.Application.Abstractions.Time;
 using FastFoodOrderingSystem.Domain.Users;
 using FastFoodOrderingSystem.Infrastructure.Authentication;
 using FastFoodOrderingSystem.Infrastructure.Cache.Redis;
@@ -15,6 +16,7 @@ using FastFoodOrderingSystem.Infrastructure.Persistence.Database;
 using FastFoodOrderingSystem.Infrastructure.Persistence.Repositories;
 using FastFoodOrderingSystem.Infrastructure.Serialization.Enums;
 using FastFoodOrderingSystem.Infrastructure.Serialization.ValueObjects;
+using FastFoodOrderingSystem.Infrastructure.Time;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -95,6 +97,7 @@ public static class DependencyInjection
         services.AddScoped<IOtpHashService, OtpHashService>();
         services.AddScoped<IEmailSender, GmailSender>();
         services.AddScoped<IPendingRegistrationStore, RedisPendingRegistrationCache>();
+        services.AddScoped<IDateTimeProvider, DateTimeProvider>();
 
         /*
          * Register Repositories

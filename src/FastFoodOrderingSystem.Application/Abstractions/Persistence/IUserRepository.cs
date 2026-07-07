@@ -9,4 +9,5 @@ public interface IUserRepository
     Task<User?> GetByIdAsync(Guid id);
     Task<bool> EmailAlreadyExistedAsync(Email email);
     Task<User?> GetWithShippingAddressesAsync(Guid id);
+    Task InsertAsync(User user);
 }

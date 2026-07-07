@@ -24,7 +24,7 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.FullName)
             .HasConversion(
                 fullName => fullName.Value,
-                value => FullName.Create(value))
+                value => FullName.Create(value).Value!)
             .IsRequired()
             .HasMaxLength(FullName.MaxLength)
             .IsUnicode()
@@ -33,7 +33,7 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.Email)
             .HasConversion(
                 email => email.Value,
-                value => Email.Create(value))
+                value => Email.Create(value).Value!)
             .IsRequired()
             .HasMaxLength(Email.MaxLength)
             .HasColumnName("email");
@@ -41,7 +41,7 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.PasswordHash)
             .HasConversion(
                 passwordHash => passwordHash.Value,
-                value => PasswordHash.Create(value))
+                value => PasswordHash.Create(value).Value!)
             .IsRequired()
             .HasMaxLength(PasswordHash.MaxLength)
             .HasColumnName("password_hash");
@@ -49,7 +49,7 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.PhoneNumber)
             .HasConversion(
                 phoneNumber => phoneNumber.Value,
-                value => PhoneNumber.Create(value))
+                value => PhoneNumber.Create(value).Value!)
             .IsRequired()
             .HasMaxLength(PhoneNumber.MaxLength)
             .HasColumnName("phone_number");
@@ -57,7 +57,7 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.AvatarImagePath)
             .HasConversion(
                 imagePath => imagePath.Value,
-                value => ImagePath.Create(value))
+                value => ImagePath.Create(value).Value!)
             .HasMaxLength(ImagePath.MaxLength)
             .IsUnicode()
             .HasColumnName("avatar_image_path");
@@ -100,7 +100,7 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
                 passwordHistory.Property(p => p.PasswordHash)
                     .HasConversion(
                         passwordHash => passwordHash.Value,
-                        value => PasswordHash.Create(value))
+                        value => PasswordHash.Create(value).Value!)
                     .HasColumnName("password_hash")
                     .HasMaxLength(PasswordHash.MaxLength);
                 passwordHistory.Property(p => p.ChangedAt)
@@ -125,14 +125,14 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
                 shippingAddress.Property(a => a.RecipientName)
                     .HasConversion(
                         fullName => fullName.Value,
-                        value => FullName.Create(value))
+                        value => FullName.Create(value).Value!)
                     .HasMaxLength(FullName.MaxLength)
                     .IsUnicode()
                     .HasColumnName("recipient_name");
                 shippingAddress.Property(a => a.PhoneNumber)
                     .HasConversion(
                         phoneNumber => phoneNumber.Value,
-                        value => PhoneNumber.Create(value))
+                        value => PhoneNumber.Create(value).Value!)
                     .HasMaxLength(PhoneNumber.MaxLength)
                     .HasColumnName("phone_number");
                 shippingAddress.Property(a => a.Address)

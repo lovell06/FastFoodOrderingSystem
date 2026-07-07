@@ -18,7 +18,12 @@ public class PasswordHashService : IPasswordHashService
     {
         var raw = _passwordHasher.HashPassword(user, password.Value);
 
-        return PasswordHash.Create(raw);
+        var result = PasswordHash.Create(raw);
+
+        if (result.IsFailure)
+            throw new InvalidOperationException($"Hash password failed.");
+
+        return result.Value!;
     }
 
     public bool Verify(User user, Password providedPassword, PasswordHash hashedPassword)

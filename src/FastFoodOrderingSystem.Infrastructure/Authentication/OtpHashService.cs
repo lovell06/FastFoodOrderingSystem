@@ -21,7 +21,12 @@ public class OtpHashService : IOtpHashService
 
         var hashCode = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(code.Value));
 
-        return OtpCodeHash.Create(Convert.ToHexString(hashCode));
+        var result = OtpCodeHash.Create(Convert.ToHexString(hashCode));
+
+        if (result.IsFailure)
+            throw new InvalidOperationException("Hash OTP code failed.");
+
+        return result.Value!;
     }
 
     public bool Verify(OtpCode providedCode, OtpCodeHash hashedCode)

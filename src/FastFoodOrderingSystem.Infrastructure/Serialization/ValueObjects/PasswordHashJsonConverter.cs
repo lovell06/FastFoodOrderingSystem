@@ -6,7 +6,12 @@ public class PasswordHashJsonConverter : SystemTextJsonConverter<PasswordHash>
 {
     protected override PasswordHash? Create(string value)
     {
-        return PasswordHash.Create(value);
+        var result = PasswordHash.Create(value);
+
+        if (result.IsFailure)
+            throw new InvalidOperationException("Can not converter password hash from json data.");
+
+        return result.Value;
     }
 
     protected override string GetValue(PasswordHash value)

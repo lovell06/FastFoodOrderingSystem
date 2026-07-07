@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
+using FastFoodOrderingSystem.Domain.Common.DomainResults;
 using FastFoodOrderingSystem.Domain.Common.Validations;
-using FastFoodOrderingSystem.Domain.Common.ValueObjects.Exceptions;
+using FastFoodOrderingSystem.Domain.Common.ValueObjects.Errors;
 
 namespace FastFoodOrderingSystem.Domain.Common.ValueObjects;
 
@@ -14,26 +15,31 @@ public sealed record Email
         Value = value.Trim();
     }
 
-    public static Email Create(string email)
+    public static DomainResult<Email> Create(string email)
     {   
-        Validate(email);
-        
-        return new Email(email);
+        var error = Validate(email);
+
+        if (error is not null)
+            return DomainResult<Email>.Failure(error);
+
+        return DomainResult<Email>.Success(new Email(email));
     }
 
-    private static void Validate(string email)
+    private static DomainError? Validate(string email)
     {
         if (string.IsNullOrWhiteSpace(email))
-            throw InvalidEmailException.Empty();
+            return EmailError.Empty();
 
         email = email.Trim();
         if (email.Length > MaxLength)
-            throw InvalidEmailException.ExceedsMaxLength(MaxLength);
+            return EmailError.ExceedsMaxLength(MaxLength);
 
         if (email.Any(char.IsWhiteSpace))
-            throw InvalidEmailException.ContainsWhitespace();
+            return EmailError.ContainsWhitespace();
 
         if (!Regex.IsMatch(email, ValidationPatterns.Email))
-            throw InvalidEmailException.InvalidFormat();
+            return EmailError.InvalidFormat();
+
+        return null;
     }
 }

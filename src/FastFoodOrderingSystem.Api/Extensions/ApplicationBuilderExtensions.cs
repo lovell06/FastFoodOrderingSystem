@@ -1,3 +1,4 @@
+using FastFoodOrderingSystem.Api.Middlewares;
 using Scalar.AspNetCore;
 
 namespace FastFoodOrderingSystem.Api.Extensions;
@@ -11,6 +12,8 @@ public static class ApplicationBuilderExtensions
             app.MapOpenApi();
             app.MapScalarApiReference();
         }
+
+        app.UseMiddleware<ExceptionMiddleware>();
 
         app.MapControllers();
 

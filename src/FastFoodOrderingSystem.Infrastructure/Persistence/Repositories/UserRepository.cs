@@ -30,7 +30,7 @@ public class UserRepository : IUserRepository
         return user;
     }
 
-    public async Task Insert(User user)
+    public async Task InsertAsync(User user)
     {
         await _context.AddAsync(user);
     }

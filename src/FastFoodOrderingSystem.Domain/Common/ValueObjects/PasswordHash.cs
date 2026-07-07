@@ -1,4 +1,5 @@
-using FastFoodOrderingSystem.Domain.Common.ValueObjects.Exceptions;
+using FastFoodOrderingSystem.Domain.Common.DomainResults;
+using FastFoodOrderingSystem.Domain.Common.ValueObjects.Errors;
 
 namespace FastFoodOrderingSystem.Domain.Common.ValueObjects;
 
@@ -12,19 +13,24 @@ public sealed record PasswordHash
         Value = value;
     }
 
-    public static PasswordHash Create(string passwordHash)
+    public static DomainResult<PasswordHash> Create(string passwordHash)
     {
-        Validate(passwordHash);
+        var error = Validate(passwordHash);
         
-        return new PasswordHash(passwordHash);
+        if (error is not null)
+            return DomainResult<PasswordHash>.Failure(error);
+        
+        return DomainResult<PasswordHash>.Success(new PasswordHash(passwordHash));
     }
 
-    private static void Validate(string passwordHash)
+    private static DomainError? Validate(string passwordHash)
     {
         if (string.IsNullOrWhiteSpace(passwordHash))
-            throw InvalidPasswordHashException.Empty();
+            return PasswordHashError.Empty();
 
         if (passwordHash.Length > MaxLength)
-            throw InvalidPasswordHashException.ExceedsMaxLength(MaxLength);
+            return  PasswordHashError.ExceedsMaxLength(MaxLength);
+
+        return null;
     }
 }

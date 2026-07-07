@@ -42,4 +42,9 @@ public class Error
     {
         return new(code, message, ErrorType.Conflict);
     }
+
+    public static Error Business(string code, string message)
+    {
+        return new(code, message, ErrorType.Business);
+    }
 }

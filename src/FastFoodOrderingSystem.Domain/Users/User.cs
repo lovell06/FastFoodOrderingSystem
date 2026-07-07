@@ -1,6 +1,8 @@
 using FastFoodOrderingSystem.Domain.Common.Abstractions;
+using FastFoodOrderingSystem.Domain.Common.DomainResults;
 using FastFoodOrderingSystem.Domain.Common.Enums;
 using FastFoodOrderingSystem.Domain.Common.ValueObjects;
+using FastFoodOrderingSystem.Domain.Users.Errors;
 using FastFoodOrderingSystem.Domain.Users.Exceptions;
 
 namespace FastFoodOrderingSystem.Domain.Users;
@@ -15,7 +17,7 @@ public class User : AggregateRoot<Guid>
     public IReadOnlyCollection<UserShippingAddress> ShippingAddresses => _shippingAddresses.AsReadOnly();
     private readonly Queue<UserPasswordHistory> _passwordHistories = [];
     public IReadOnlyCollection<UserPasswordHistory> PasswordHistories => _passwordHistories.ToArray();
-    public ImagePath AvatarImagePath { get; private set; } = ImagePath.Create("images/users/default.png");
+    public ImagePath AvatarImagePath { get; private set; } = ImagePath.Default();
     public UserRole Role { get; private set; } = UserRole.Customer;
     public DateTime CreatedAt { get; }
     public DateTime? UpdatedAt { get; private set; }
@@ -85,18 +87,20 @@ public class User : AggregateRoot<Guid>
         FullName = newFullName;
     }
 
-    public void ChangePasswordHash(PasswordHash newPasswordHash)
+    public DomainResult<User> ChangePasswordHash(PasswordHash newPasswordHash)
     {
         if (PasswordHash == newPasswordHash)
-            throw new NewPasswordSameAsCurrentPasswordException();
+            return DomainResult<User>.Failure(new NewPasswordSameAsCurrentPasswordError());
 
         if (_passwordHistories.Any(p => newPasswordHash == p.PasswordHash))
-            throw new NewPasswordRecentlyUsedException();
+            return DomainResult<User>.Failure(new NewPasswordRecentlyUsedError());
 
         var updatedAt = DateTime.UtcNow;
         RemoveExcessPasswordHistories(updatedAt);
         AddCurrentPasswordToHistory(newPasswordHash, updatedAt);
         PasswordHash = newPasswordHash;
+
+        return DomainResult<User>.Success();
     }
 
     private void AddCurrentPasswordToHistory(PasswordHash passwordHash, DateTime changedAt)
@@ -131,29 +135,33 @@ public class User : AggregateRoot<Guid>
         UpdatedAt = updatedAt;
     }
 
-    public void ChangeShippingAddress(UserShippingAddress userShippingAddress, DateTime updatedAt)
+    public DomainResult<User> ChangeShippingAddress(UserShippingAddress userShippingAddress, DateTime updatedAt)
     {
         var shippingAddress = _shippingAddresses.SingleOrDefault(a => a.Id == userShippingAddress.Id);
 
         if (shippingAddress is null)
-            throw new AddressNotFoundException();
+            return DomainResult<User>.Failure(new AddressNotFoundError());
 
         shippingAddress.Change(
             recipientName: userShippingAddress.RecipientName,
             phoneNumber: userShippingAddress.PhoneNumber,
             address: userShippingAddress.Address);
         UpdatedAt = updatedAt;
+
+        return DomainResult<User>.Success();
     }
 
-    public void RemoveShippingAddress(UserShippingAddress userShippingAddress, DateTime updatedAt)
+    public DomainResult<User> RemoveShippingAddress(UserShippingAddress userShippingAddress, DateTime updatedAt)
     {
         var shippingAddress = _shippingAddresses.SingleOrDefault(a => a.Id == userShippingAddress.Id);
 
         if (shippingAddress is null)
-            throw new AddressNotFoundException();
+            return DomainResult<User>.Failure(new AddressNotFoundError());
 
         _shippingAddresses.Remove(userShippingAddress);
         UpdatedAt = updatedAt;
+
+        return DomainResult<User>.Success();
     }
 
     public void ChangeAvatarImagePath(ImagePath imagePath, DateTime updatedAt)

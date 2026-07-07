@@ -6,7 +6,12 @@ public class EmailJsonConverter : SystemTextJsonConverter<Email>
 {
     protected override Email? Create(string value)
     {
-        return Email.Create(value);
+        var result =  Email.Create(value);
+
+        if (result.IsFailure)
+            throw new InvalidOperationException("Can not converter email from json data.");
+
+        return result.Value;
     }
 
     protected override string GetValue(Email value)

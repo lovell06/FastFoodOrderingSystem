@@ -1,4 +1,5 @@
-using FastFoodOrderingSystem.Domain.Common.ValueObjects.Exceptions;
+using FastFoodOrderingSystem.Domain.Common.DomainResults;
+using FastFoodOrderingSystem.Domain.Common.ValueObjects.Errors;
 
 namespace FastFoodOrderingSystem.Domain.Common.ValueObjects;
 
@@ -12,18 +13,24 @@ public sealed record OtpCodeHash
         Value = value;
     }
 
-    private static void Validate(string raw)
+    private static DomainError? Validate(string raw)
     {
         if (string.IsNullOrWhiteSpace(raw))
-            throw InvalidOtpCodeHashException.Empty();
+            return OtpCodeHashError.Empty();
         
         if (raw.Length > MaxLength)
-            throw InvalidOtpCodeHashException.ExceedsMaxLength(MaxLength);
+            return OtpCodeHashError.ExceedsMaxLength(MaxLength);
+
+        return null;
     }
 
-    public static OtpCodeHash Create(string raw)
+    public static DomainResult<OtpCodeHash> Create(string raw)
     {
-        Validate(raw);
-        return new OtpCodeHash(raw);
+        var error = Validate(raw);
+
+        if (error is not null)
+            return DomainResult<OtpCodeHash>.Failure(error);
+        
+        return DomainResult<OtpCodeHash>.Success(new OtpCodeHash(raw));
     }
 }

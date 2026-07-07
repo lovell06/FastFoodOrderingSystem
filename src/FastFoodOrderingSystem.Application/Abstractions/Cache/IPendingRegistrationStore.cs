@@ -1,3 +1,4 @@
+using FastFoodOrderingSystem.Application.Abstractions.Time;
 using FastFoodOrderingSystem.Domain.Common.ValueObjects;
 using FastFoodOrderingSystem.Domain.Users;
 
@@ -7,6 +8,7 @@ public interface IPendingRegistrationStore
 {
     public Task<bool> SaveAsync(
         PendingRegistration pendingRegistration,
+        IDateTimeProvider clock,
         CancellationToken cancellationToken = default);
 
     public Task<PendingRegistration?> GetAsync(

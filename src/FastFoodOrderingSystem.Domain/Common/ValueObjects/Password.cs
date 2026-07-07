@@ -1,4 +1,5 @@
-using FastFoodOrderingSystem.Domain.Common.ValueObjects.Exceptions;
+using FastFoodOrderingSystem.Domain.Common.DomainResults;
+using FastFoodOrderingSystem.Domain.Common.ValueObjects.Errors;
 
 namespace FastFoodOrderingSystem.Domain.Common.ValueObjects;
 
@@ -11,30 +12,35 @@ public sealed record Password
         Value = value;
     }
 
-    private static void Validate(string raw)
+    private static DomainError? Validate(string raw)
     {
         if (string.IsNullOrWhiteSpace(raw))
-            throw InvalidPasswordException.Empty();
+            return PasswordError.Empty();
         
         if (raw.Length < MinLength)
-            throw InvalidPasswordException.PasswordLengthBelowMinimum(MinLength);
+            return PasswordError.PasswordLengthBelowMinimum(MinLength);
 
         if (!raw.Any(char.IsUpper))
-            throw InvalidPasswordException.PasswordRequiresUppercase();
+            return PasswordError.PasswordRequiresUppercase();
 
         if (!raw.Any(char.IsLower))
-            throw InvalidPasswordException.PasswordRequiresLowercase();
+            return PasswordError.PasswordRequiresLowercase();
 
         if (!raw.Any(char.IsDigit))
-            throw InvalidPasswordException.PasswordRequiresDigit();
+            return PasswordError.PasswordRequiresDigit();
 
         if (raw.All(char.IsLetterOrDigit))
-            throw InvalidPasswordException.PasswordRequiresSpecialCharacter();
+            return PasswordError.PasswordRequiresSpecialCharacter();
+
+        return null;
     }
 
-    public static Password Create(string raw)
+    public static DomainResult<Password> Create(string raw)
     {
-        Validate(raw);
-        return new Password(raw);
+        var error = Validate(raw);
+
+        if (error is not null)
+            return DomainResult<Password>.Failure(error);
+        return DomainResult<Password>.Success(new Password(raw));
     }
 }

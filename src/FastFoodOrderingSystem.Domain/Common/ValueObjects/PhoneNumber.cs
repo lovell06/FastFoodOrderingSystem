@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
+using FastFoodOrderingSystem.Domain.Common.DomainResults;
 using FastFoodOrderingSystem.Domain.Common.Validations;
-using FastFoodOrderingSystem.Domain.Common.ValueObjects.Exceptions;
+using FastFoodOrderingSystem.Domain.Common.ValueObjects.Errors;
 
 namespace FastFoodOrderingSystem.Domain.Common.ValueObjects;
 
@@ -14,26 +15,30 @@ public sealed record PhoneNumber
         Value = value.Trim();
     }
 
-    public static PhoneNumber Create(string phone)
+    public static DomainResult<PhoneNumber> Create(string phone)
     {
-        Validate(phone);
+        var error = Validate(phone);
 
-        return new PhoneNumber(phone);
+        if (error is not null)
+            return DomainResult<PhoneNumber>.Failure(error);
+        return DomainResult<PhoneNumber>.Success(new PhoneNumber(phone));
     }
 
-    private static void Validate(string phone)
+    private static DomainError? Validate(string phone)
     {
         if (string.IsNullOrWhiteSpace(phone))
-            throw InvalidPhoneNumberException.Empty();
+            return PhoneNumberError.Empty();
 
         phone = phone.Trim();
         if (phone.Length > MaxLength)
-            throw InvalidPhoneNumberException.ExceedsMaxLength(MaxLength);
+            return PhoneNumberError.ExceedsMaxLength(MaxLength);
 
         if (Regex.IsMatch(phone, ValidationPatterns.PhoneNumber))
-            throw InvalidPhoneNumberException.ContainsNonDigitCharacters();
+            return PhoneNumberError.ContainsNonDigitCharacters();
 
         if (phone.Any(char.IsWhiteSpace))
-            throw InvalidPhoneNumberException.ContainsWhitespace();
+            return PhoneNumberError.ContainsWhitespace();
+
+        return null;
     }
 }

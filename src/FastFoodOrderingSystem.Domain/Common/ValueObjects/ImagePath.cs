@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
+using FastFoodOrderingSystem.Domain.Common.DomainResults;
 using FastFoodOrderingSystem.Domain.Common.Validations;
-using FastFoodOrderingSystem.Domain.Common.ValueObjects.Exceptions;
+using FastFoodOrderingSystem.Domain.Common.ValueObjects.Errors;
 
 namespace FastFoodOrderingSystem.Domain.Common.ValueObjects;
 
@@ -23,31 +24,37 @@ public record ImagePath
         Value = value.Trim();
     }
 
-    private static void Validate(string path)
+    private static DomainError? Validate(string path)
     {
         if (string.IsNullOrWhiteSpace(path))
-            throw InvalidImagePathException.Empty();
+            return ImagePathError.Empty();
 
         path = path.Trim();
         if (path.Length > MaxLength)
-            throw InvalidImagePathException.ExceedsMaxLength(MaxLength);
+            return ImagePathError.ExceedsMaxLength(MaxLength);
 
         string extension = Path.GetExtension(path);
         if (!SupportedExtensions.Contains(extension))
-            throw InvalidImagePathException.UnsupportExtension(extension);
+            return ImagePathError.UnsupportExtension(extension);
 
         if (!Regex.IsMatch(path, ValidationPatterns.ImagePath(extension)))
-            throw InvalidImagePathException.InvalidImagePathFormat();
+            return ImagePathError.InvalidImagePathFormat();
+
+        return null;
     }
 
-    public static ImagePath Create(string path)
+    public static DomainResult<ImagePath> Create(string path)
     {
-        Validate(path);
-        return new ImagePath(path);
+        var error = Validate(path);
+
+        if (error is not null)
+            return DomainResult<ImagePath>.Failure(error);
+        
+        return DomainResult<ImagePath>.Success(new ImagePath(path));
     }
 
     public static ImagePath Default()
     {
-        return new ImagePath("default");
+        return new ImagePath("images/users/default.png");
     }
 }

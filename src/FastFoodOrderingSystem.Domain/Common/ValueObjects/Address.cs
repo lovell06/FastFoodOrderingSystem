@@ -1,4 +1,5 @@
-using FastFoodOrderingSystem.Domain.Common.ValueObjects.Exceptions;
+using FastFoodOrderingSystem.Domain.Common.DomainResults;
+using FastFoodOrderingSystem.Domain.Common.ValueObjects.Errors;
 
 namespace FastFoodOrderingSystem.Domain.Common.ValueObjects;
 
@@ -16,30 +17,35 @@ public sealed record Address
         Detail = detail;
     }
 
-    public static Address Create(string provinceCity, string wardCommune, string detail)
+    public static DomainResult<Address> Create(string provinceCity, string wardCommune, string detail)
     {
         provinceCity = provinceCity.Trim();
         wardCommune = wardCommune.Trim();
         detail = detail.Trim();
 
-        Validate(provinceCity, wardCommune, detail);
+        var error = Validate(provinceCity, wardCommune, detail);
+
+        if (error is not null)
+            return DomainResult<Address>.Failure(error);
         
-        return new Address(provinceCity, wardCommune, detail);
+        return DomainResult<Address>.Success(new Address(provinceCity, wardCommune, detail));
     }
 
-    private static void Validate(string provinceCity, string wardCommune, string detail)
+    private static DomainError? Validate(string provinceCity, string wardCommune, string detail)
     {
         if (string.IsNullOrWhiteSpace(provinceCity))
-            throw InvalidAddressException.ProvinceOrCityEmpty();
+            return AddressError.ProvinceOrCityEmpty();
 
         if (string.IsNullOrWhiteSpace(wardCommune))
-            throw InvalidAddressException.WardOrCommuneEmpty();
+            return AddressError.WardOrCommuneEmpty();
 
         if (string.IsNullOrWhiteSpace(detail))
-            throw InvalidAddressException.DetailEmpty();
+            return AddressError.DetailEmpty();
 
         if (provinceCity.Length + wardCommune.Length + detail.Length > MaxLength)
-            throw InvalidAddressException.ExceedsMaxLength(MaxLength);
+            return AddressError.ExceedsMaxLength(MaxLength);
+
+        return null;
     }
 
     public override string ToString()
@@ -57,11 +63,16 @@ public sealed record Address
         var parts = value.Split("|");
 
         if (parts.Length != 3)
-            throw new FormatException("Invalid address format.");
+            throw new InvalidOperationException("Can not parse address from Database.");
 
-        return Create(
+        var result = Create(
             detail: parts[0],
             wardCommune: parts[1],
             provinceCity: parts[2]);
+
+        if (result.IsFailure)
+            throw new InvalidOperationException("Address from database invalid.");
+
+        return result.Value!;
     }
 }

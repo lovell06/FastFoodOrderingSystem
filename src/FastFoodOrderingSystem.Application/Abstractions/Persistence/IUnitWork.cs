@@ -2,5 +2,8 @@ namespace FastFoodOrderingSystem.Application.Abstractions.Persistence;
 
 public interface IUnitWork
 {
-    Task<int> CommitAsync();
+    Task BeginAsync(CancellationToken cancellationToken);
+    Task CommitAsync(CancellationToken cancellationToken);
+    Task RollbackAsync(CancellationToken cancellationToken);
+    Task<int> SaveChangeAsync(CancellationToken cancellationToken);
 }

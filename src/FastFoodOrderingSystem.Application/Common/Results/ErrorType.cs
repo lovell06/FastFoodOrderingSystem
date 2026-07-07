@@ -8,6 +8,7 @@ public class ErrorType
     public static readonly ErrorType Forbidden = new("Forbidden");
     public static readonly ErrorType Failure = new("Failure");
     public static readonly ErrorType Conflict = new("Conflict");
+    public static readonly ErrorType Business = new("Business");
 
     public string Value { get; }
     private ErrorType(string value)
