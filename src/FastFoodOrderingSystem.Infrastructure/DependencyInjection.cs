@@ -1,6 +1,7 @@
 using FastFoodOrderingSystem.Infrastructure.Authentication;
 using FastFoodOrderingSystem.Infrastructure.Cache;
 using FastFoodOrderingSystem.Infrastructure.Configurations;
+using FastFoodOrderingSystem.Infrastructure.Emails;
 using FastFoodOrderingSystem.Infrastructure.Options;
 using FastFoodOrderingSystem.Infrastructure.Persistence;
 using FastFoodOrderingSystem.Infrastructure.Serialization;
@@ -22,12 +23,14 @@ public static class DependencyInjection
 
         services.AddDateTimeProvider();
 
-        services.AddAuthenticationServices();
-
         services.AddPersistence(configuration);
 
         services.AddCacheService();
-        
+
+        services.AddEmailServices();
+
+        services.AddAuthenticationServices();
+
         return services;
     }
 }
