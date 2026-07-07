@@ -17,19 +17,17 @@ dotnet restore
 
 ### Enviroment Variable (User secrets)
 ```bash
-cd src/FastFoodOrderingSystem.Api
-dotnet user-secrets init
-dotnet user-secrets set "ConnectionStrings:DefaultConnection" "your-db-connection-string"
-dotnet user-secrets set "JwtOption:Key" "your-key"
-dotnet user-secrets set "OtpOption:SecretKey" "your-secret-key"
-dotnet user-secrets set "EmailOption:UserName" "your-email"
-dotnet user-secrets set "EmailOption:Password" "your-password"
-cd ../../
+dotnet user-secrets init --project src/*.Api/*.csproj
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "your-db-connection-string" --project src/*.Api/*.csproj
+dotnet user-secrets set "JwtOption:Key" "your-key" --project src/*.Api/*.csproj
+dotnet user-secrets set "OtpOption:SecretKey" "your-secret-key" --project src/*.Api/*.csproj
+dotnet user-secrets set "EmailOption:UserName" "your-email" --project src/*.Api/*.csproj
+dotnet user-secrets set "EmailOption:Password" "your-password" --project src/*.Api/*.csproj
 ```
 
 ### Migration Command
 ```bash
-dotnet ef database update --project src/FastFoodOrderingSystem.Infrastructure/FastFoodOrderingSystem.Infrastructure.csproj
+dotnet ef database update --project src/*.Infrastructure/*.csproj
 ```
 
 ### Cache Service Command (This project use Redis, Ensure redis server is installed)
@@ -40,5 +38,5 @@ redis-server
 ### Build & Run Project
 ```bash
 dotnet build
-dotnet run --project src/FastFoodOrderingSystem.Api/FastFoodOrderingSystem.Api.csproj
+dotnet run --project src/*.Api/*.csproj
 ```
