@@ -1,6 +1,6 @@
 using FastFoodOrderingSystem.Domain.Common.DomainResults;
 
-namespace FastFoodOrderingSystem.Domain.Users.Exceptions;
+namespace FastFoodOrderingSystem.Domain.Users.Errors;
 
 public sealed record NewPasswordRecentlyUsedError : DomainError
 {
