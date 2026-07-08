@@ -12,16 +12,12 @@ public class RedisPendingRegistrationCache : IPendingRegistrationStore
 {
     private readonly IDatabase _database;
     private readonly RedisKeyProvider _redisKeyProvider;
-    private readonly JsonSerializerOptions _options;
-
     public RedisPendingRegistrationCache(
         IConnectionMultiplexer connectionMultiplexer,
-        RedisKeyProvider redisKeyProvider,
-        JsonSerializerOptions options)
+        RedisKeyProvider redisKeyProvider)
     {
         _database = connectionMultiplexer.GetDatabase();
         _redisKeyProvider = redisKeyProvider;
-        _options = options;
     }
 
     public async Task<Domain.Users.PendingRegistration?> GetByEmailAsync(Email email,
@@ -33,14 +29,13 @@ public class RedisPendingRegistrationCache : IPendingRegistrationStore
         if (!json.HasValue)
             return null;
 
-        var snapshot = JsonSerializer.Deserialize<PendingRegistrationSnapshot>(
-            json: json!,
-            options: _options);
+        var snapshot = JsonSerializer.Deserialize<PendingRegistrationSnapshot>(json: json!);
 
         if (snapshot is null)
             throw new InvalidOperationException("Cannot Deserialize PendingRegistration.");
 
         var pending = PendingRegistrationMapper.ToEntity(snapshot);
+
         return pending;
     }
 
@@ -55,15 +50,16 @@ public class RedisPendingRegistrationCache : IPendingRegistrationStore
         IDateTimeProvider clock,
         CancellationToken cancellationToken = default)
     {
-        var key = _redisKeyProvider.PendingRegistration(pendingRegistration.Id);
-        var json = JsonSerializer.Serialize(
-            value: pendingRegistration,
-            options: _options);
-        
         var ttl = pendingRegistration.ExpiresAt - clock.UtcNow;
         if (ttl < TimeSpan.Zero)
             return false;
 
+        var snapshot = PendingRegistrationMapper.ToSnapshot(pendingRegistration);
+
+        var key = _redisKeyProvider.PendingRegistration(pendingRegistration.Id);
+
+        var json = JsonSerializer.Serialize(snapshot);
+        
         return await _database.StringSetAsync(
             key: key,
             value: json,

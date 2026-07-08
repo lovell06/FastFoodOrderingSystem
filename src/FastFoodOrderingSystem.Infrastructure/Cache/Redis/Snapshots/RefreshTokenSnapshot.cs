@@ -1,3 +1,3 @@
 namespace FastFoodOrderingSystem.Infrastructure.Cache.Redis.Snapshots;
 
-public record RefreshTokenSnapshot(Guid UserId, string Token, DateTime ExpiresAt);
+public record RefreshTokenSnapshot(Guid Id, Guid UserId, string Token, DateTime ExpiresAt);

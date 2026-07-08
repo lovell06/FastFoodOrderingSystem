@@ -4,7 +4,6 @@ using FastFoodOrderingSystem.Infrastructure.Configurations;
 using FastFoodOrderingSystem.Infrastructure.Emails;
 using FastFoodOrderingSystem.Infrastructure.Options;
 using FastFoodOrderingSystem.Infrastructure.Persistence;
-using FastFoodOrderingSystem.Infrastructure.Serialization;
 using FastFoodOrderingSystem.Infrastructure.Time;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,8 +17,6 @@ public static class DependencyInjection
         services.AddInfrastructureOptions(configuration);
 
         services.AddConfigurations();
-
-        services.AddSerialization();
 
         services.AddDateTimeProvider();
 
