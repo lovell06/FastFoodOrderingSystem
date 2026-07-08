@@ -8,6 +8,7 @@ using FastFoodOrderingSystem.Application.Common.Handlers;
 using FastFoodOrderingSystem.Application.Common.Results;
 using FastFoodOrderingSystem.Application.Features.Auth.Login.Dtos;
 using FastFoodOrderingSystem.Domain.Common.ValueObjects;
+using FastFoodOrderingSystem.Domain.RefreshTokens;
 using Microsoft.Extensions.Logging;
 
 namespace FastFoodOrderingSystem.Application.Features.Auth.Login;
@@ -73,7 +74,11 @@ public class LoginHandler : ICommandHandler<LoginCommand, Result<LoginResponse>>
         }
 
         var accessToken = _accessTokenProvider.Generate(user);
-        var refreshToken = _refreshToken.Generate(user, now.AddDays(_refreshTokenConfiguration.ExpireDays));
+        var refreshToken = RefreshToken.Create(
+            id: TokenId.Create(Guid.NewGuid()),
+            userId: user.Id,
+            token: _refreshToken.Generate(),
+            now.AddDays(_refreshTokenConfiguration.ExpireDays));
 
         if (!await _refreshTokenStore.SaveAsync(refreshToken, _clock, cancellationToken))
         {
@@ -85,7 +90,11 @@ public class LoginHandler : ICommandHandler<LoginCommand, Result<LoginResponse>>
 
         var response = new LoginResponse(
             AccessToken: accessToken,
-            RefreshToken: refreshToken.Token,
+            RefreshTokenInfo: new RefreshTokenDto(
+                Id: refreshToken.Id.Value,
+                UserId: refreshToken.UserId,
+                Token: refreshToken.Token.Value,
+                ExpiresAt: refreshToken.ExpiresAt),
             UserInfo: new UserDto(
                 FullName: user.FullName.Value,
                 Email: user.Email.Value,
