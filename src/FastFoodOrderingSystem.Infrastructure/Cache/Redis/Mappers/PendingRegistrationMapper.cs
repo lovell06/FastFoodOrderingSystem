@@ -3,7 +3,7 @@ using FastFoodOrderingSystem.Infrastructure.Cache.Redis.Snapshots;
 
 namespace FastFoodOrderingSystem.Infrastructure.Cache.Redis.Mappers;
 
-public class PendingRegistrationMapper
+public static class PendingRegistrationMapper
 {
     public static Domain.Users.PendingRegistration ToEntity(PendingRegistrationSnapshot snapshot)
     {
@@ -29,5 +29,18 @@ public class PendingRegistrationMapper
             phone: phoneNumberResult.Value!,
             otpCodeHash: otpCodeHashResult.Value!,
             expiresAt: expiresAt);
+    }
+
+    public static PendingRegistrationSnapshot ToSnapshot(Domain.Users.PendingRegistration pending)
+    {
+        return new PendingRegistrationSnapshot(
+            Id: pending.Id.Value,
+            FullName: pending.FullName.Value,
+            PasswordHash: pending.PasswordHash.Value,
+            PhoneNumber: pending.PhoneNumber.Value,
+            Role: pending.Role.Code,
+            OtpCodeHash: pending.OtpCodeHash.Value,
+            ExpiresAt: pending.ExpiresAt,
+            AttemptCount: pending.AttemptCount);
     }
 }

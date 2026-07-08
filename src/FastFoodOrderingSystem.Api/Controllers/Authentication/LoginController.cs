@@ -1,5 +1,4 @@
 using FastFoodOrderingSystem.Api.Contracts.Authentication;
-using FastFoodOrderingSystem.Application.Common.Errors;
 using FastFoodOrderingSystem.Application.Common.Handlers;
 using FastFoodOrderingSystem.Application.Common.Results;
 using FastFoodOrderingSystem.Application.Features.Auth.Login;
@@ -7,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FastFoodOrderingSystem.Api.Controllers.Authentication
 {
-    [Route("api/[controller]")]
+    [Route("api/auth/[controller]")]
     [ApiController]
     public class LoginController : ControllerBase
     {
@@ -32,7 +31,7 @@ namespace FastFoodOrderingSystem.Api.Controllers.Authentication
                 return StatusCode(500, new {err.Code, err.Message, err.Type.Value});
             }
 
-            return Accepted(result.Value);
+            return Ok(result.Value);
         }
     }
 }

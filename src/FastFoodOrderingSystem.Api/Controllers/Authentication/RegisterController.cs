@@ -1,4 +1,3 @@
-using System.Net;
 using FastFoodOrderingSystem.Api.Contracts.Authentication;
 using FastFoodOrderingSystem.Application.Common.Handlers;
 using FastFoodOrderingSystem.Application.Common.Results;
@@ -7,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FastFoodOrderingSystem.Api.Controllers.Authentication
 {
-    [Route("api/[controller]")]
+    [Route("api/auth/[controller]")]
     [ApiController]
     public class RegisterController : ControllerBase
     {

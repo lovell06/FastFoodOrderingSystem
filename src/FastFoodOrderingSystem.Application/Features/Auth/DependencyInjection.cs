@@ -4,6 +4,7 @@ using FastFoodOrderingSystem.Application.Common.Handlers.CommandDecorators;
 using FastFoodOrderingSystem.Application.Common.Handlers.HandlerDecorators;
 using FastFoodOrderingSystem.Application.Common.Results;
 using FastFoodOrderingSystem.Application.Features.Auth.Login;
+using FastFoodOrderingSystem.Application.Features.Auth.Logout;
 using FastFoodOrderingSystem.Application.Features.Auth.Register;
 using FastFoodOrderingSystem.Application.Features.Auth.VerifyOtp;
 using Microsoft.Extensions.DependencyInjection;
@@ -68,6 +69,26 @@ public static class DependencyInjection
                 handler,
                 sp.GetRequiredService<ILogger<IHandler<LoginCommand, Result<LoginResponse>>>>());
 
+            return handler;
+        });
+
+        services.AddScoped<LogoutHandler>();
+        services.AddScoped(sp =>
+        {
+            IHandler<LogoutCommand, Result<LogoutResponse>> handler = sp.GetRequiredService<LogoutHandler>();
+
+            handler = new TransactionCommandDecorator<LogoutCommand, Result<LogoutResponse>>(
+                handler,
+                sp.GetRequiredService<IUnitWork>());
+
+            handler = new PerformanceHandlerDecorator<LogoutCommand, Result<LogoutResponse>>(
+                handler,
+                sp.GetRequiredService<ILogger<IHandler<LogoutCommand, Result<LogoutResponse>>>>());
+
+            handler = new LoggingHandlerDecorator<LogoutCommand, Result<LogoutResponse>>(
+                handler,
+                sp.GetRequiredService<ILogger<IHandler<LogoutCommand, Result<LogoutResponse>>>>());
+            
             return handler;
         });
 

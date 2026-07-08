@@ -1,6 +1,7 @@
 using System.Text.Json;
 using FastFoodOrderingSystem.Application.Abstractions.Cache;
 using FastFoodOrderingSystem.Application.Abstractions.Time;
+using FastFoodOrderingSystem.Domain.RefreshTokens;
 using FastFoodOrderingSystem.Infrastructure.Cache.Redis.Mappers;
 using FastFoodOrderingSystem.Infrastructure.Cache.Redis.Snapshots;
 using StackExchange.Redis;
@@ -11,52 +12,54 @@ public sealed class RedisRefreshTokenCache : IRefreshTokenStore
 {
     private readonly IDatabase _database;
     private readonly RedisKeyProvider _keyProvider;
-    private readonly JsonSerializerOptions _options;
-    public RedisRefreshTokenCache(IConnectionMultiplexer connectionMultiplexer, RedisKeyProvider keyProvider, JsonSerializerOptions options)
+    public RedisRefreshTokenCache(
+        IConnectionMultiplexer connectionMultiplexer, 
+        RedisKeyProvider keyProvider)
     {
         _database = connectionMultiplexer.GetDatabase();
         _keyProvider = keyProvider;
-        _options = options;
     }
-    public async Task<Domain.Common.ValueObjects.RefreshToken?> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken)
+
+    public async Task<Domain.RefreshTokens.RefreshToken?> GetByIdAsync(TokenId id, CancellationToken cancellationToken)
     {
-        var key = _keyProvider.RefreshToken(userId);
+        var key = _keyProvider.RefreshToken(id);
 
         var json = await _database.StringGetAsync(key);
 
         if (!json.HasValue)
             return null;
+            
+        var snapshot = JsonSerializer.Deserialize<RefreshTokenSnapshot>(json: json!);
+
+        if (snapshot is null)
+            throw new InvalidOperationException(
+                $"Cannot parse RedisValue to RefreshTokenSnapshot. TokenId: {id.Value}.");
         
-        var snapshot = JsonSerializer.Deserialize<RefreshTokenSnapshot>(
-            (string)json!,
-            _options);
+        var result = RefreshTokenMapper.ToEntity(snapshot);
 
-        var token = RefreshTokenMapper.ToValueObject(snapshot!);
-
-        return token;
-
+        return result;
     }
 
-    public async Task<bool> RemoveByUserIdAsync(Guid userId, CancellationToken cancellationToken)
+    public async Task<bool> RemoveByIdAsync(TokenId id, CancellationToken cancellationToken)
     {
-        var key = _keyProvider.RefreshToken(userId);
-
-        return await _database.KeyDeleteAsync(key);
+        var key = _keyProvider.RefreshToken(id);
+        var result = await _database.KeyDeleteAsync(key);
+        return result;
     }
 
-    public async Task<bool> SaveAsync(Domain.Common.ValueObjects.RefreshToken token, IDateTimeProvider clock, CancellationToken cancellationToken)
+    public async Task<bool> SaveAsync(Domain.RefreshTokens.RefreshToken token, IDateTimeProvider clock,
+        CancellationToken cancellationToken)
     {
-        var key = _keyProvider.RefreshToken(token.UserId);
-        var snapshot = new RefreshTokenSnapshot(
-            UserId: token.UserId, 
-            Token: token.Token, 
-            ExpiresAt: token.ExpiresAt);
-
         var ttl = token.ExpiresAt - clock.UtcNow;
         if (ttl < TimeSpan.Zero)
             return false;
+        
+        var snapshot = RefreshTokenMapper.ToSnapshot(token);
 
-        var json = JsonSerializer.Serialize(value: snapshot, options: _options);
+        var key = _keyProvider.RefreshToken(token.Id);
+
+        var json = JsonSerializer.Serialize(snapshot);
+
         return await _database.StringSetAsync(
             key: key,
             value: json,

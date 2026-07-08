@@ -1,9 +1,9 @@
 using FastFoodOrderingSystem.Infrastructure.Authentication;
 using FastFoodOrderingSystem.Infrastructure.Cache;
 using FastFoodOrderingSystem.Infrastructure.Configurations;
+using FastFoodOrderingSystem.Infrastructure.Emails;
 using FastFoodOrderingSystem.Infrastructure.Options;
 using FastFoodOrderingSystem.Infrastructure.Persistence;
-using FastFoodOrderingSystem.Infrastructure.Serialization;
 using FastFoodOrderingSystem.Infrastructure.Time;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,16 +18,16 @@ public static class DependencyInjection
 
         services.AddConfigurations();
 
-        services.AddSerialization();
-
         services.AddDateTimeProvider();
 
         services.AddPersistence(configuration);
 
         services.AddCacheService();
 
-        services.AddAuthenticationServices();
+        services.AddEmailServices();
 
+        services.AddAuthenticationServices();
+        
         return services;
     }
 }
