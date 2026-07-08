@@ -1,5 +1,11 @@
 # Fast Food Ordering System
 
+## Architecture
+
+Architecture: Clean architecture + DDD + CQRS
+
+Design pattern: Factory Pattern, Repository Pattern, Decorator Pattern
+
 ### Required dotnet sdk 10.0
 ```bash
 dotnet --version
@@ -15,7 +21,7 @@ dotnet tool install --global dotnet-ef
 dotnet restore
 ```
 
-### Database Management used is PostgreSQL (Ensure it installed)
+### Database Management System: PostgreSQL (Ensure installed)
 
 ### Enviroment Variable (User secrets: pls pass your secret configuration to "your-key", "your-email",...)
 ```bash
@@ -41,4 +47,10 @@ redis-server
 ```bash
 dotnet build
 dotnet run --project src/*.Api/*.csproj
+```
+
+### This project use Scalar (API documentation)
+```bash
+URL: host:port/scalar
+Ex URL: localhost:5209/scalar
 ```
