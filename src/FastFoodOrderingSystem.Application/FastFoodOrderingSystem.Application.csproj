@@ -5,10 +5,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Auth\RefreshToken\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="Microsoft.Extensions.Configuration.Abstractions">
       <HintPath>..\..\..\..\.nuget\packages\microsoft.extensions.configuration.abstractions\10.0.9\lib\net10.0\Microsoft.Extensions.Configuration.Abstractions.dll</HintPath>
     </Reference>
