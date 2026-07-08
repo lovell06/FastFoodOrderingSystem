@@ -26,7 +26,9 @@ public class LoginHandler : ICommandHandler<LoginCommand, Result<LoginResponse>>
 
     public LoginHandler(
         IUserRepository userRepository,
-        ILogger<IHandler<LoginCommand, Result<LoginResponse>>> logger, IDateTimeProvider dateTimeProvider, IPasswordHashService passwordHashService, IAccessTokenProvider jwtProvider, IRefreshTokenGenerator refreshToken, IRefreshTokenStore refreshTokenStore, IRefreshTokenConfiguration refreshTokenConfiguration)
+        ILogger<IHandler<LoginCommand, Result<LoginResponse>>> logger, IDateTimeProvider dateTimeProvider,
+        IPasswordHashService passwordHashService, IAccessTokenProvider jwtProvider, IRefreshTokenGenerator refreshToken,
+        IRefreshTokenStore refreshTokenStore, IRefreshTokenConfiguration refreshTokenConfiguration)
     {
         _userRepository = userRepository;
         _logger = logger;
@@ -64,18 +66,18 @@ public class LoginHandler : ICommandHandler<LoginCommand, Result<LoginResponse>>
         if (user is null)
         {
             _logger.LogError($"Email not found. Email {email.Value} not existed. Occurred at: {now}");
-            return Result<LoginResponse>.Failure(LoginError.Failed);
+            return Result<LoginResponse>.Failure(LoginError.Failure);
         }
 
         if (!_passwordHashService.Verify(user, password, user.PasswordHash))
         {
             _logger.LogError($"Password incorrect. Occurred at: {now}");
-            return Result<LoginResponse>.Failure(LoginError.Failed);
+            return Result<LoginResponse>.Failure(LoginError.Failure);
         }
 
         var accessToken = _accessTokenProvider.Generate(user);
+
         var refreshToken = RefreshToken.Create(
-            id: TokenId.Create(Guid.NewGuid()),
             userId: user.Id,
             token: _refreshToken.Generate(),
             now.AddDays(_refreshTokenConfiguration.ExpireDays));
@@ -91,7 +93,6 @@ public class LoginHandler : ICommandHandler<LoginCommand, Result<LoginResponse>>
         var response = new LoginResponse(
             AccessToken: accessToken,
             RefreshTokenInfo: new RefreshTokenDto(
-                Id: refreshToken.Id.Value,
                 UserId: refreshToken.UserId,
                 Token: refreshToken.Token.Value,
                 ExpiresAt: refreshToken.ExpiresAt),
@@ -101,6 +102,6 @@ public class LoginHandler : ICommandHandler<LoginCommand, Result<LoginResponse>>
                 PhoneNumber: user.PhoneNumber.Value));
 
         _logger.LogInformation($"User {user.Email.Value} login succesful. {now}");
-        return Result<LoginResponse>.Success(response);        
+        return Result<LoginResponse>.Success(response);
     }
 }

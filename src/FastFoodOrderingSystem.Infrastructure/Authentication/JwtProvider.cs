@@ -27,9 +27,9 @@ public sealed class JwtProvider : IAccessTokenProvider
 
         var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Email, user.Email.Value),
-            new Claim(ClaimTypes.Role, user.Role.Code)
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(ClaimTypes.Email, user.Email.Value),
+            new(ClaimTypes.Role, user.Role.Code)
         };
 
         var token = new JwtSecurityToken(

@@ -2,7 +2,7 @@ using FastFoodOrderingSystem.Application.Features.Auth.Logout;
 
 namespace FastFoodOrderingSystem.Api.Contracts.Authentication;
 
-public record LogoutRequest(Guid RefreshTokenId)
+public record LogoutRequest(string RefreshTokenId)
 {
     public LogoutCommand ToCommand()
     {

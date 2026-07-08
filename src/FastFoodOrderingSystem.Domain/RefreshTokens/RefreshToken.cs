@@ -19,8 +19,10 @@ public class RefreshToken : AggregateRoot<TokenId>
         ExpiresAt = expiresAt;
     }
 
-    public static RefreshToken Create(TokenId id, Guid userId, Token token, DateTime expiresAt)
+    public static RefreshToken Create(Guid userId, Token token, DateTime expiresAt)
     {
+        var id = TokenId.Create(token);
+
         return new RefreshToken(id, userId, token, expiresAt);
     }
 }

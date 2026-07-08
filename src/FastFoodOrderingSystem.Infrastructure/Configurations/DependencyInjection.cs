@@ -10,6 +10,7 @@ public static class DependencyInjection
         services.AddScoped<IOtpConfiguration, OtpConfiguration>();
         services.AddScoped<IEmailConfiguration, GmailConfiguration>();
         services.AddScoped<IRefreshTokenConfiguration, RefreshTokenConfiguration>();
+        services.AddScoped<IAccessTokenConfiguration, AccessTokenConfiguration>();
         return services;
     }
 }

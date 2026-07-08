@@ -9,10 +9,8 @@ public static class RefreshTokenMapper
     {
         ArgumentNullException.ThrowIfNull(snapshot, "RefreshTokenSnapshot is null.");
 
-        var tokenId = DomainAggregateRoot.TokenId.Create(snapshot.Id);
         var token = DomainAggregateRoot.Token.Create(snapshot.Token);
         return DomainAggregateRoot.RefreshToken.Create(
-            id: tokenId,
             userId: snapshot.UserId,
             token: token,
             expiresAt: snapshot.ExpiresAt);
@@ -21,7 +19,6 @@ public static class RefreshTokenMapper
     public static RefreshTokenSnapshot ToSnapshot(DomainAggregateRoot.RefreshToken refreshToken)
     {
         return new RefreshTokenSnapshot(
-            Id: refreshToken.Id.Value,
             UserId: refreshToken.UserId,
             Token: refreshToken.Token.Value,
             ExpiresAt: refreshToken.ExpiresAt);

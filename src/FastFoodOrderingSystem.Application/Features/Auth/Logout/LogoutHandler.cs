@@ -22,13 +22,18 @@ public sealed class LogoutHandler : ICommandHandler<LogoutCommand, Result<Logout
     public async Task<Result<LogoutResponse>> HandleAsync(LogoutCommand command, CancellationToken cancellationToken)
     {
         var now = _clock.UtcNow;
+
+        var token = Token.Create(command.Token);
+
+        var tokenId = TokenId.Create(token);
+
         var isSuccess = await _refreshTokenStore.RemoveByIdAsync(
-            TokenId.Create(command.TokenId), 
+            tokenId, 
             cancellationToken);
 
         _logger.LogInformation(!isSuccess
-            ? $"Refresh token with id: {command.TokenId} was already revoked."
-            : $"Refresh token with UserId: {command.TokenId} has been revoked. Occured at: {now}");
+            ? $"Refresh token with id: {tokenId.Value} was already revoked."
+            : $"Refresh token with id: {tokenId.Value} has been revoked. Occured at: {now}");
 
         return Result<LogoutResponse>.Success(new ());
     }
