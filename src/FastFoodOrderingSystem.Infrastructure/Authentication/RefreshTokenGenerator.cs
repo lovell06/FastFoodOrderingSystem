@@ -9,7 +9,7 @@ public sealed class RefreshTokenGenerator : IRefreshTokenGenerator
     public Token Generate()
     {
         var randomString = RandomNumberGenerator.GetHexString(256);
-        var token = Convert.ToBase64String(
+        var token = Convert.ToHexString(
             System.Text.Encoding.UTF8.GetBytes(randomString));
 
         return Token.Create(token);

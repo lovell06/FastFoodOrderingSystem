@@ -62,15 +62,24 @@ public sealed class RefreshTokenHandler : IHandler<RefreshTokenCommand, Result<R
         if (user is null)
         {
             _logger.LogError($"Refresh failed. User with id: {command.UserId} not found. Occured at: {now}");
-            return Result<RefreshTokenResponse>.Failure(RefreshTokenError.UserNotFound);
+            return Result<RefreshTokenResponse>.Failure(RefreshTokenError.Failure);
         }
+
+        _logger.LogInformation(
+            await _refreshTokenStore.RemoveByIdAsync(tokenId, cancellationToken) ?
+                $"Revoke successful. Old refresh token with id: {tokenId.Value} was been revoked. Occurred at {now}" :
+                $"Revoke failed. Old refresh token with id: {tokenId.Value} cannot revoke or not found. Occured at {now}");
 
         var accessToken = _accessTokenProvider.Generate(user);
         var refreshToken = RefreshToken.Create(
             userId: user.Id,
             token: _refreshTokenGenerator.Generate(),
             expiresAt: now.AddDays(_refreshTokenConfiguration.ExpireDays));
+
+        if (!await _refreshTokenStore.SaveAsync(refreshToken, _clock, cancellationToken))
+            throw new InvalidOperationException($"Cannot store new refresh token with id: {tokenId.Value}");
         
+        _logger.LogInformation($"Store successful. Store new refresh token successful. Ocurred at: {now}");
         return Result<RefreshTokenResponse>.Success(new(
             new AccessTokenDto(accessToken, now.AddMinutes(_accessTokenConfiguration.ExpireMinutes)),
             new RefreshTokenDto(refreshToken.Token.Value, refreshToken.ExpiresAt)));
