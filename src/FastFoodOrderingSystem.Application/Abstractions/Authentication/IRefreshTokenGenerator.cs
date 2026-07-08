@@ -1,9 +1,8 @@
-using FastFoodOrderingSystem.Domain.Common.ValueObjects;
-using FastFoodOrderingSystem.Domain.Users;
+using FastFoodOrderingSystem.Domain.RefreshTokens;
 
 namespace FastFoodOrderingSystem.Application.Abstractions.Authentication;
 
 public interface IRefreshTokenGenerator
 {
-    RefreshToken Generate(User user, DateTime expiresAt);
+    Token Generate();
 }

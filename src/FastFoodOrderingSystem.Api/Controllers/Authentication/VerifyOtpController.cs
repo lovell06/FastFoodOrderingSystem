@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FastFoodOrderingSystem.Api.Controllers.Authentication
 {
-    [Route("api/[controller]")]
+    [Route("api/auth/[controller]")]
     [ApiController]
     public class VerifyOtpController : ControllerBase
     {
