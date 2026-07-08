@@ -1,3 +1,3 @@
-namespace FastFoodOrderingSystem.Application.Features.Auth.RefreshToken;
+namespace FastFoodOrderingSystem.Application.Features.Auth.Refresh;
 
 public sealed record RefreshTokenCommand(Guid UserId, string RefreshToken);

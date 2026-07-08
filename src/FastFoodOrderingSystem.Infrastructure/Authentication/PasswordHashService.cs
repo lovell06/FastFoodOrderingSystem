@@ -1,6 +1,6 @@
 using FastFoodOrderingSystem.Application.Abstractions.Authentication;
-using FastFoodOrderingSystem.Domain.Common.ValueObjects;
 using FastFoodOrderingSystem.Domain.Users;
+using FastFoodOrderingSystem.Domain.Users.ValueObjects;
 using Microsoft.AspNetCore.Identity;
 
 namespace FastFoodOrderingSystem.Infrastructure.Authentication;

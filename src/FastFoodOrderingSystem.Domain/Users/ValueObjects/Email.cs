@@ -2,8 +2,9 @@ using System.Text.RegularExpressions;
 using FastFoodOrderingSystem.Domain.Common.DomainResults;
 using FastFoodOrderingSystem.Domain.Common.Validations;
 using FastFoodOrderingSystem.Domain.Common.ValueObjects.Errors;
+using FastFoodOrderingSystem.Domain.Users.ValueObjects.Errors;
 
-namespace FastFoodOrderingSystem.Domain.Common.ValueObjects;
+namespace FastFoodOrderingSystem.Domain.Users.ValueObjects;
 
 public sealed record Email
 {

@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 using FastFoodOrderingSystem.Application.Abstractions.Authentication;
-using FastFoodOrderingSystem.Domain.Common.ValueObjects;
+using FastFoodOrderingSystem.Domain.Users.ValueObjects;
 
 namespace FastFoodOrderingSystem.Infrastructure.Authentication;
 

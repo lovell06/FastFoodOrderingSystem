@@ -1,7 +1,7 @@
 using System.Text.Json;
 using FastFoodOrderingSystem.Application.Abstractions.Cache;
 using FastFoodOrderingSystem.Application.Abstractions.Time;
-using FastFoodOrderingSystem.Domain.Common.ValueObjects;
+using FastFoodOrderingSystem.Domain.Users.ValueObjects;
 using FastFoodOrderingSystem.Infrastructure.Cache.Redis.Mappers;
 using FastFoodOrderingSystem.Infrastructure.Cache.Redis.Snapshots;
 using StackExchange.Redis;

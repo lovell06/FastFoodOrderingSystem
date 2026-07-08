@@ -1,5 +1,5 @@
 using FastFoodOrderingSystem.Domain.Common.Abstractions;
-using FastFoodOrderingSystem.Domain.Common.ValueObjects;
+using FastFoodOrderingSystem.Domain.Users.ValueObjects;
 
 namespace FastFoodOrderingSystem.Domain.Users;
 

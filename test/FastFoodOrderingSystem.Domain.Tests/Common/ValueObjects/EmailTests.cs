@@ -1,4 +1,4 @@
-using FastFoodOrderingSystem.Domain.Common.ValueObjects;
+using FastFoodOrderingSystem.Domain.Users.ValueObjects;
 using FluentAssertions;
 
 namespace FastFoodOrderingSystem.Domain.Tests.Common.ValueObjects;

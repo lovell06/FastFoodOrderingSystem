@@ -1,6 +1,7 @@
 using FastFoodOrderingSystem.Domain.Common.DomainResults;
+using FastFoodOrderingSystem.Domain.Users.ValueObjects;
 
-namespace FastFoodOrderingSystem.Domain.Common.ValueObjects;
+namespace FastFoodOrderingSystem.Application.Abstractions.Emails;
 
 public sealed record EmailContent
 {

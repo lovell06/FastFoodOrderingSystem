@@ -1,4 +1,5 @@
 using FastFoodOrderingSystem.Domain.Common.ValueObjects;
+using FastFoodOrderingSystem.Domain.Users.ValueObjects;
 using FastFoodOrderingSystem.Infrastructure.Cache.Redis.Snapshots;
 
 namespace FastFoodOrderingSystem.Infrastructure.Cache.Redis.Mappers;

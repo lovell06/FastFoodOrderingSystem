@@ -1,6 +1,6 @@
 using FastFoodOrderingSystem.Application.Abstractions.Persistence;
-using FastFoodOrderingSystem.Domain.Common.ValueObjects;
 using FastFoodOrderingSystem.Domain.Users;
+using FastFoodOrderingSystem.Domain.Users.ValueObjects;
 using FastFoodOrderingSystem.Infrastructure.Persistence.Database;
 using Microsoft.EntityFrameworkCore;
 

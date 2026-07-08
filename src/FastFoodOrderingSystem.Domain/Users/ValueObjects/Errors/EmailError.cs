@@ -1,6 +1,6 @@
 using FastFoodOrderingSystem.Domain.Common.DomainResults;
 
-namespace FastFoodOrderingSystem.Domain.Common.ValueObjects.Errors;
+namespace FastFoodOrderingSystem.Domain.Users.ValueObjects.Errors;
 
 public static class EmailError
 {
