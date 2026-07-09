@@ -26,4 +26,6 @@ public abstract class SmartEnum<TEnum> where TEnum : SmartEnum<TEnum>
     {
         return GetAll().Single(f => f.Code == value);
     }
+
+    public static readonly IReadOnlyCollection<TEnum> List = GetAll();
 }
