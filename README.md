@@ -6,7 +6,7 @@
 
 Architecture: Clean architecture + DDD + CQRS
 
-Design pattern: Factory Pattern, Repository Pattern, Decorator Pattern
+Design pattern: Repository Pattern, Decorator Pattern
 
 
 
