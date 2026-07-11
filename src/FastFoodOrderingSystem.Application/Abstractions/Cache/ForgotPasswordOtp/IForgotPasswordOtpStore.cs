@@ -1,21 +1,20 @@
 using FastFoodOrderingSystem.Application.Abstractions.Time;
-using FastFoodOrderingSystem.Domain.Users;
 using FastFoodOrderingSystem.Domain.Users.ValueObjects;
 
-namespace FastFoodOrderingSystem.Application.Abstractions.Cache;
+namespace FastFoodOrderingSystem.Application.Abstractions.Cache.ForgotPasswordOtp;
 
-public interface IPendingRegistrationStore
+public interface IForgotPasswordOtpStore
 {
     public Task<bool> SaveAsync(
-        PendingRegistration pendingRegistration,
+        ForgotPasswordOtp forgotPasswordOtp,
         IDateTimeProvider clock,
         CancellationToken cancellationToken = default);
 
-    public Task<PendingRegistration?> GetByEmailAsync(
+    public Task<ForgotPasswordOtp?> GetByEmailAsync(
         Email email,
         CancellationToken cancellationToken = default);
 
-    public Task<bool> RemoveAsync(
+    public Task<bool> RemoveByEmailAsync(
         Email email,
         CancellationToken cancellationToken = default);
 }

@@ -70,18 +70,6 @@ public class User : AggregateRoot<Guid>
             createdAt: createdAt);
     }
 
-    public static User CreateFromPending(PendingRegistration pendingRegistration, DateTime createdAt)
-    {
-        return User.Create(
-            fullName: pendingRegistration.FullName,
-            email: pendingRegistration.Id,
-            passwordHash: pendingRegistration.PasswordHash,
-            phoneNumber: pendingRegistration.PhoneNumber,
-            avatarImagePath: ImagePath.Default(),
-            role: pendingRegistration.Role,
-            createdAt: createdAt);
-    }
-
     public void ChangeFullName(FullName newFullName)
     {
         FullName = newFullName;

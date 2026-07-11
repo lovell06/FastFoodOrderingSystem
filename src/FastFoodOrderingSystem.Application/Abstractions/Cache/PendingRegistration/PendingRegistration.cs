@@ -3,7 +3,7 @@ using FastFoodOrderingSystem.Domain.Common.Enums;
 using FastFoodOrderingSystem.Domain.Common.ValueObjects;
 using FastFoodOrderingSystem.Domain.Users.ValueObjects;
 
-namespace FastFoodOrderingSystem.Domain.Users;
+namespace FastFoodOrderingSystem.Application.Abstractions.Cache.PendingRegistration;
 
 public class PendingRegistration : Entity<Email>
 {
@@ -14,10 +14,6 @@ public class PendingRegistration : Entity<Email>
     public OtpCodeHash OtpCodeHash { get; private set; }
     public DateTime ExpiresAt { get; private set; }
     public int AttemptCount { get; private set; }
-
-    protected PendingRegistration()
-    {
-    }
 
     private PendingRegistration(
         Email email,
