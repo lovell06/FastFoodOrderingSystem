@@ -4,8 +4,8 @@ using FastFoodOrderingSystem.Application.Abstractions.Configurations;
 using FastFoodOrderingSystem.Application.Abstractions.Emails;
 using FastFoodOrderingSystem.Application.Abstractions.Persistence;
 using FastFoodOrderingSystem.Application.Abstractions.Time;
+using FastFoodOrderingSystem.Application.Common.Cqrs;
 using FastFoodOrderingSystem.Application.Common.Errors;
-using FastFoodOrderingSystem.Application.Common.Handlers;
 using FastFoodOrderingSystem.Application.Common.Results;
 using FastFoodOrderingSystem.Domain.Common.ValueObjects;
 using FastFoodOrderingSystem.Domain.Users;
@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FastFoodOrderingSystem.Application.Features.Auth.Register;
 
-public sealed class RegisterHandler : ICommandHandler<RegisterCommand, Result<RegisterResponse>>
+public sealed class RegisterHandler : ICommandHandler<RegisterCommand, Result<Unit>>
 {
     private readonly IUserRepository _userRepository;
     private readonly IPendingRegistrationStore _pendingRegistrationStore;
@@ -51,7 +51,7 @@ public sealed class RegisterHandler : ICommandHandler<RegisterCommand, Result<Re
         _clock = clock;
     }
 
-    public async Task<Result<RegisterResponse>> HandleAsync(RegisterCommand command,
+    public async Task<Result<Unit>> HandleAsync(RegisterCommand command,
         CancellationToken cancellationToken)
     {
         var now = _clock.UtcNow;
@@ -61,14 +61,14 @@ public sealed class RegisterHandler : ICommandHandler<RegisterCommand, Result<Re
         {
             var err = Error.Validation(emailResult.Error!.Code, emailResult.Error.Message);
             _logger.LogError($"Code: {err.Code} | Message: {err.Message} | Occured at: {now}");
-            return Result<RegisterResponse>.Failure(err);
+            return Result<Unit>.Failure(err);
         }
 
         if (await _userRepository.EmailAlreadyExistedAsync(emailResult.Value!, cancellationToken))
         {
             var err = RegisterError.EmailAlreadyExisted(emailResult.Value!);
             _logger.LogError($"Code: {err.Code} | Message: {err.Message} | Occured at: {now}.");
-            return Result<RegisterResponse>.Failure(err);
+            return Result<Unit>.Failure(err);
         }
 
         var fullNameResult = FullName.Create(command.FullName);
@@ -76,7 +76,7 @@ public sealed class RegisterHandler : ICommandHandler<RegisterCommand, Result<Re
         {
             var err = Error.Validation(fullNameResult.Error!.Code, fullNameResult.Error.Message);
             _logger.LogError($"Code: {err.Code} | Message: {err.Message} | Occured at: {now}");
-            return Result<RegisterResponse>.Failure(err);
+            return Result<Unit>.Failure(err);
         }
 
         var passwordResult = Password.Create(command.Password);
@@ -84,7 +84,7 @@ public sealed class RegisterHandler : ICommandHandler<RegisterCommand, Result<Re
         {
             var err = Error.Validation(passwordResult.Error!.Code, passwordResult.Error.Message);
             _logger.LogError($"Code: {err.Code} | Message: {err.Message} | Occured at: {now}");
-            return Result<RegisterResponse>.Failure(err);
+            return Result<Unit>.Failure(err);
         }
 
         var passwordHash = _passwordHashService.Hash(null!, passwordResult.Value!);
@@ -93,7 +93,7 @@ public sealed class RegisterHandler : ICommandHandler<RegisterCommand, Result<Re
         {
             var err = Error.Validation(phoneNumberResult.Error!.Code, phoneNumberResult.Error.Message);
             _logger.LogError($"Code: {err.Code} | Message: {err.Message} | Occured at: {now}");
-            return Result<RegisterResponse>.Failure(err);
+            return Result<Unit>.Failure(err);
         }
 
         FullName fullName = fullNameResult.Value!;
@@ -115,7 +115,7 @@ public sealed class RegisterHandler : ICommandHandler<RegisterCommand, Result<Re
                 cancellationToken: cancellationToken))
         {
             _logger.LogError($"Pending registration store {email.Value} failed {now}.");
-            return Result<RegisterResponse>.Failure(SystemError.Unexpected);
+            return Result<Unit>.Failure(SystemError.Unexpected);
         }
 
         _logger.LogInformation($"Pending registration store {email.Value} successful {now}.");
@@ -129,7 +129,7 @@ public sealed class RegisterHandler : ICommandHandler<RegisterCommand, Result<Re
         if (emailContentResult.IsFailure)
         {
             _logger.LogError($"Create EmailContent failed {now}.");
-            return Result<RegisterResponse>.Failure(SystemError.Unexpected);
+            return Result<Unit>.Failure(SystemError.Unexpected);
         }
 
         EmailContent emailContent = emailContentResult.Value!;
@@ -137,7 +137,6 @@ public sealed class RegisterHandler : ICommandHandler<RegisterCommand, Result<Re
         await _emailSender.SendAsync(emailContent);
         _logger.LogInformation(
             $"Send OTP code from {emailContent.From.Value} to {emailContent.To.Value} successful {now}.");
-        return Result<RegisterResponse>.Success(
-            new RegisterResponse($"OTP code sent to email {emailContent.To.Value}."));
+        return Result<Unit>.Success(Unit.Value);
     }
 }

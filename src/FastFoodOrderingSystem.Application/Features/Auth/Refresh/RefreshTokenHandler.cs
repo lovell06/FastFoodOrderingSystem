@@ -3,7 +3,7 @@ using FastFoodOrderingSystem.Application.Abstractions.Cache;
 using FastFoodOrderingSystem.Application.Abstractions.Configurations;
 using FastFoodOrderingSystem.Application.Abstractions.Persistence;
 using FastFoodOrderingSystem.Application.Abstractions.Time;
-using FastFoodOrderingSystem.Application.Common.Handlers;
+using FastFoodOrderingSystem.Application.Common.Cqrs;
 using FastFoodOrderingSystem.Application.Common.Results;
 using FastFoodOrderingSystem.Application.Features.Auth.Refresh.Dtos;
 using FastFoodOrderingSystem.Domain.RefreshTokens;
@@ -14,7 +14,7 @@ namespace FastFoodOrderingSystem.Application.Features.Auth.Refresh;
 public sealed class RefreshTokenHandler : IHandler<RefreshTokenCommand, Result<RefreshTokenResponse>>
 {
     private readonly IRefreshTokenStore _refreshTokenStore;
-    private readonly ILogger<IHandler<RefreshTokenCommand, Result<RefreshTokenResponse>>> _logger;
+    private readonly ILogger<RefreshTokenHandler> _logger;
     private readonly IDateTimeProvider _clock;
     private readonly IAccessTokenProvider _accessTokenProvider;
     private readonly IUserRepository _userRepository;
@@ -23,7 +23,7 @@ public sealed class RefreshTokenHandler : IHandler<RefreshTokenCommand, Result<R
     private readonly IAccessTokenConfiguration _accessTokenConfiguration;
     public RefreshTokenHandler(
         IRefreshTokenStore refreshTokenStore, 
-        ILogger<IHandler<RefreshTokenCommand, Result<RefreshTokenResponse>>> logger, 
+        ILogger<RefreshTokenHandler> logger, 
         IDateTimeProvider dateTimeProvider, 
         IAccessTokenProvider accessTokenProvider, 
         IUserRepository userRepository, 

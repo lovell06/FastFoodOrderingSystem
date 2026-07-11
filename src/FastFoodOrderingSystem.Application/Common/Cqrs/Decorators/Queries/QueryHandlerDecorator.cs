@@ -1,4 +1,4 @@
-namespace FastFoodOrderingSystem.Application.Common.Handlers.QueryDecorators;
+namespace FastFoodOrderingSystem.Application.Common.Cqrs.Decorators.Queries;
 
 public abstract class QueryHandlerDecorator<TQuery, TResult> : IQueryHandler<TQuery, TResult>
 {

@@ -3,8 +3,8 @@ using FastFoodOrderingSystem.Application.Abstractions.Cache;
 using FastFoodOrderingSystem.Application.Abstractions.Configurations;
 using FastFoodOrderingSystem.Application.Abstractions.Persistence;
 using FastFoodOrderingSystem.Application.Abstractions.Time;
+using FastFoodOrderingSystem.Application.Common.Cqrs;
 using FastFoodOrderingSystem.Application.Common.Errors;
-using FastFoodOrderingSystem.Application.Common.Handlers;
 using FastFoodOrderingSystem.Application.Common.Results;
 using FastFoodOrderingSystem.Application.Features.Auth.Login.Dtos;
 using FastFoodOrderingSystem.Domain.RefreshTokens;
@@ -16,7 +16,7 @@ namespace FastFoodOrderingSystem.Application.Features.Auth.Login;
 public class LoginHandler : ICommandHandler<LoginCommand, Result<LoginResponse>>
 {
     private readonly IUserRepository _userRepository;
-    private readonly ILogger<IHandler<LoginCommand, Result<LoginResponse>>> _logger;
+    private readonly ILogger<LoginHandler> _logger;
     private readonly IDateTimeProvider _clock;
     private readonly IPasswordHashService _passwordHashService;
     private readonly IAccessTokenProvider _accessTokenProvider;
@@ -26,9 +26,13 @@ public class LoginHandler : ICommandHandler<LoginCommand, Result<LoginResponse>>
 
     public LoginHandler(
         IUserRepository userRepository,
-        ILogger<IHandler<LoginCommand, Result<LoginResponse>>> logger, IDateTimeProvider dateTimeProvider,
-        IPasswordHashService passwordHashService, IAccessTokenProvider jwtProvider, IRefreshTokenGenerator refreshToken,
-        IRefreshTokenStore refreshTokenStore, IRefreshTokenConfiguration refreshTokenConfiguration)
+        ILogger<LoginHandler> logger, 
+        IDateTimeProvider dateTimeProvider,
+        IPasswordHashService passwordHashService, 
+        IAccessTokenProvider jwtProvider, 
+        IRefreshTokenGenerator refreshToken,
+        IRefreshTokenStore refreshTokenStore, 
+        IRefreshTokenConfiguration refreshTokenConfiguration)
     {
         _userRepository = userRepository;
         _logger = logger;

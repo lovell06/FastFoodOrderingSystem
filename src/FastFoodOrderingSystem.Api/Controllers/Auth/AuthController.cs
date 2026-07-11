@@ -1,5 +1,5 @@
 using FastFoodOrderingSystem.Api.Contracts.Authentication;
-using FastFoodOrderingSystem.Application.Common.Handlers;
+using FastFoodOrderingSystem.Application.Common.Cqrs;
 using FastFoodOrderingSystem.Application.Common.Results;
 using FastFoodOrderingSystem.Application.Features.Auth.Login;
 using FastFoodOrderingSystem.Application.Features.Auth.Logout;
@@ -16,17 +16,17 @@ namespace FastFoodOrderingSystem.Api.Controllers.Auth
     public class AuthController : ControllerBase
     {
         private readonly IHandler<LoginCommand, Result<LoginResponse>> _loginHandler;
-        private readonly IHandler<LogoutCommand, Result<LogoutResponse>> _logoutHandler;
+        private readonly IHandler<LogoutCommand, Result<Unit>> _logoutHandler;
         private readonly IHandler<RefreshTokenCommand, Result<RefreshTokenResponse>> _refreshTokenHandler;
-        private readonly IHandler<RegisterCommand, Result<RegisterResponse>> _registerHandler;
-        private readonly IHandler<VerifyOtpCommand, Result<VerifyOtpResponse>> _verifyOtpHandler;
+        private readonly IHandler<RegisterCommand, Result<Unit>> _registerHandler;
+        private readonly IHandler<VerifyOtpCommand, Result<Unit>> _verifyOtpHandler;
 
         public AuthController(
             IHandler<LoginCommand, Result<LoginResponse>> loginHandler, 
-            IHandler<LogoutCommand, Result<LogoutResponse>> logoutHandler, 
+            IHandler<LogoutCommand, Result<Unit>> logoutHandler, 
             IHandler<RefreshTokenCommand, Result<RefreshTokenResponse>> refreshTokenHandler, 
-            IHandler<RegisterCommand, Result<RegisterResponse>> registerHandler, 
-            IHandler<VerifyOtpCommand, Result<VerifyOtpResponse>> verifyOtpHandler)
+            IHandler<RegisterCommand, Result<Unit>> registerHandler, 
+            IHandler<VerifyOtpCommand, Result<Unit>> verifyOtpHandler)
         {
             _loginHandler = loginHandler;
             _logoutHandler = logoutHandler;

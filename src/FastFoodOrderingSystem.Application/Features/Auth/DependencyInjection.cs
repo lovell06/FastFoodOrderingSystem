@@ -1,7 +1,7 @@
 using FastFoodOrderingSystem.Application.Abstractions.Persistence;
-using FastFoodOrderingSystem.Application.Common.Handlers;
-using FastFoodOrderingSystem.Application.Common.Handlers.CommandDecorators;
-using FastFoodOrderingSystem.Application.Common.Handlers.HandlerDecorators;
+using FastFoodOrderingSystem.Application.Common.Cqrs;
+using FastFoodOrderingSystem.Application.Common.Cqrs.Decorators.Commands;
+using FastFoodOrderingSystem.Application.Common.Cqrs.Decorators.Handlers;
 using FastFoodOrderingSystem.Application.Common.Results;
 using FastFoodOrderingSystem.Application.Features.Auth.Login;
 using FastFoodOrderingSystem.Application.Features.Auth.Logout;
@@ -20,17 +20,17 @@ public static class DependencyInjection
         services.AddScoped<RegisterHandler>();
         services.AddScoped(sp =>
         {
-            IHandler<RegisterCommand, Result<RegisterResponse>> handler = sp.GetRequiredService<RegisterHandler>();
+            IHandler<RegisterCommand, Result<Unit>> handler = sp.GetRequiredService<RegisterHandler>();
 
-            handler = new TransactionCommandDecorator<RegisterCommand, Result<RegisterResponse>>(
+            handler = new TransactionCommandDecorator<RegisterCommand, Result<Unit>>(
                 handler,
                 sp.GetRequiredService<IUnitWork>());
-            handler = new PerformanceHandlerDecorator<RegisterCommand, Result<RegisterResponse>>(
+            handler = new PerformanceHandlerDecorator<RegisterCommand, Result<Unit>>(
                 handler,
-                sp.GetRequiredService<ILogger<IHandler<RegisterCommand, Result<RegisterResponse>>>>());
-            handler = new LoggingHandlerDecorator<RegisterCommand, Result<RegisterResponse>>(
+                sp.GetRequiredService<ILogger<IHandler<RegisterCommand, Result<Unit>>>>());
+            handler = new LoggingHandlerDecorator<RegisterCommand, Result<Unit>>(
                 handler,
-                sp.GetRequiredService<ILogger<IHandler<RegisterCommand, Result<RegisterResponse>>>>());
+                sp.GetRequiredService<ILogger<IHandler<RegisterCommand, Result<Unit>>>>());
 
             return handler;
         });
@@ -38,17 +38,17 @@ public static class DependencyInjection
         services.AddScoped<VerifyOtpHandler>();
         services.AddScoped(sp =>
         {
-            IHandler<VerifyOtpCommand, Result<VerifyOtpResponse>> handler = sp.GetRequiredService<VerifyOtpHandler>();
+            IHandler<VerifyOtpCommand, Result<Unit>> handler = sp.GetRequiredService<VerifyOtpHandler>();
 
-            handler = new TransactionCommandDecorator<VerifyOtpCommand, Result<VerifyOtpResponse>>(
+            handler = new TransactionCommandDecorator<VerifyOtpCommand, Result<Unit>>(
                 handler,
                 sp.GetRequiredService<IUnitWork>());
-            handler = new PerformanceHandlerDecorator<VerifyOtpCommand, Result<VerifyOtpResponse>>(
+            handler = new PerformanceHandlerDecorator<VerifyOtpCommand, Result<Unit>>(
                 handler,
-                sp.GetRequiredService<ILogger<IHandler<VerifyOtpCommand, Result<VerifyOtpResponse>>>>());
-            handler = new LoggingHandlerDecorator<VerifyOtpCommand, Result<VerifyOtpResponse>>(
+                sp.GetRequiredService<ILogger<IHandler<VerifyOtpCommand, Result<Unit>>>>());
+            handler = new LoggingHandlerDecorator<VerifyOtpCommand, Result<Unit>>(
                 handler,
-                sp.GetRequiredService<ILogger<IHandler<VerifyOtpCommand, Result<VerifyOtpResponse>>>>());
+                sp.GetRequiredService<ILogger<IHandler<VerifyOtpCommand, Result<Unit>>>>());
 
             return handler;
         });
@@ -76,19 +76,19 @@ public static class DependencyInjection
         services.AddScoped<LogoutHandler>();
         services.AddScoped(sp =>
         {
-            IHandler<LogoutCommand, Result<LogoutResponse>> handler = sp.GetRequiredService<LogoutHandler>();
+            IHandler<LogoutCommand, Result<Unit>> handler = sp.GetRequiredService<LogoutHandler>();
 
-            handler = new TransactionCommandDecorator<LogoutCommand, Result<LogoutResponse>>(
+            handler = new TransactionCommandDecorator<LogoutCommand, Result<Unit>>(
                 handler,
                 sp.GetRequiredService<IUnitWork>());
 
-            handler = new PerformanceHandlerDecorator<LogoutCommand, Result<LogoutResponse>>(
+            handler = new PerformanceHandlerDecorator<LogoutCommand, Result<Unit>>(
                 handler,
-                sp.GetRequiredService<ILogger<IHandler<LogoutCommand, Result<LogoutResponse>>>>());
+                sp.GetRequiredService<ILogger<IHandler<LogoutCommand, Result<Unit>>>>());
 
-            handler = new LoggingHandlerDecorator<LogoutCommand, Result<LogoutResponse>>(
+            handler = new LoggingHandlerDecorator<LogoutCommand, Result<Unit>>(
                 handler,
-                sp.GetRequiredService<ILogger<IHandler<LogoutCommand, Result<LogoutResponse>>>>());
+                sp.GetRequiredService<ILogger<IHandler<LogoutCommand, Result<Unit>>>>());
             
             return handler;
         });

@@ -1,4 +1,4 @@
-namespace FastFoodOrderingSystem.Application.Common.Handlers.HandlerDecorators;
+namespace FastFoodOrderingSystem.Application.Common.Cqrs.Decorators.Handlers;
 
 public abstract class HandlerDecorator<TRequest, TResult> : IHandler<TRequest, TResult>
 {

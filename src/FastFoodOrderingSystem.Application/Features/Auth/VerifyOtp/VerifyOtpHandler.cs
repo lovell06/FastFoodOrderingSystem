@@ -2,7 +2,7 @@ using FastFoodOrderingSystem.Application.Abstractions.Authentication;
 using FastFoodOrderingSystem.Application.Abstractions.Cache;
 using FastFoodOrderingSystem.Application.Abstractions.Persistence;
 using FastFoodOrderingSystem.Application.Abstractions.Time;
-using FastFoodOrderingSystem.Application.Common.Handlers;
+using FastFoodOrderingSystem.Application.Common.Cqrs;
 using FastFoodOrderingSystem.Application.Common.Results;
 using FastFoodOrderingSystem.Domain.Users;
 using FastFoodOrderingSystem.Domain.Users.ValueObjects;
@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FastFoodOrderingSystem.Application.Features.Auth.VerifyOtp;
 
-public sealed class VerifyOtpHandler : ICommandHandler<VerifyOtpCommand, Result<VerifyOtpResponse>>
+public sealed class VerifyOtpHandler : ICommandHandler<VerifyOtpCommand, Result<Unit>>
 {
     private readonly IPendingRegistrationStore _pendingRegistrationStore;
     private readonly IUserRepository _userRepository;
@@ -35,7 +35,7 @@ public sealed class VerifyOtpHandler : ICommandHandler<VerifyOtpCommand, Result<
         _clock = clock;
     }
 
-    public async Task<Result<VerifyOtpResponse>> HandleAsync(
+    public async Task<Result<Unit>> HandleAsync(
         VerifyOtpCommand command,
         CancellationToken cancellationToken)
     {
@@ -47,14 +47,14 @@ public sealed class VerifyOtpHandler : ICommandHandler<VerifyOtpCommand, Result<
         {
             var err = Error.Validation(emailResult.Error!.Code, emailResult.Error.Message);
             _logger.LogError($"Code: {err.Code} | Message: {err.Message} | Occured at {now}");
-            return Result<VerifyOtpResponse>.Failure(err);
+            return Result<Unit>.Failure(err);
         }
 
         if (otpCodeResult.IsFailure)
         {
             var err = Error.Validation(otpCodeResult.Error!.Code, otpCodeResult.Error.Message);
             _logger.LogError($"Code: {err.Code} | Message: {err.Message} | Occured at {now}");
-            return Result<VerifyOtpResponse>.Failure(err);
+            return Result<Unit>.Failure(err);
         }
 
         Email email = emailResult.Value!;
@@ -65,21 +65,21 @@ public sealed class VerifyOtpHandler : ICommandHandler<VerifyOtpCommand, Result<
         {
             _logger.LogError(
                 $"Verify OTP Failed. Email not found. Email: {email.Value}. At {now}.");
-            return Result<VerifyOtpResponse>.Failure(VerifyOtpError.AuthOtpInvalid);
+            return Result<Unit>.Failure(VerifyOtpError.AuthOtpInvalid);
         }
 
         if (!_optHashService.Verify(otpCode, pending.OtpCodeHash))
         {
             _logger.LogError(
                 $"Verify OTP Failed. OTP code invalid. Email: {email.Value}. At {now}");
-            return Result<VerifyOtpResponse>.Failure(VerifyOtpError.AuthOtpInvalid);
+            return Result<Unit>.Failure(VerifyOtpError.AuthOtpInvalid);
         }
 
         if (pending.IsExpired(now))
         {
             _logger.LogError(
                 $"Verify OTP Failed. OTP expired. Email: {email.Value}. At {now}.");
-            return Result<VerifyOtpResponse>.Failure(VerifyOtpError.AuthOtpInvalid);
+            return Result<Unit>.Failure(VerifyOtpError.AuthOtpInvalid);
         }
 
         _logger.LogInformation(
@@ -91,7 +91,6 @@ public sealed class VerifyOtpHandler : ICommandHandler<VerifyOtpCommand, Result<
 
         await _pendingRegistrationStore.RemoveAsync(email, cancellationToken);
 
-        return Result<VerifyOtpResponse>.Success(
-            new VerifyOtpResponse("Verify OTP Successful."));
+        return Result<Unit>.Success(Unit.Value);
     }
 }

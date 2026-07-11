@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 
-namespace FastFoodOrderingSystem.Application.Common.Handlers.HandlerDecorators;
+namespace FastFoodOrderingSystem.Application.Common.Cqrs.Decorators.Handlers;
 
 public class LoggingHandlerDecorator<TRequest, TResult> : HandlerDecorator<TRequest, TResult>
 {

@@ -1,4 +1,4 @@
-namespace FastFoodOrderingSystem.Application.Common.Handlers.CommandDecorators;
+namespace FastFoodOrderingSystem.Application.Common.Cqrs.Decorators.Commands;
 
 public abstract class CommandHandlerDecorator<TCommand, TResult> : ICommandHandler<TCommand, TResult>
 {

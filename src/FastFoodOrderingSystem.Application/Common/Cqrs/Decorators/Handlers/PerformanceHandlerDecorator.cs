@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 
-namespace FastFoodOrderingSystem.Application.Common.Handlers.HandlerDecorators;
+namespace FastFoodOrderingSystem.Application.Common.Cqrs.Decorators.Handlers;
 
 public sealed class PerformanceHandlerDecorator<TRequest, TResult> : HandlerDecorator<TRequest, TResult>
 {

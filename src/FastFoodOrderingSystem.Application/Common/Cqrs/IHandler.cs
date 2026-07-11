@@ -1,4 +1,4 @@
-namespace FastFoodOrderingSystem.Application.Common.Handlers;
+namespace FastFoodOrderingSystem.Application.Common.Cqrs;
 
 public interface IHandler<TRequest, TResult>
 {

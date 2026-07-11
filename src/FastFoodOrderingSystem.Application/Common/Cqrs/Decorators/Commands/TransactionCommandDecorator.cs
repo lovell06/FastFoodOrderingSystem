@@ -1,6 +1,6 @@
 using FastFoodOrderingSystem.Application.Abstractions.Persistence;
 
-namespace FastFoodOrderingSystem.Application.Common.Handlers.CommandDecorators;
+namespace FastFoodOrderingSystem.Application.Common.Cqrs.Decorators.Commands;
 
 public class TransactionCommandDecorator<TCommand, TResult> : CommandHandlerDecorator<TCommand, TResult>
 {
