@@ -1,6 +1,7 @@
 using FastFoodOrderingSystem.Api.Middlewares;
 using FastFoodOrderingSystem.Infrastructure.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace FastFoodOrderingSystem.Api.Extensions;
@@ -23,7 +24,7 @@ public static class ServiceCollectionExtensions
             })
             .AddJwtBearer((options) =>
             {
-                var jwtOptions = provider.GetRequiredService<JwtOption>();
+                var jwtOptions = provider.GetRequiredService<IOptions<JwtOption>>().Value;
 
                 options.TokenValidationParameters = new TokenValidationParameters()
                 {
