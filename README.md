@@ -31,7 +31,6 @@ dotnet restore
 
 #### Enviroment Variable (User secrets: pls pass your secret configuration to "your-key", "your-email",...)
 ```bash
-dotnet user-secrets init --project src/*.Api/*.csproj
 dotnet user-secrets set "ConnectionStrings:DefaultConnection" "your-db-connection-string" --project src/*.Api/*.csproj
 dotnet user-secrets set "JwtOption:Key" "your-key" --project src/*.Api/*.csproj
 dotnet user-secrets set "OtpOption:SecretKey" "your-secret-key" --project src/*.Api/*.csproj
