@@ -1,5 +1,5 @@
 using FastFoodOrderingSystem.Application.Abstractions.Authentication;
-using FastFoodOrderingSystem.Application.Abstractions.Cache;
+using FastFoodOrderingSystem.Application.Abstractions.Cache.PendingRegistration;
 using FastFoodOrderingSystem.Application.Abstractions.Configurations;
 using FastFoodOrderingSystem.Application.Abstractions.Emails;
 using FastFoodOrderingSystem.Application.Abstractions.Persistence;
@@ -8,7 +8,6 @@ using FastFoodOrderingSystem.Application.Common.Cqrs;
 using FastFoodOrderingSystem.Application.Common.Errors;
 using FastFoodOrderingSystem.Application.Common.Results;
 using FastFoodOrderingSystem.Domain.Common.ValueObjects;
-using FastFoodOrderingSystem.Domain.Users;
 using FastFoodOrderingSystem.Domain.Users.ValueObjects;
 using Microsoft.Extensions.Logging;
 

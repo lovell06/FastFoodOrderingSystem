@@ -1,4 +1,4 @@
-using FastFoodOrderingSystem.Application.Abstractions.Cache;
+using FastFoodOrderingSystem.Application.Abstractions.Cache.RefreshToken;
 using FastFoodOrderingSystem.Application.Abstractions.Time;
 using FastFoodOrderingSystem.Application.Common.Cqrs;
 using FastFoodOrderingSystem.Application.Common.Results;

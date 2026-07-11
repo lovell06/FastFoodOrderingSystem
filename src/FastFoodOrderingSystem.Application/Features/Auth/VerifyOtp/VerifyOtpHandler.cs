@@ -1,9 +1,10 @@
 using FastFoodOrderingSystem.Application.Abstractions.Authentication;
-using FastFoodOrderingSystem.Application.Abstractions.Cache;
+using FastFoodOrderingSystem.Application.Abstractions.Cache.PendingRegistration;
 using FastFoodOrderingSystem.Application.Abstractions.Persistence;
 using FastFoodOrderingSystem.Application.Abstractions.Time;
 using FastFoodOrderingSystem.Application.Common.Cqrs;
 using FastFoodOrderingSystem.Application.Common.Results;
+using FastFoodOrderingSystem.Domain.Common.ValueObjects;
 using FastFoodOrderingSystem.Domain.Users;
 using FastFoodOrderingSystem.Domain.Users.ValueObjects;
 using Microsoft.Extensions.Logging;
@@ -85,7 +86,14 @@ public sealed class VerifyOtpHandler : ICommandHandler<VerifyOtpCommand, Result<
         _logger.LogInformation(
             $"Verify OTP Successful. Email: {email.Value}. At {now}");
 
-        var user = User.CreateFromPending(pending, now);
+        var user = User.Create(
+            fullName: pending.FullName,
+            email: pending.Id,
+            passwordHash: pending.PasswordHash,
+            phoneNumber: pending.PhoneNumber,
+            avatarImagePath: ImagePath.Default(), 
+            role: pending.Role,
+            now);
         await _userRepository.InsertAsync(user, cancellationToken);
         await _unitWork.SaveChangeAsync(cancellationToken);
 
