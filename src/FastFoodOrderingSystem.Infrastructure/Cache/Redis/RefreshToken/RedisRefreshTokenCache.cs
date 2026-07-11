@@ -1,5 +1,5 @@
 using System.Text.Json;
-using FastFoodOrderingSystem.Application.Abstractions.Cache;
+using FastFoodOrderingSystem.Application.Abstractions.Cache.RefreshToken;
 using FastFoodOrderingSystem.Application.Abstractions.Time;
 using FastFoodOrderingSystem.Domain.RefreshTokens;
 using FastFoodOrderingSystem.Infrastructure.Cache.Redis.Mappers;

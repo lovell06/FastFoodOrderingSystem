@@ -1,5 +1,5 @@
 using System.Text.Json;
-using FastFoodOrderingSystem.Application.Abstractions.Cache;
+using FastFoodOrderingSystem.Application.Abstractions.Cache.PendingRegistration;
 using FastFoodOrderingSystem.Application.Abstractions.Time;
 using FastFoodOrderingSystem.Domain.Users.ValueObjects;
 using FastFoodOrderingSystem.Infrastructure.Cache.Redis.Mappers;
@@ -20,7 +20,7 @@ public class RedisPendingRegistrationCache : IPendingRegistrationStore
         _redisKeyProvider = redisKeyProvider;
     }
 
-    public async Task<Domain.Users.PendingRegistration?> GetByEmailAsync(Email email,
+    public async Task<Application.Abstractions.Cache.PendingRegistration.PendingRegistration?> GetByEmailAsync(Email email,
         CancellationToken cancellationToken = default)
     {
         var key = _redisKeyProvider.PendingRegistration(email);
@@ -46,7 +46,7 @@ public class RedisPendingRegistrationCache : IPendingRegistrationStore
     }
 
     public async Task<bool> SaveAsync(
-        Domain.Users.PendingRegistration pendingRegistration,
+        Application.Abstractions.Cache.PendingRegistration.PendingRegistration pendingRegistration,
         IDateTimeProvider clock,
         CancellationToken cancellationToken = default)
     {

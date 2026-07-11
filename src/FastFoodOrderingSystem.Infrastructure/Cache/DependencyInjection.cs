@@ -1,5 +1,8 @@
-using FastFoodOrderingSystem.Application.Abstractions.Cache;
+using FastFoodOrderingSystem.Application.Abstractions.Cache.ForgotPasswordOtp;
+using FastFoodOrderingSystem.Application.Abstractions.Cache.PendingRegistration;
+using FastFoodOrderingSystem.Application.Abstractions.Cache.RefreshToken;
 using FastFoodOrderingSystem.Infrastructure.Cache.Redis;
+using FastFoodOrderingSystem.Infrastructure.Cache.Redis.ForgotPasswordOtp;
 using FastFoodOrderingSystem.Infrastructure.Cache.Redis.PendingRegistration;
 using FastFoodOrderingSystem.Infrastructure.Cache.Redis.RefreshToken;
 using FastFoodOrderingSystem.Infrastructure.Options;
@@ -21,6 +24,7 @@ public static class DependencyInjection
         services.AddScoped<RedisKeyProvider>();
         services.AddScoped<IPendingRegistrationStore, RedisPendingRegistrationCache>();
         services.AddScoped<IRefreshTokenStore, RedisRefreshTokenCache>();
+        services.AddScoped<IForgotPasswordOtpStore, RedisForgotPasswordOtpCache>();
         return services;
     }
 }

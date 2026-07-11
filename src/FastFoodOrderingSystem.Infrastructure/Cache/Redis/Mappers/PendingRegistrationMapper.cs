@@ -6,7 +6,7 @@ namespace FastFoodOrderingSystem.Infrastructure.Cache.Redis.Mappers;
 
 public static class PendingRegistrationMapper
 {
-    public static Domain.Users.PendingRegistration ToEntity(PendingRegistrationSnapshot snapshot)
+    public static Application.Abstractions.Cache.PendingRegistration.PendingRegistration ToEntity(PendingRegistrationSnapshot snapshot)
     {
         var fullNameResult = FullName.Create(snapshot.FullName);
         var emailResult = Email.Create(snapshot.Id);
@@ -23,7 +23,7 @@ public static class PendingRegistrationMapper
             otpCodeHashResult.IsFailure)
             throw new ArgumentException("PendingRegistrationSnapshot invalid.");
         
-        return Domain.Users.PendingRegistration.Create(
+        return Application.Abstractions.Cache.PendingRegistration.PendingRegistration.Create(
             fullName: fullNameResult.Value!,
             email: emailResult.Value!,
             passwordHash: passwordHashResult.Value!,
@@ -32,7 +32,7 @@ public static class PendingRegistrationMapper
             expiresAt: expiresAt);
     }
 
-    public static PendingRegistrationSnapshot ToSnapshot(Domain.Users.PendingRegistration pending)
+    public static PendingRegistrationSnapshot ToSnapshot(Application.Abstractions.Cache.PendingRegistration.PendingRegistration pending)
     {
         return new PendingRegistrationSnapshot(
             Id: pending.Id.Value,

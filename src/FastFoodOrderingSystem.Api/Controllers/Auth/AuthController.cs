@@ -1,6 +1,7 @@
 using FastFoodOrderingSystem.Api.Contracts.Authentication;
 using FastFoodOrderingSystem.Application.Common.Cqrs;
 using FastFoodOrderingSystem.Application.Common.Results;
+using FastFoodOrderingSystem.Application.Features.Auth.ForgotPassword;
 using FastFoodOrderingSystem.Application.Features.Auth.Login;
 using FastFoodOrderingSystem.Application.Features.Auth.Logout;
 using FastFoodOrderingSystem.Application.Features.Auth.Refresh;
@@ -20,19 +21,22 @@ namespace FastFoodOrderingSystem.Api.Controllers.Auth
         private readonly IHandler<RefreshTokenCommand, Result<RefreshTokenResponse>> _refreshTokenHandler;
         private readonly IHandler<RegisterCommand, Result<Unit>> _registerHandler;
         private readonly IHandler<VerifyOtpCommand, Result<Unit>> _verifyOtpHandler;
+        private readonly IHandler<ForgotPasswordCommand, Result<Unit>> _forgotPasswordHandler;
 
         public AuthController(
             IHandler<LoginCommand, Result<LoginResponse>> loginHandler, 
             IHandler<LogoutCommand, Result<Unit>> logoutHandler, 
             IHandler<RefreshTokenCommand, Result<RefreshTokenResponse>> refreshTokenHandler, 
             IHandler<RegisterCommand, Result<Unit>> registerHandler, 
-            IHandler<VerifyOtpCommand, Result<Unit>> verifyOtpHandler)
+            IHandler<VerifyOtpCommand, Result<Unit>> verifyOtpHandler, 
+            IHandler<ForgotPasswordCommand, Result<Unit>> forgotPasswordHandler)
         {
             _loginHandler = loginHandler;
             _logoutHandler = logoutHandler;
             _refreshTokenHandler = refreshTokenHandler;
             _registerHandler = registerHandler;
             _verifyOtpHandler = verifyOtpHandler;
+            _forgotPasswordHandler = forgotPasswordHandler;
         }
 
         [HttpPost("login")]
@@ -110,6 +114,27 @@ namespace FastFoodOrderingSystem.Api.Controllers.Auth
             if (result.Error?.Type == ErrorType.Validtion ||
                 result.Error?.Type == ErrorType.Business)
                 return BadRequest(result.Error);
+            return StatusCode(500, result.Error);
+        }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request, CancellationToken cancellationToken)
+        {
+            var command = request.ToCommand();
+
+            var result = await _forgotPasswordHandler.HandleAsync(command, cancellationToken);
+
+            if (result.IsSuccess)
+                return Ok();
+
+            if (result.Error?.Type == ErrorType.Validtion)
+                return BadRequest(new
+                {
+                    result.Error.Code, 
+                    result.Error.Message, 
+                    Type = result.Error.Type.Value
+                });
+
             return StatusCode(500, result.Error);
         }
     }

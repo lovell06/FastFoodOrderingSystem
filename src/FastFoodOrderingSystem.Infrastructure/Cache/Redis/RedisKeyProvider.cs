@@ -19,4 +19,7 @@ public sealed class RedisKeyProvider
 
     public string RefreshToken(TokenId id)
         => $"{_prefixKey}:RefreshToken:{id.Value}";
+
+    public string ForgotPasswordOtp(Email email)
+        => $"{_prefixKey}:ForgotPasswordOtp:{email.Value}";
 }
