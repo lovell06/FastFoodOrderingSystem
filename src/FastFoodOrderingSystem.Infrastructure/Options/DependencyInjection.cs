@@ -22,6 +22,9 @@ public static class DependencyInjection
         services.AddOptions<RefreshTokenOption>()
             .Bind(configuration.GetSection(RefreshTokenOption.SectionName))
             .ValidateOnStart();
+        services.AddOptions<RandomPasswordOption>()
+            .Bind(configuration.GetSection(RandomPasswordOption.SectionName))
+            .ValidateOnStart();
 
         return services;
     }

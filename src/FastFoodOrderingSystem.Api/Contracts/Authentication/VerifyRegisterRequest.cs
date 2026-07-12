@@ -2,7 +2,7 @@ using FastFoodOrderingSystem.Application.Features.Auth.Register;
 
 namespace FastFoodOrderingSystem.Api.Contracts.Authentication;
 
-public record VerifyOtpRequest(string Email, string OtpCode)
+public record VerifyRegisterRequest(string Email, string OtpCode)
 {
     public VerifyRegisterCommand ToCommand()
     {

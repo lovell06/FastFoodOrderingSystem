@@ -135,6 +135,27 @@ public static class DependencyInjection
             return handler;
         });
 
+        services.AddScoped<VerifyForgotPasswordHandler>();
+        services.AddScoped(sp =>
+        {
+            IHandler<VerifyForgotPasswordCommand, Result<Unit>> handler =
+                sp.GetRequiredService<VerifyForgotPasswordHandler>();
+
+            handler = new TransactionCommandDecorator<VerifyForgotPasswordCommand, Result<Unit>>(
+                handler,
+                sp.GetRequiredService<IUnitWork>());
+
+            handler = new PerformanceHandlerDecorator<VerifyForgotPasswordCommand, Result<Unit>>(
+                handler,
+                sp.GetRequiredService<ILogger<IHandler<VerifyForgotPasswordCommand, Result<Unit>>>>());
+
+            handler = new LoggingHandlerDecorator<VerifyForgotPasswordCommand, Result<Unit>>(
+                handler,
+                sp.GetRequiredService<ILogger<IHandler<VerifyForgotPasswordCommand, Result<Unit>>>>());
+
+            return handler;
+        });
+
         return services;
     }
 }

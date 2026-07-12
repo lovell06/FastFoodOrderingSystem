@@ -21,7 +21,7 @@ public static class ErrorMapper
         if (error.Type == ErrorType.Forbidden)
             return controller.Forbid();
         if (error.Type == ErrorType.Unathorized)
-            return controller.Unauthorized();
+            return controller.Unauthorized(response);
         if (error.Type == ErrorType.NotFound)
             return controller.NotFound();
         if (error == SystemError.Unexpected)

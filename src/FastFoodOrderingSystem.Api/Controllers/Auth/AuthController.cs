@@ -1,4 +1,5 @@
 using FastFoodOrderingSystem.Api.Contracts.Authentication;
+using FastFoodOrderingSystem.Api.Mapping;
 using FastFoodOrderingSystem.Application.Common.Cqrs;
 using FastFoodOrderingSystem.Application.Common.Results;
 using FastFoodOrderingSystem.Application.Features.Auth.ForgotPassword;
@@ -21,6 +22,7 @@ namespace FastFoodOrderingSystem.Api.Controllers.Auth
         private readonly IHandler<RegisterCommand, Result<Unit>> _registerHandler;
         private readonly IHandler<VerifyRegisterCommand, Result<Unit>> _verifyOtpHandler;
         private readonly IHandler<ForgotPasswordCommand, Result<Unit>> _forgotPasswordHandler;
+        private readonly IHandler<VerifyForgotPasswordCommand, Result<Unit>> _verifyForgotPasswordHandler;
 
         public AuthController(
             IHandler<LoginCommand, Result<LoginResponse>> loginHandler,
@@ -28,7 +30,8 @@ namespace FastFoodOrderingSystem.Api.Controllers.Auth
             IHandler<RefreshTokenCommand, Result<RefreshTokenResponse>> refreshTokenHandler,
             IHandler<RegisterCommand, Result<Unit>> registerHandler,
             IHandler<VerifyRegisterCommand, Result<Unit>> verifyOtpHandler,
-            IHandler<ForgotPasswordCommand, Result<Unit>> forgotPasswordHandler)
+            IHandler<ForgotPasswordCommand, Result<Unit>> forgotPasswordHandler, 
+            IHandler<VerifyForgotPasswordCommand, Result<Unit>> verifyForgotPasswordHandler)
         {
             _loginHandler = loginHandler;
             _logoutHandler = logoutHandler;
@@ -36,6 +39,7 @@ namespace FastFoodOrderingSystem.Api.Controllers.Auth
             _registerHandler = registerHandler;
             _verifyOtpHandler = verifyOtpHandler;
             _forgotPasswordHandler = forgotPasswordHandler;
+            _verifyForgotPasswordHandler = verifyForgotPasswordHandler;
         }
 
         [HttpPost("login")]
@@ -45,16 +49,10 @@ namespace FastFoodOrderingSystem.Api.Controllers.Auth
 
             var result = await _loginHandler.HandleAsync(command, cancellationToken);
 
-            if (result.IsFailure)
-            {
-                Error err = result.Error!;
-                if (err.Type == ErrorType.Validtion || err.Type == ErrorType.Failure)
-                    return BadRequest(new { err.Code, err.Message, err.Type.Value });
+            if (result.IsSuccess)
+                return Ok(result.Value);
 
-                return StatusCode(500, new { err.Code, err.Message, err.Type.Value });
-            }
-
-            return Ok(result.Value);
+            return result.Error!.ToActionResult(this);
         }
 
         [Authorize]
@@ -63,9 +61,12 @@ namespace FastFoodOrderingSystem.Api.Controllers.Auth
         {
             var command = request.ToCommand();
 
-            await _logoutHandler.HandleAsync(command, cancellationToken);
+            var result = await _logoutHandler.HandleAsync(command, cancellationToken);
 
-            return NoContent();
+            if (result.IsSuccess)
+                return NoContent();
+
+            return result.Error!.ToActionResult(this);
         }
 
         [HttpPost("refresh")]
@@ -75,10 +76,10 @@ namespace FastFoodOrderingSystem.Api.Controllers.Auth
 
             var result = await _refreshTokenHandler.HandleAsync(command, cancellationToken);
 
-            if (result.IsFailure)
-                return Unauthorized(new { result.Error!.Code, result.Error.Message, result.Error.Type.Value });
+            if (result.IsSuccess)
+                return Ok(result.Value);
 
-            return Ok(result.Value);
+            return result.Error!.ToActionResult(this);
         }
 
         [HttpPost("register")]
@@ -90,19 +91,11 @@ namespace FastFoodOrderingSystem.Api.Controllers.Auth
             if (result.IsSuccess)
                 return Ok();
 
-            var err = new { result.Error?.Code, result.Error?.Message, Type = result.Error?.Type.Value };
-
-            if (result.Error?.Type == ErrorType.Conflict)
-                return Conflict(err);
-
-            if (result.Error?.Type == ErrorType.Validtion)
-                return BadRequest(err);
-
-            return StatusCode(500, err);
+            return result.Error!.ToActionResult(this);
         }
 
         [HttpPost("register/verify")]
-        public async Task<IActionResult> VerifyOtp(VerifyOtpRequest request)
+        public async Task<IActionResult> VerifyRegister(VerifyRegisterRequest request)
         {
             var command = request.ToCommand();
             var result = await _verifyOtpHandler.HandleAsync(command, default);
@@ -110,16 +103,7 @@ namespace FastFoodOrderingSystem.Api.Controllers.Auth
             if (result.IsSuccess)
                 return Created();
 
-            if (result.Error?.Type == ErrorType.Validtion ||
-                result.Error?.Type == ErrorType.Business)
-                return BadRequest(new
-                {
-                    result.Error.Code,
-                    result.Error.Message,
-                    Type = result.Error.Type.Value
-                });
-
-            return StatusCode(500);
+            return result.Error!.ToActionResult(this);
         }
 
         [HttpPost("forgot-password")]
@@ -133,15 +117,22 @@ namespace FastFoodOrderingSystem.Api.Controllers.Auth
             if (result.IsSuccess)
                 return Ok();
 
-            if (result.Error?.Type == ErrorType.Validtion)
-                return BadRequest(new
-                {
-                    result.Error.Code,
-                    result.Error.Message,
-                    Type = result.Error.Type.Value
-                });
+            return result.Error!.ToActionResult(this);
+        }
 
-            return StatusCode(500, result.Error);
+        [HttpPost("forgot-password/verify")]
+        public async Task<IActionResult> VerifyForgotPassword(
+            VerifyForgotPasswordRequest request,
+            CancellationToken cancellationToken)
+        {
+            var command = request.ToCommand();
+
+            var result = await _verifyForgotPasswordHandler.HandleAsync(command, cancellationToken);
+
+            if (result.IsSuccess)
+                return Ok();
+
+            return result.Error!.ToActionResult(this);
         }
     }
 }

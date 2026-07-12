@@ -10,5 +10,7 @@ public interface IUserRepository
     Task<User?> GetByEmailAsync(Email email, CancellationToken cancellationToken);
     Task<bool> EmailAlreadyExistedAsync(Email email, CancellationToken cancellationToken);
     Task<User?> GetWithShippingAddressesAsync(Guid id, CancellationToken cancellationToken);
+    Task<User?> GetWithPasswordHistoriesAsync(Guid id, CancellationToken cancellationToken);
+    Task<User?> GetWithPasswordHistoriesByEmailAsync(Email email, CancellationToken cancellationToken);
     Task InsertAsync(User user, CancellationToken cancellationToken);
 }
