@@ -6,7 +6,6 @@ using FastFoodOrderingSystem.Application.Features.Auth.Login;
 using FastFoodOrderingSystem.Application.Features.Auth.Logout;
 using FastFoodOrderingSystem.Application.Features.Auth.Refresh;
 using FastFoodOrderingSystem.Application.Features.Auth.Register;
-using FastFoodOrderingSystem.Application.Features.Auth.VerifyOtp;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,15 +19,15 @@ namespace FastFoodOrderingSystem.Api.Controllers.Auth
         private readonly IHandler<LogoutCommand, Result<Unit>> _logoutHandler;
         private readonly IHandler<RefreshTokenCommand, Result<RefreshTokenResponse>> _refreshTokenHandler;
         private readonly IHandler<RegisterCommand, Result<Unit>> _registerHandler;
-        private readonly IHandler<VerifyOtpCommand, Result<Unit>> _verifyOtpHandler;
+        private readonly IHandler<VerifyRegisterCommand, Result<Unit>> _verifyOtpHandler;
         private readonly IHandler<ForgotPasswordCommand, Result<Unit>> _forgotPasswordHandler;
 
         public AuthController(
-            IHandler<LoginCommand, Result<LoginResponse>> loginHandler, 
-            IHandler<LogoutCommand, Result<Unit>> logoutHandler, 
-            IHandler<RefreshTokenCommand, Result<RefreshTokenResponse>> refreshTokenHandler, 
-            IHandler<RegisterCommand, Result<Unit>> registerHandler, 
-            IHandler<VerifyOtpCommand, Result<Unit>> verifyOtpHandler, 
+            IHandler<LoginCommand, Result<LoginResponse>> loginHandler,
+            IHandler<LogoutCommand, Result<Unit>> logoutHandler,
+            IHandler<RefreshTokenCommand, Result<RefreshTokenResponse>> refreshTokenHandler,
+            IHandler<RegisterCommand, Result<Unit>> registerHandler,
+            IHandler<VerifyRegisterCommand, Result<Unit>> verifyOtpHandler,
             IHandler<ForgotPasswordCommand, Result<Unit>> forgotPasswordHandler)
         {
             _loginHandler = loginHandler;
@@ -52,7 +51,7 @@ namespace FastFoodOrderingSystem.Api.Controllers.Auth
                 if (err.Type == ErrorType.Validtion || err.Type == ErrorType.Failure)
                     return BadRequest(new { err.Code, err.Message, err.Type.Value });
 
-                return StatusCode(500, new {err.Code, err.Message, err.Type.Value});
+                return StatusCode(500, new { err.Code, err.Message, err.Type.Value });
             }
 
             return Ok(result.Value);
@@ -102,7 +101,7 @@ namespace FastFoodOrderingSystem.Api.Controllers.Auth
             return StatusCode(500, err);
         }
 
-        [HttpPost("verify-otp")]
+        [HttpPost("register/verify")]
         public async Task<IActionResult> VerifyOtp(VerifyOtpRequest request)
         {
             var command = request.ToCommand();
@@ -113,12 +112,19 @@ namespace FastFoodOrderingSystem.Api.Controllers.Auth
 
             if (result.Error?.Type == ErrorType.Validtion ||
                 result.Error?.Type == ErrorType.Business)
-                return BadRequest(result.Error);
-            return StatusCode(500, result.Error);
+                return BadRequest(new
+                {
+                    result.Error.Code,
+                    result.Error.Message,
+                    Type = result.Error.Type.Value
+                });
+
+            return StatusCode(500);
         }
 
         [HttpPost("forgot-password")]
-        public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request,
+            CancellationToken cancellationToken)
         {
             var command = request.ToCommand();
 
@@ -130,8 +136,8 @@ namespace FastFoodOrderingSystem.Api.Controllers.Auth
             if (result.Error?.Type == ErrorType.Validtion)
                 return BadRequest(new
                 {
-                    result.Error.Code, 
-                    result.Error.Message, 
+                    result.Error.Code,
+                    result.Error.Message,
                     Type = result.Error.Type.Value
                 });
 

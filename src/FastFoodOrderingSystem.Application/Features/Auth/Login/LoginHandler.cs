@@ -4,7 +4,6 @@ using FastFoodOrderingSystem.Application.Abstractions.Configurations;
 using FastFoodOrderingSystem.Application.Abstractions.Persistence;
 using FastFoodOrderingSystem.Application.Abstractions.Time;
 using FastFoodOrderingSystem.Application.Common.Cqrs;
-using FastFoodOrderingSystem.Application.Common.Errors;
 using FastFoodOrderingSystem.Application.Common.Results;
 using FastFoodOrderingSystem.Application.Features.Auth.Login.Dtos;
 using FastFoodOrderingSystem.Domain.RefreshTokens;
@@ -26,12 +25,12 @@ public class LoginHandler : ICommandHandler<LoginCommand, Result<LoginResponse>>
 
     public LoginHandler(
         IUserRepository userRepository,
-        ILogger<LoginHandler> logger, 
+        ILogger<LoginHandler> logger,
         IDateTimeProvider dateTimeProvider,
-        IPasswordHashService passwordHashService, 
-        IAccessTokenProvider jwtProvider, 
+        IPasswordHashService passwordHashService,
+        IAccessTokenProvider jwtProvider,
         IRefreshTokenGenerator refreshToken,
-        IRefreshTokenStore refreshTokenStore, 
+        IRefreshTokenStore refreshTokenStore,
         IRefreshTokenConfiguration refreshTokenConfiguration)
     {
         _userRepository = userRepository;
@@ -53,6 +52,7 @@ public class LoginHandler : ICommandHandler<LoginCommand, Result<LoginResponse>>
         {
             var err = Error.Validation(emailResult.Error!.Code, emailResult.Error.Message);
             _logger.LogError($"Code: {err.Code}. Message: {err.Message}. Occured at {now}");
+            return Result<LoginResponse>.Failure(err);
         }
 
         var passwordResult = Password.Create(command.Password);
@@ -60,6 +60,7 @@ public class LoginHandler : ICommandHandler<LoginCommand, Result<LoginResponse>>
         {
             var err = Error.Validation(passwordResult.Error!.Code, passwordResult.Error.Message);
             _logger.LogError($"Code: {err.Code}. Message: {err.Message}. Occured at {now}");
+            return Result<LoginResponse>.Failure(err);
         }
 
         Email email = emailResult.Value!;
@@ -70,13 +71,13 @@ public class LoginHandler : ICommandHandler<LoginCommand, Result<LoginResponse>>
         if (user is null)
         {
             _logger.LogError($"Email not found. Email {email.Value} not existed. Occurred at: {now}");
-            return Result<LoginResponse>.Failure(LoginError.Failure);
+            return Result<LoginResponse>.Failure(LoginError.Unauthorized);
         }
 
         if (!_passwordHashService.Verify(user, password, user.PasswordHash))
         {
             _logger.LogError($"Password incorrect. Occurred at: {now}");
-            return Result<LoginResponse>.Failure(LoginError.Failure);
+            return Result<LoginResponse>.Failure(LoginError.Unauthorized);
         }
 
         var accessToken = _accessTokenProvider.Generate(user);
@@ -86,11 +87,7 @@ public class LoginHandler : ICommandHandler<LoginCommand, Result<LoginResponse>>
             token: _refreshToken.Generate(),
             now.AddDays(_refreshTokenConfiguration.ExpireDays));
 
-        if (!await _refreshTokenStore.SaveAsync(refreshToken, _clock, cancellationToken))
-        {
-            _logger.LogError($"Store refresh token failed. Occurred at: {now}");
-            return Result<LoginResponse>.Failure(SystemError.Unexpected);
-        }
+        await _refreshTokenStore.SaveAsync(refreshToken, _clock, cancellationToken);
 
         _logger.LogInformation($"Store refresh token successful. Ocurred at: {now}");
 

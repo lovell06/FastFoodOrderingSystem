@@ -5,7 +5,6 @@ using FastFoodOrderingSystem.Application.Abstractions.Emails;
 using FastFoodOrderingSystem.Application.Abstractions.Persistence;
 using FastFoodOrderingSystem.Application.Abstractions.Time;
 using FastFoodOrderingSystem.Application.Common.Cqrs;
-using FastFoodOrderingSystem.Application.Common.Errors;
 using FastFoodOrderingSystem.Application.Common.Results;
 using FastFoodOrderingSystem.Domain.Common.ValueObjects;
 using FastFoodOrderingSystem.Domain.Users.ValueObjects;
@@ -110,29 +109,22 @@ public sealed class RegisterHandler : ICommandHandler<RegisterCommand, Result<Un
             expiresAt: now.AddMinutes(_otpConfiguration.Expiration)
         );
 
-        if (!await _pendingRegistrationStore.SaveAsync(pendingRegistration: pending, _clock,
-                cancellationToken: cancellationToken))
-        {
-            _logger.LogError($"Pending registration store {email.Value} failed {now}.");
-            return Result<Unit>.Failure(SystemError.Unexpected);
-        }
+        await _pendingRegistrationStore.SaveAsync(pendingRegistration: pending, _clock,
+            cancellationToken: cancellationToken);
 
         _logger.LogInformation($"Pending registration store {email.Value} successful {now}.");
 
-        var emailContentResult = EmailContent.Create(
-            from: _emailConfiguration.SenderAddress,
-            to: email.Value,
+        var senderAddressResult = Email.Create(_emailConfiguration.SenderAddress);
+        if (senderAddressResult.IsFailure)
+            throw new InvalidOperationException(
+                $"Code: {senderAddressResult.Error?.Code}. Message: {senderAddressResult.Error?.Message}. Email sender address invalid.");
+        
+        var emailContent = EmailContent.Create(
+            from: senderAddressResult.Value!,
+            to: email,
             "Verify email",
             $"This is OTP verification code: {otpCode.Value}. Expiration after {_otpConfiguration.Expiration} minutes.");
-
-        if (emailContentResult.IsFailure)
-        {
-            _logger.LogError($"Create EmailContent failed {now}.");
-            return Result<Unit>.Failure(SystemError.Unexpected);
-        }
-
-        EmailContent emailContent = emailContentResult.Value!;
-
+        
         await _emailSender.SendAsync(emailContent);
         _logger.LogInformation(
             $"Send OTP code from {emailContent.From.Value} to {emailContent.To.Value} successful {now}.");

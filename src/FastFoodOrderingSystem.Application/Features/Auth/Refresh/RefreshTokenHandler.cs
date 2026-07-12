@@ -76,10 +76,10 @@ public sealed class RefreshTokenHandler : IHandler<RefreshTokenCommand, Result<R
             token: _refreshTokenGenerator.Generate(),
             expiresAt: now.AddDays(_refreshTokenConfiguration.ExpireDays));
 
-        if (!await _refreshTokenStore.SaveAsync(refreshToken, _clock, cancellationToken))
-            throw new InvalidOperationException($"Cannot store new refresh token with id: {tokenId.Value}");
+        await _refreshTokenStore.SaveAsync(refreshToken, _clock, cancellationToken);
         
         _logger.LogInformation($"Store successful. Store new refresh token successful. Ocurred at: {now}");
+        
         return Result<RefreshTokenResponse>.Success(new(
             new AccessTokenDto(accessToken, now.AddMinutes(_accessTokenConfiguration.ExpireMinutes)),
             new RefreshTokenDto(refreshToken.Token.Value, refreshToken.ExpiresAt)));

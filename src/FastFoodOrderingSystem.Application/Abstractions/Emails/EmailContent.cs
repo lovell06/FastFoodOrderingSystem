@@ -1,4 +1,3 @@
-using FastFoodOrderingSystem.Domain.Common.DomainResults;
 using FastFoodOrderingSystem.Domain.Users.ValueObjects;
 
 namespace FastFoodOrderingSystem.Application.Abstractions.Emails;
@@ -18,20 +17,12 @@ public sealed record EmailContent
         Body = body;
     }
 
-    public static DomainResult<EmailContent> Create(string from, string to, string subject, string body)
+    public static EmailContent Create(Email from, Email to, string subject, string body)
     {
-        var senderAddress = Email.Create(from);
-        var recepientAddress = Email.Create(to);
-
-        if (senderAddress.IsFailure)
-            return DomainResult<EmailContent>.Failure(senderAddress.Error!);
-        if (recepientAddress.IsFailure)
-            return DomainResult<EmailContent>.Failure(recepientAddress.Error!);
-        
-        return DomainResult<EmailContent>.Success(new(
-            senderAddress.Value!,
-            recepientAddress.Value!,
-            subject,
-            body));
+        return new(
+            from: from,
+            to: to,
+            subject: subject,
+            body: body);
     }
 }

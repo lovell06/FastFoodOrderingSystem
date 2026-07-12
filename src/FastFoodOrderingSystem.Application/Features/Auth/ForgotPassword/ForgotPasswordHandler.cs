@@ -84,20 +84,18 @@ public sealed class ForgotPasswordHandler : IHandler<ForgotPasswordCommand, Resu
 
         _logger.LogInformation($"Store forgot password OTP for account {email.Value} successful. Occured at {now}");
 
-        var emailContentResult = EmailContent.Create(
-            _emailConfiguration.SenderAddress,
-            email.Value,
+        var senderAddressResult = Email.Create(_emailConfiguration.SenderAddress);
+        if (senderAddressResult.IsFailure)
+            throw new InvalidOperationException(
+                $"Code: {senderAddressResult.Error?.Code}. Message: {senderAddressResult.Error?.Message}. Email sender address invalid.");
+        
+        var emailContent = EmailContent.Create(
+            senderAddressResult.Value!,
+            email,
             "Forgot password",
             $"Forgot password OTP: {otpCode.Value}. Expiration: {_otpConfiguration.Expiration}'.");
-        if (emailContentResult.IsFailure)
-        {
-            _logger.LogError($"Cannot create EmailContent. Occured at {now}");
-            return Result<Unit>.Failure(SystemError.Unexpected);
-        }
 
-        var emailContent = emailContentResult.Value;
-
-        await _emailSender.SendAsync(emailContent!);
+        await _emailSender.SendAsync(emailContent);
         _logger.LogInformation($"OTP was been sent to {email.Value}. Occured at {now}");
 
         return Result<Unit>.Success(Unit.Value);

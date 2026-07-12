@@ -8,7 +8,6 @@ using FastFoodOrderingSystem.Application.Features.Auth.Login;
 using FastFoodOrderingSystem.Application.Features.Auth.Logout;
 using FastFoodOrderingSystem.Application.Features.Auth.Refresh;
 using FastFoodOrderingSystem.Application.Features.Auth.Register;
-using FastFoodOrderingSystem.Application.Features.Auth.VerifyOtp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -36,20 +35,20 @@ public static class DependencyInjection
             return handler;
         });
 
-        services.AddScoped<VerifyOtpHandler>();
+        services.AddScoped<VerifyRegisterHandler>();
         services.AddScoped(sp =>
         {
-            IHandler<VerifyOtpCommand, Result<Unit>> handler = sp.GetRequiredService<VerifyOtpHandler>();
+            IHandler<VerifyRegisterCommand, Result<Unit>> handler = sp.GetRequiredService<VerifyRegisterHandler>();
 
-            handler = new TransactionCommandDecorator<VerifyOtpCommand, Result<Unit>>(
+            handler = new TransactionCommandDecorator<VerifyRegisterCommand, Result<Unit>>(
                 handler,
                 sp.GetRequiredService<IUnitWork>());
-            handler = new PerformanceHandlerDecorator<VerifyOtpCommand, Result<Unit>>(
+            handler = new PerformanceHandlerDecorator<VerifyRegisterCommand, Result<Unit>>(
                 handler,
-                sp.GetRequiredService<ILogger<IHandler<VerifyOtpCommand, Result<Unit>>>>());
-            handler = new LoggingHandlerDecorator<VerifyOtpCommand, Result<Unit>>(
+                sp.GetRequiredService<ILogger<IHandler<VerifyRegisterCommand, Result<Unit>>>>());
+            handler = new LoggingHandlerDecorator<VerifyRegisterCommand, Result<Unit>>(
                 handler,
-                sp.GetRequiredService<ILogger<IHandler<VerifyOtpCommand, Result<Unit>>>>());
+                sp.GetRequiredService<ILogger<IHandler<VerifyRegisterCommand, Result<Unit>>>>());
 
             return handler;
         });
@@ -90,14 +89,15 @@ public static class DependencyInjection
             handler = new LoggingHandlerDecorator<LogoutCommand, Result<Unit>>(
                 handler,
                 sp.GetRequiredService<ILogger<IHandler<LogoutCommand, Result<Unit>>>>());
-            
+
             return handler;
         });
 
         services.AddScoped<RefreshTokenHandler>();
         services.AddScoped(sp =>
         {
-            IHandler<RefreshTokenCommand, Result<RefreshTokenResponse>> handler = sp.GetRequiredService<RefreshTokenHandler>();
+            IHandler<RefreshTokenCommand, Result<RefreshTokenResponse>> handler =
+                sp.GetRequiredService<RefreshTokenHandler>();
 
             handler = new TransactionCommandDecorator<RefreshTokenCommand, Result<RefreshTokenResponse>>(
                 handler,

@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <Folder Include="Common\Cqrs\Decorators\" />
+    <Folder Include="Features\Auth\VerifyOtp\" />
   </ItemGroup>
 
   <PropertyGroup>
