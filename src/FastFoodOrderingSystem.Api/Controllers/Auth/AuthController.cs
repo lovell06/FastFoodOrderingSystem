@@ -1,14 +1,20 @@
+using System.Security.Claims;
 using FastFoodOrderingSystem.Api.Contracts.Authentication;
 using FastFoodOrderingSystem.Api.Mapping;
 using FastFoodOrderingSystem.Application.Common.Cqrs;
 using FastFoodOrderingSystem.Application.Common.Results;
+using FastFoodOrderingSystem.Application.Features.Auth.ChangePassword;
 using FastFoodOrderingSystem.Application.Features.Auth.ForgotPassword;
 using FastFoodOrderingSystem.Application.Features.Auth.Login;
 using FastFoodOrderingSystem.Application.Features.Auth.Logout;
 using FastFoodOrderingSystem.Application.Features.Auth.Refresh;
 using FastFoodOrderingSystem.Application.Features.Auth.Register;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace FastFoodOrderingSystem.Api.Controllers.Auth
 {
@@ -23,6 +29,7 @@ namespace FastFoodOrderingSystem.Api.Controllers.Auth
         private readonly IHandler<VerifyRegisterCommand, Result<Unit>> _verifyOtpHandler;
         private readonly IHandler<ForgotPasswordCommand, Result<Unit>> _forgotPasswordHandler;
         private readonly IHandler<VerifyForgotPasswordCommand, Result<Unit>> _verifyForgotPasswordHandler;
+        private readonly IHandler<ChangePasswordCommand, Result<Unit>> _changePasswordHandler;
 
         public AuthController(
             IHandler<LoginCommand, Result<LoginResponse>> loginHandler,
@@ -31,7 +38,8 @@ namespace FastFoodOrderingSystem.Api.Controllers.Auth
             IHandler<RegisterCommand, Result<Unit>> registerHandler,
             IHandler<VerifyRegisterCommand, Result<Unit>> verifyOtpHandler,
             IHandler<ForgotPasswordCommand, Result<Unit>> forgotPasswordHandler, 
-            IHandler<VerifyForgotPasswordCommand, Result<Unit>> verifyForgotPasswordHandler)
+            IHandler<VerifyForgotPasswordCommand, Result<Unit>> verifyForgotPasswordHandler, 
+            IHandler<ChangePasswordCommand, Result<Unit>> changePasswordHandler)
         {
             _loginHandler = loginHandler;
             _logoutHandler = logoutHandler;
@@ -40,6 +48,7 @@ namespace FastFoodOrderingSystem.Api.Controllers.Auth
             _verifyOtpHandler = verifyOtpHandler;
             _forgotPasswordHandler = forgotPasswordHandler;
             _verifyForgotPasswordHandler = verifyForgotPasswordHandler;
+            _changePasswordHandler = changePasswordHandler;
         }
 
         [HttpPost("login")]
@@ -128,6 +137,23 @@ namespace FastFoodOrderingSystem.Api.Controllers.Auth
             var command = request.ToCommand();
 
             var result = await _verifyForgotPasswordHandler.HandleAsync(command, cancellationToken);
+
+            if (result.IsSuccess)
+                return Ok();
+
+            return result.Error!.ToActionResult(this);
+        }
+
+        [HttpPost("change-password")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword(
+            ChangePasswordRequest request,
+            CancellationToken cancellationToken)
+        {
+            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "");
+            var command = request.ToCommand(userId);
+
+            var result = await _changePasswordHandler.HandleAsync(command, cancellationToken);
 
             if (result.IsSuccess)
                 return Ok();

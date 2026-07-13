@@ -44,7 +44,8 @@ public static class ServiceCollectionExtensions
                 {
                     OnAuthenticationFailed = context =>
                     {
-                        var logger = provider.GetRequiredService<ILogger>();
+                        var factory = provider.GetRequiredService<ILoggerFactory>();
+                        var logger = factory.CreateLogger("JwtBearer");
                         logger.LogWarning(context.Exception, "JWT validation failed.");
                         return Task.CompletedTask;
                     },

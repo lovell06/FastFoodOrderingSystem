@@ -3,6 +3,7 @@ using FastFoodOrderingSystem.Application.Common.Cqrs;
 using FastFoodOrderingSystem.Application.Common.Cqrs.Decorators.Commands;
 using FastFoodOrderingSystem.Application.Common.Cqrs.Decorators.Handlers;
 using FastFoodOrderingSystem.Application.Common.Results;
+using FastFoodOrderingSystem.Application.Features.Auth.ChangePassword;
 using FastFoodOrderingSystem.Application.Features.Auth.ForgotPassword;
 using FastFoodOrderingSystem.Application.Features.Auth.Login;
 using FastFoodOrderingSystem.Application.Features.Auth.Logout;
@@ -152,6 +153,26 @@ public static class DependencyInjection
             handler = new LoggingHandlerDecorator<VerifyForgotPasswordCommand, Result<Unit>>(
                 handler,
                 sp.GetRequiredService<ILogger<IHandler<VerifyForgotPasswordCommand, Result<Unit>>>>());
+
+            return handler;
+        });
+
+        services.AddScoped<ChangePasswordHandler>();
+        services.AddScoped(sp =>
+        {
+            IHandler<ChangePasswordCommand, Result<Unit>> handler = sp.GetRequiredService<ChangePasswordHandler>();
+
+            handler = new TransactionCommandDecorator<ChangePasswordCommand, Result<Unit>>(
+                handler,
+                sp.GetRequiredService<IUnitWork>());
+
+            handler = new PerformanceHandlerDecorator<ChangePasswordCommand, Result<Unit>>(
+                handler,
+                sp.GetRequiredService<ILogger<IHandler<ChangePasswordCommand, Result<Unit>>>>());
+
+            handler = new LoggingHandlerDecorator<ChangePasswordCommand, Result<Unit>>(
+                handler,
+                sp.GetRequiredService<ILogger<IHandler<ChangePasswordCommand, Result<Unit>>>>());
 
             return handler;
         });
