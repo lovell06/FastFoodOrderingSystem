@@ -10,11 +10,7 @@ using FastFoodOrderingSystem.Application.Features.Auth.Logout;
 using FastFoodOrderingSystem.Application.Features.Auth.Refresh;
 using FastFoodOrderingSystem.Application.Features.Auth.Register;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace FastFoodOrderingSystem.Api.Controllers.Auth
 {
