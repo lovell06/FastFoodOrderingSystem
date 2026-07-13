@@ -91,7 +91,7 @@ public sealed class VerifyRegisterHandler : ICommandHandler<VerifyRegisterComman
             email: pending.Id,
             passwordHash: pending.PasswordHash,
             phoneNumber: pending.PhoneNumber,
-            avatarImagePath: ImagePath.Default(),
+            avatarImagePath: AvatarImagePath.Default(),
             role: pending.Role,
             now);
         await _userRepository.InsertAsync(user, cancellationToken);

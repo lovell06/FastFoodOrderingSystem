@@ -1,11 +1,11 @@
 using System.Text.RegularExpressions;
 using FastFoodOrderingSystem.Domain.Common.DomainResults;
 using FastFoodOrderingSystem.Domain.Common.Validations;
-using FastFoodOrderingSystem.Domain.Common.ValueObjects.Errors;
+using FastFoodOrderingSystem.Domain.Users.ValueObjects.Errors;
 
-namespace FastFoodOrderingSystem.Domain.Common.ValueObjects;
+namespace FastFoodOrderingSystem.Domain.Users.ValueObjects;
 
-public record ImagePath
+public record AvatarImagePath
 {
     public const int MaxLength = 255;
 
@@ -19,7 +19,7 @@ public record ImagePath
 
     public string Value { get; init; }
 
-    private ImagePath(string value)
+    private AvatarImagePath(string value)
     {
         Value = value.Trim();
     }
@@ -27,34 +27,34 @@ public record ImagePath
     private static DomainError? Validate(string path)
     {
         if (string.IsNullOrWhiteSpace(path))
-            return ImagePathError.Empty();
+            return AvatarImagePathError.Empty();
 
         path = path.Trim();
         if (path.Length > MaxLength)
-            return ImagePathError.ExceedsMaxLength(MaxLength);
+            return AvatarImagePathError.ExceedsMaxLength(MaxLength);
 
         string extension = Path.GetExtension(path);
         if (!SupportedExtensions.Contains(extension))
-            return ImagePathError.UnsupportExtension(extension);
+            return AvatarImagePathError.UnsupportExtension(extension);
 
         if (!Regex.IsMatch(path, ValidationPatterns.ImagePath(extension)))
-            return ImagePathError.InvalidImagePathFormat();
+            return AvatarImagePathError.InvalidImagePathFormat();
 
         return null;
     }
 
-    public static DomainResult<ImagePath> Create(string path)
+    public static DomainResult<AvatarImagePath> Create(string path)
     {
         var error = Validate(path);
 
         if (error is not null)
-            return DomainResult<ImagePath>.Failure(error);
+            return DomainResult<AvatarImagePath>.Failure(error);
         
-        return DomainResult<ImagePath>.Success(new ImagePath(path));
+        return DomainResult<AvatarImagePath>.Success(new AvatarImagePath(path));
     }
 
-    public static ImagePath Default()
+    public static AvatarImagePath Default()
     {
-        return new ImagePath("images/users/default.png");
+        return new AvatarImagePath("images/users/default.png");
     }
 }

@@ -17,7 +17,7 @@ public class User : AggregateRoot<Guid>
     public IReadOnlyCollection<UserShippingAddress> ShippingAddresses => _shippingAddresses.AsReadOnly();
     private readonly List<UserPasswordHistory> _passwordHistories = [];
     public IReadOnlyCollection<UserPasswordHistory> PasswordHistories => _passwordHistories.ToArray();
-    public ImagePath AvatarImagePath { get; private set; } = ImagePath.Default();
+    public AvatarImagePath AvatarImagePath { get; private set; } = AvatarImagePath.Default();
     public UserRole Role { get; private set; } = UserRole.Customer;
     public DateTime CreatedAt { get; }
     public DateTime? UpdatedAt { get; private set; }
@@ -36,7 +36,7 @@ public class User : AggregateRoot<Guid>
         Email email,
         PasswordHash passwordHash,
         PhoneNumber phoneNumber,
-        ImagePath avatarImagePath,
+        AvatarImagePath avatarImagePath,
         UserRole role,
         DateTime createdAt) : base(id)
     {
@@ -55,7 +55,7 @@ public class User : AggregateRoot<Guid>
         Email email,
         PasswordHash passwordHash,
         PhoneNumber phoneNumber,
-        ImagePath avatarImagePath,
+        AvatarImagePath avatarImagePath,
         UserRole role,
         DateTime createdAt)
     {
@@ -152,7 +152,7 @@ public class User : AggregateRoot<Guid>
         return DomainResult<User>.Success();
     }
 
-    public void ChangeAvatarImagePath(ImagePath imagePath, DateTime updatedAt)
+    public void ChangeAvatarImagePath(AvatarImagePath imagePath, DateTime updatedAt)
     {
         AvatarImagePath = imagePath;
         UpdatedAt = updatedAt;

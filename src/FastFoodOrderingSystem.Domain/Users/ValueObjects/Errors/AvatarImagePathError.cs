@@ -1,8 +1,8 @@
 using FastFoodOrderingSystem.Domain.Common.DomainResults;
 
-namespace FastFoodOrderingSystem.Domain.Common.ValueObjects.Errors;
+namespace FastFoodOrderingSystem.Domain.Users.ValueObjects.Errors;
 
-public sealed class ImagePathError
+public sealed class AvatarImagePathError
 {
     public static DomainError Empty()
     {

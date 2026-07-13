@@ -58,8 +58,8 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.AvatarImagePath)
             .HasConversion(
                 imagePath => imagePath.Value,
-                value => ImagePath.Create(value).Value!)
-            .HasMaxLength(ImagePath.MaxLength)
+                value => AvatarImagePath.Create(value).Value!)
+            .HasMaxLength(AvatarImagePath.MaxLength)
             .IsUnicode()
             .HasColumnName("avatar_image_path");
 

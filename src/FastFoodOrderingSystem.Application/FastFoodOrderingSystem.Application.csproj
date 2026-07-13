@@ -18,7 +18,7 @@
 
   <ItemGroup>
     <Folder Include="Common\Cqrs\Decorators\" />
-    <Folder Include="Features\Users\" />
+    <Folder Include="Features\Users\GetProfile\" />
   </ItemGroup>
 
   <PropertyGroup>
