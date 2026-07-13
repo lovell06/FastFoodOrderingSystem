@@ -1,4 +1,4 @@
-using FastFoodOrderingSystem.Application.Features.Auth.Register;
+using FastFoodOrderingSystem.Application.Features.Customers.Register;
 
 namespace FastFoodOrderingSystem.Api.Contracts.Authentication;
 

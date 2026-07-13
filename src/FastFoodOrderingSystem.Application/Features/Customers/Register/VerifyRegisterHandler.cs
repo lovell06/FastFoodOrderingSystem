@@ -9,7 +9,7 @@ using FastFoodOrderingSystem.Domain.Users;
 using FastFoodOrderingSystem.Domain.Users.ValueObjects;
 using Microsoft.Extensions.Logging;
 
-namespace FastFoodOrderingSystem.Application.Features.Auth.Register;
+namespace FastFoodOrderingSystem.Application.Features.Customers.Register;
 
 public sealed class VerifyRegisterHandler : ICommandHandler<VerifyRegisterCommand, Result<Unit>>
 {

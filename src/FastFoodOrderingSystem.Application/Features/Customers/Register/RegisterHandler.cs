@@ -10,7 +10,7 @@ using FastFoodOrderingSystem.Domain.Common.ValueObjects;
 using FastFoodOrderingSystem.Domain.Users.ValueObjects;
 using Microsoft.Extensions.Logging;
 
-namespace FastFoodOrderingSystem.Application.Features.Auth.Register;
+namespace FastFoodOrderingSystem.Application.Features.Customers.Register;
 
 public sealed class RegisterHandler : ICommandHandler<RegisterCommand, Result<Unit>>
 {

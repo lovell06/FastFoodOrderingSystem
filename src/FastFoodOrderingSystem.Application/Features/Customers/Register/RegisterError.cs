@@ -1,7 +1,7 @@
 using FastFoodOrderingSystem.Application.Common.Results;
 using FastFoodOrderingSystem.Domain.Users.ValueObjects;
 
-namespace FastFoodOrderingSystem.Application.Features.Auth.Register;
+namespace FastFoodOrderingSystem.Application.Features.Customers.Register;
 
 public sealed class RegisterError
 {

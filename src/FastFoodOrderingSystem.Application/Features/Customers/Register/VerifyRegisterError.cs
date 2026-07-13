@@ -1,6 +1,6 @@
 using FastFoodOrderingSystem.Application.Common.Results;
 
-namespace FastFoodOrderingSystem.Application.Features.Auth.Register;
+namespace FastFoodOrderingSystem.Application.Features.Customers.Register;
 
 public sealed class VerifyRegisterError
 {

@@ -8,7 +8,7 @@ using FastFoodOrderingSystem.Application.Features.Auth.ForgotPassword;
 using FastFoodOrderingSystem.Application.Features.Auth.Login;
 using FastFoodOrderingSystem.Application.Features.Auth.Logout;
 using FastFoodOrderingSystem.Application.Features.Auth.Refresh;
-using FastFoodOrderingSystem.Application.Features.Auth.Register;
+using FastFoodOrderingSystem.Application.Features.Customers.Register;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

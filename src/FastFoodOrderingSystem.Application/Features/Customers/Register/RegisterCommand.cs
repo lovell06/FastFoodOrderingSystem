@@ -1,4 +1,4 @@
-namespace FastFoodOrderingSystem.Application.Features.Auth.Register;
+namespace FastFoodOrderingSystem.Application.Features.Customers.Register;
 
 public sealed record RegisterCommand(string FullName,
     string Email,
