@@ -4,11 +4,9 @@
 
 ## Architecture
 
-Architecture: Clean architecture + DDD + CQRS
+Architecture: Modular monolith (Clean architecture + DDD + CQRS)
 
 Design pattern: Repository Pattern, Decorator Pattern
-
-
 
 ## Implementation
 
