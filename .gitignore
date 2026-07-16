@@ -55,3 +55,20 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# JetBrains Rider / IntelliJ
+.idea/
+*.iml
+.idea_modules/
+
+# Rider caches
+*.sln.iml
+
+# Visual studio
+.vs/
+*.user
+*.suo
+*.userosscache
+
+# VS Code
+.vscode/

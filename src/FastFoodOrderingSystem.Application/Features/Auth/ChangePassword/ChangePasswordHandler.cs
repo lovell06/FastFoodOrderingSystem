@@ -77,7 +77,7 @@ public sealed class ChangePasswordHandler : IHandler<ChangePasswordCommand, Resu
             return Result<Unit>.Failure(Error.Conflict(err.Code, err.Message));
         }
 
-        _logger.LogInformation($"Change password succesful. User with id: {user.Id} was been change password. Occured at: {now}.");
+        _logger.LogInformation($"Change password successful. User with id: {user.Id} was been change password. Occured at: {now}.");
 
         return Result<Unit>.Success(Unit.Value);
     }

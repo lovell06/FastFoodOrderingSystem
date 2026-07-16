@@ -50,6 +50,25 @@ public class User : AggregateRoot<Guid>
         CreatedAt = createdAt;
     }
 
+    public static User Register(
+        FullName fullName,
+        Email email,
+        PasswordHash passwordHash,
+        PhoneNumber phoneNumber,
+        AvatarImagePath avatarImagePath,
+        DateTime createdAt)
+    {
+        return new User(
+            id: Guid.NewGuid(),
+            fullName: fullName,
+            email: email,
+            passwordHash: passwordHash,
+            phoneNumber: phoneNumber,
+            avatarImagePath: avatarImagePath,
+            role: UserRole.Customer, 
+            createdAt: createdAt);
+    }
+    
     public static User Create(
         FullName fullName,
         Email email,
@@ -69,7 +88,7 @@ public class User : AggregateRoot<Guid>
             role: role,
             createdAt: createdAt);
     }
-
+    
     public void ChangeFullName(FullName newFullName)
     {
         FullName = newFullName;

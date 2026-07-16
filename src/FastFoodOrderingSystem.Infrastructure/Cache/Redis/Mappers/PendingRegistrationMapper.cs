@@ -39,7 +39,6 @@ public static class PendingRegistrationMapper
             FullName: pending.FullName.Value,
             PasswordHash: pending.PasswordHash.Value,
             PhoneNumber: pending.PhoneNumber.Value,
-            Role: pending.Role.Code,
             OtpCodeHash: pending.OtpCodeHash.Value,
             ExpiresAt: pending.ExpiresAt,
             AttemptCount: pending.AttemptCount);

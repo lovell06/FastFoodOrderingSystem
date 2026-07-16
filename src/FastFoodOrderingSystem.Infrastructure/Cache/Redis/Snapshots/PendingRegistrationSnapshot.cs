@@ -5,7 +5,6 @@ public sealed record PendingRegistrationSnapshot(
     string Id,
     string PasswordHash,
     string PhoneNumber,
-    string Role,
     string OtpCodeHash,
     DateTime ExpiresAt,
     int AttemptCount);

@@ -4,7 +4,6 @@ using FastFoodOrderingSystem.Application.Abstractions.Persistence;
 using FastFoodOrderingSystem.Application.Abstractions.Time;
 using FastFoodOrderingSystem.Application.Common.Cqrs;
 using FastFoodOrderingSystem.Application.Common.Results;
-using FastFoodOrderingSystem.Domain.Common.ValueObjects;
 using FastFoodOrderingSystem.Domain.Users;
 using FastFoodOrderingSystem.Domain.Users.ValueObjects;
 using Microsoft.Extensions.Logging;
@@ -86,13 +85,12 @@ public sealed class VerifyRegisterHandler : ICommandHandler<VerifyRegisterComman
         _logger.LogInformation(
             $"Verify OTP Successful. Email: {email.Value}. At {now}");
 
-        var user = User.Create(
+        var user = User.Register(
             fullName: pending.FullName,
             email: pending.Id,
             passwordHash: pending.PasswordHash,
             phoneNumber: pending.PhoneNumber,
             avatarImagePath: AvatarImagePath.Default(),
-            role: pending.Role,
             now);
         await _userRepository.InsertAsync(user, cancellationToken);
         await _unitWork.SaveChangeAsync(cancellationToken);
