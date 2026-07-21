@@ -54,7 +54,7 @@ public sealed class OutboxWorker : BackgroundService
                 {
                     try
                     {
-                        var e = OutboxMessagePayloadSerializer.Deserialize(outboxMessage);
+                        var e = OutboxMessagePayloadSerializer.Deserialize(outboxMessage.Payload, outboxMessage.Type);
                         await dispatcher.DispatchAsync(e, stoppingToken);
                         outboxMessage.ProcessedAtUtc = clock.UtcNow;
                         outboxMessage.Error = null;

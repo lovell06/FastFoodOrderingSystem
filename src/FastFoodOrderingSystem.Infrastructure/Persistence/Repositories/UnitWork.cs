@@ -4,6 +4,7 @@ using FastFoodOrderingSystem.Infrastructure.Eventing.EventMappers;
 using FastFoodOrderingSystem.Infrastructure.Persistence.Database;
 using FastFoodOrderingSystem.Infrastructure.Persistence.Database.Entities;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Logging;
 
 namespace FastFoodOrderingSystem.Infrastructure.Persistence.Repositories;
 
@@ -11,9 +12,11 @@ public sealed class UnitWork : IUnitWork
 {
     private readonly ApplicationDbContext _context;
     private IDbContextTransaction? _transaction;
-    public UnitWork(ApplicationDbContext context)
+    private readonly ILogger<UnitWork> _logger;
+    public UnitWork(ApplicationDbContext context, ILogger<UnitWork> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     public async Task BeginAsync(CancellationToken cancellationToken = default)
@@ -31,8 +34,9 @@ public sealed class UnitWork : IUnitWork
             throw new InvalidOperationException(
                 "No active transaction.");
 
-        await _context.SaveChangesAsync(cancellationToken);
+        var count = await _context.SaveChangesAsync(cancellationToken);
         
+        _logger.LogInformation($"Changed {count} rows.");
         await _transaction.CommitAsync(cancellationToken);
 
         await _transaction.DisposeAsync();
@@ -71,14 +75,19 @@ public sealed class UnitWork : IUnitWork
         return events;
     }
 
-    public async Task<int> SaveEventsAsync(CancellationToken cancellationToken)
+    public async Task StoreEventsAsync(CancellationToken cancellationToken)
     {
         var domainEvents = DequeueDomainEvents();
 
-        var outboxMessages = domainEvents
-            .Select(e => OutboxMessage.Create(e.ToIntegration()));
+        if (domainEvents.Count == 0)
+            return;
 
+        var outboxMessages = domainEvents
+            .Select(e => OutboxMessage.Create(e.ToIntegration()))
+            .ToList();
+        
         await _context.OutboxMessages.AddRangeAsync(outboxMessages, cancellationToken);
-        return await _context.SaveChangesAsync(cancellationToken);
+        
+        _logger.LogInformation($"Events was been store. {outboxMessages.Count} events.");
     }
 }

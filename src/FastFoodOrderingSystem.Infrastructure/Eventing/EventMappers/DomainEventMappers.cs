@@ -15,7 +15,7 @@ public static class DomainEventMappers
             {
                 OccurredAtUtc = e.OccurredAtUtc,
                 UserId = e.UserId,
-                UserEmail = e.UserEmail
+                UserEmail = e.UserEmail.Value
             },
             _ => throw new ArgumentOutOfRangeException()
         };

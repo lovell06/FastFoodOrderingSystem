@@ -34,14 +34,19 @@ public class SendWelcomeEmailHandler : IEventHandler<IntegrationUserRegisteredEv
                 $"Sender email address invalid. {err.Code}. {err.Message}. {e.OccurredAtUtc}");
         }
 
-        _logger.LogInformation($"Sending welcome to {e.UserEmail.Value}...");
+        _logger.LogInformation($"Sending welcome to {e.UserEmail}...");
 
         var sw = new Stopwatch();
         
         sw.Start();
+
+        var emailResult = Email.Create(e.UserEmail);
+        if (emailResult.IsFailure)
+            throw new InvalidOperationException("Email create failed.");
+        
         var content = EmailContent.Create(
             senderAddressResult.Value!,
-            e.UserEmail,
+            emailResult.Value!,
             "Welcome to fast food.",
             "You was been register successful.");
 

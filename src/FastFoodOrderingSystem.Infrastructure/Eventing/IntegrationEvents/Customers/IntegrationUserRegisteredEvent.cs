@@ -7,5 +7,5 @@ public sealed class IntegrationUserRegisteredEvent : IEvent
 {
     public DateTime OccurredAtUtc { get; init; }
     public Guid UserId { get; init; }
-    public required Email UserEmail { get; init; }
+    public required string UserEmail { get; init; }
 }

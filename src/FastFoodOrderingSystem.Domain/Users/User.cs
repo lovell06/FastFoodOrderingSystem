@@ -3,6 +3,7 @@ using FastFoodOrderingSystem.Domain.Common.DomainResults;
 using FastFoodOrderingSystem.Domain.Common.Enums;
 using FastFoodOrderingSystem.Domain.Common.ValueObjects;
 using FastFoodOrderingSystem.Domain.Users.Errors;
+using FastFoodOrderingSystem.Domain.Users.Events;
 using FastFoodOrderingSystem.Domain.Users.ValueObjects;
 
 namespace FastFoodOrderingSystem.Domain.Users;
@@ -78,7 +79,7 @@ public class User : AggregateRoot<Guid>
         AvatarImagePath avatarImagePath,
         DateTime createdAt)
     {
-        return new User(
+        var user =  new User(
             id: Guid.NewGuid(),
             fullName: fullName,
             email: email,
@@ -87,6 +88,15 @@ public class User : AggregateRoot<Guid>
             avatarImagePath: avatarImagePath,
             role: UserRole.Customer,
             createdAt: createdAt);
+        
+        user.RegisterDomainEvent(new UserRegisteredDomainEvent
+        {
+            OccurredAtUtc = createdAt,
+            UserEmail = user.Email,
+            UserId = user.Id
+        });
+
+        return user;
     }
 
     public void ChangeFullName(FullName newFullName)

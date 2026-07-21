@@ -9,19 +9,19 @@ public static class OutboxMessagePayloadSerializer
 {
     public static string Serialize(IEvent e)
     {
-        return JsonSerializer.Serialize(e);
+        return JsonSerializer.Serialize(e, e.GetType());
     }
 
-    public static IEvent Deserialize(OutboxMessage outboxMessage)
+    public static IEvent Deserialize(string payload, string typeName)
     {
-        var type = Type.GetType(outboxMessage.Type);
-        if (type is null)
-            throw new SerializationException($"Not found type: {outboxMessage.Type}");
+        var asm = typeof(IEvent).Assembly;
+        var type = asm.GetType(typeName);
         
-        var result = (IEvent?)JsonSerializer.Deserialize(outboxMessage.Payload, type);
+        if (type is null)
+            throw new SerializationException($"Not found type: {typeName}");
 
-        if (result is null)
-            throw new SerializationException($"Cannot deserialize {type.Name}");
+        var result = (IEvent) (JsonSerializer.Deserialize(payload, type) ??
+                         throw new SerializationException($"Cannot deserialize {type.Name}"));
 
         return result;
     }

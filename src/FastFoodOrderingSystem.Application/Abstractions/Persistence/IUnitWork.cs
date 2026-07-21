@@ -7,5 +7,5 @@ public interface IUnitWork
     Task BeginAsync(CancellationToken cancellationToken);
     Task CommitAsync(CancellationToken cancellationToken);
     Task RollbackAsync(CancellationToken cancellationToken);
-    Task<int> SaveEventsAsync(CancellationToken cancellationToken);
+    Task StoreEventsAsync(CancellationToken cancellationToken);
 }

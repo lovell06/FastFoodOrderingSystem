@@ -25,19 +25,18 @@ public class TransactionCommandDecorator<TCommand, TResult> : CommandHandlerDeco
             await _unitWork.BeginAsync(cancellationToken);
 
             var result = await Handler.HandleAsync(command, cancellationToken);
-
-            await _unitWork.CommitAsync(cancellationToken);
             
-            _logger.LogInformation("Commit transaction.");
-
             try
             {
-                await _unitWork.SaveEventsAsync(cancellationToken);
+                await _unitWork.StoreEventsAsync(cancellationToken);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Save event failed.");
+                _logger.LogError(e, "Store events failed.");
             }
+            
+            await _unitWork.CommitAsync(cancellationToken);
+            _logger.LogInformation("Commit transaction.");
 
             return result;
         }

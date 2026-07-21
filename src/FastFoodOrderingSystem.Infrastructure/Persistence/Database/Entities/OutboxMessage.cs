@@ -19,7 +19,7 @@ public sealed class OutboxMessage
         return new OutboxMessage
         {
             Id = Guid.NewGuid(),
-            Type = nameof(IEvent),
+            Type = e.GetType().FullName!,
             Payload = json,
             OccurredAtUtc = e.OccurredAtUtc,
             ProcessedAtUtc = null,
