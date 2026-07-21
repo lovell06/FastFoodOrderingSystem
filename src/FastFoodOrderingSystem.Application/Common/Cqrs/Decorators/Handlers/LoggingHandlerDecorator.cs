@@ -3,7 +3,8 @@ using Microsoft.Extensions.Logging;
 
 namespace FastFoodOrderingSystem.Application.Common.Cqrs.Decorators.Handlers;
 
-public class LoggingHandlerDecorator<TRequest, TResponse> : HandlerDecorator<TRequest, TResponse>
+public class LoggingHandlerDecorator<TRequest, TResponse> 
+    : HandlerDecorator<TRequest, TResponse> where TRequest : IRequest<TResponse>
 {
     private readonly ILogger<LoggingHandlerDecorator<TRequest, TResponse>> _logger;
     public LoggingHandlerDecorator(

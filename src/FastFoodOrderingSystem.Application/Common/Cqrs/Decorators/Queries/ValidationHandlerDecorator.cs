@@ -3,7 +3,7 @@ using FastFoodOrderingSystem.Application.Common.Results;
 namespace FastFoodOrderingSystem.Application.Common.Cqrs.Decorators.Queries;
 
 public sealed class ValidationHandlerDecorator<TQuery, TResponse> 
-    : QueryHandlerDecorator<TQuery, TResponse> where TQuery : IQuery
+    : QueryHandlerDecorator<TQuery, TResponse> where TQuery : IQuery<TResponse>
 {
     public ValidationHandlerDecorator(IHandler<TQuery, TResponse> handler) : base(handler)
     {

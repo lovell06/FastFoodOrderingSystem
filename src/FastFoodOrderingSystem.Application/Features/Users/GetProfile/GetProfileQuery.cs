@@ -2,4 +2,4 @@ using FastFoodOrderingSystem.Application.Common.Cqrs;
 
 namespace FastFoodOrderingSystem.Application.Features.Users.GetProfile;
 
-public class GetProfileQuery (Guid UserId) : IQuery;
+public sealed record GetProfileQuery (Guid UserId) : IQuery<GetProfileResponse>;

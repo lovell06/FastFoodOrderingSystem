@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 namespace FastFoodOrderingSystem.Application.Common.Cqrs.Decorators.Commands;
 
 public class TransactionCommandDecorator<TCommand, TResponse> 
-    : CommandHandlerDecorator<TCommand, TResponse> where TCommand : ICommand
+    : CommandHandlerDecorator<TCommand, TResponse> where TCommand : ICommand<TResponse>
 {
     private readonly IUnitWork _unitWork;
     private readonly ILogger<TransactionCommandDecorator<TCommand, TResponse>> _logger;

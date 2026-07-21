@@ -1,4 +1,4 @@
 namespace FastFoodOrderingSystem.Application.Common.Cqrs;
 
-public interface ICommandHandler<TCommand, TResult> : IHandler<TCommand, TResult> 
-    where TCommand : ICommand;
+public interface ICommandHandler<in TCommand, TResponse> 
+    : IHandler<TCommand, TResponse> where TCommand : ICommand<TResponse>;

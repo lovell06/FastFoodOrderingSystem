@@ -1,3 +1,3 @@
 namespace FastFoodOrderingSystem.Application.Common.Cqrs;
 
-public interface IQuery<TResponse> : IRequest<TResponse>;
+public interface IRequest<TResponse>;

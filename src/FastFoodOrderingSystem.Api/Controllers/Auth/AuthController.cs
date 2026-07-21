@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using FastFoodOrderingSystem.Api.Contracts.Authentication;
 using FastFoodOrderingSystem.Api.Mapping;
+using FastFoodOrderingSystem.Application.Abstractions.Mediator;
 using FastFoodOrderingSystem.Application.Common.Cqrs;
 using FastFoodOrderingSystem.Application.Common.Results;
 using FastFoodOrderingSystem.Application.Features.Auth.ChangePassword;
@@ -20,33 +21,11 @@ namespace FastFoodOrderingSystem.Api.Controllers.Auth;
 [ApiController]
 public class AuthController : ControllerBase
 {
-    private readonly IHandler<LoginCommand, Result<LoginResponse>> _loginHandler;
-    private readonly IHandler<LogoutCommand, Result<Unit>> _logoutHandler;
-    private readonly IHandler<RefreshTokenCommand, Result<RefreshTokenResponse>> _refreshTokenHandler;
-    private readonly IHandler<InitiateRegistrationCommand, Result<Unit>> _InitiateRegistrationHandler;
-    private readonly IHandler<CompleteRegistrationCommand, Result<Unit>> _completeRegistrationHandler;
-    private readonly IHandler<InitiateForgotPasswordCommand, Result<Unit>> _initiateForgotPasswordHandler;
-    private readonly IHandler<CompleteForgotPasswordCommand, Result<Unit>> _completeForgotPasswordHandler;
-    private readonly IHandler<ChangePasswordCommand, Result<Unit>> _changePasswordHandler;
+    private readonly IMediator _mediator;
 
-    public AuthController(
-        IHandler<LoginCommand, Result<LoginResponse>> loginHandler,
-        IHandler<LogoutCommand, Result<Unit>> logoutHandler,
-        IHandler<RefreshTokenCommand, Result<RefreshTokenResponse>> refreshTokenHandler,
-        IHandler<InitiateRegistrationCommand, Result<Unit>> initiateRegistrationHandler,
-        IHandler<CompleteRegistrationCommand, Result<Unit>> completeRegistrationHandler,
-        IHandler<InitiateForgotPasswordCommand, Result<Unit>> initiateForgotPasswordHandler, 
-        IHandler<CompleteForgotPasswordCommand, Result<Unit>> completeForgotPasswordHandler, 
-        IHandler<ChangePasswordCommand, Result<Unit>> changePasswordHandler)
+    public AuthController(IMediator mediator)
     {
-        _loginHandler = loginHandler;
-        _logoutHandler = logoutHandler;
-        _refreshTokenHandler = refreshTokenHandler;
-        _InitiateRegistrationHandler = initiateRegistrationHandler;
-        _completeRegistrationHandler = completeRegistrationHandler;
-        _initiateForgotPasswordHandler = initiateForgotPasswordHandler;
-        _completeForgotPasswordHandler = completeForgotPasswordHandler;
-        _changePasswordHandler = changePasswordHandler;
+        _mediator = mediator;
     }
 
     [HttpPost("login")]
@@ -54,7 +33,9 @@ public class AuthController : ControllerBase
     {
         var command = request.ToCommand();
 
-        var result = await _loginHandler.HandleAsync(command, cancellationToken);
+        var result = await _mediator.SendAsync<LoginCommand, LoginResponse>(
+            request: command, 
+            cancellationToken: cancellationToken);
 
         if (result.IsSuccess)
             return Ok(result.Value);
@@ -68,7 +49,9 @@ public class AuthController : ControllerBase
     {
         var command = request.ToCommand();
 
-        var result = await _logoutHandler.HandleAsync(command, cancellationToken);
+        var result = await _mediator.SendAsync<LogoutCommand, Unit>(
+            request: command, 
+            cancellationToken: cancellationToken);
 
         if (result.IsSuccess)
             return NoContent();
@@ -81,7 +64,8 @@ public class AuthController : ControllerBase
     {
         var command = request.ToCommand();
 
-        var result = await _refreshTokenHandler.HandleAsync(command, cancellationToken);
+        var result = await _mediator
+            .SendAsync<RefreshTokenCommand, RefreshTokenResponse>(command, cancellationToken);
 
         if (result.IsSuccess)
             return Ok(result.Value);
@@ -95,8 +79,9 @@ public class AuthController : ControllerBase
         CancellationToken cancellationToken)
     {
         var command = request.ToCommand();
-        var result = await _InitiateRegistrationHandler
-            .HandleAsync(command, cancellationToken);
+        var result = await _mediator.SendAsync<InitiateRegistrationCommand, Unit>(
+            request: command, 
+            cancellationToken: cancellationToken);
 
         if (result.IsSuccess)
             return Ok();
@@ -110,8 +95,9 @@ public class AuthController : ControllerBase
         CancellationToken cancellationToken)
     {
         var command = request.ToCommand();
-        var result = await _completeRegistrationHandler
-            .HandleAsync(command, cancellationToken);
+        var result = await _mediator.SendAsync<CompleteRegistrationCommand, Unit>(
+            request: command, 
+            cancellationToken: cancellationToken);
 
         if (result.IsSuccess)
             return Created();
@@ -126,7 +112,9 @@ public class AuthController : ControllerBase
     {
         var command = request.ToCommand();
 
-        var result = await _initiateForgotPasswordHandler.HandleAsync(command, cancellationToken);
+        var result = await _mediator.SendAsync<InitiateForgotPasswordCommand, Unit>(
+            request: command, 
+            cancellationToken: cancellationToken);
 
         if (result.IsSuccess)
             return Ok();
@@ -141,7 +129,9 @@ public class AuthController : ControllerBase
     {
         var command = request.ToCommand();
 
-        var result = await _completeForgotPasswordHandler.HandleAsync(command, cancellationToken);
+        var result = await _mediator.SendAsync<CompleteForgotPasswordCommand, Unit>(
+            request: command, 
+            cancellationToken: cancellationToken);
 
         if (result.IsSuccess)
             return Ok();
@@ -158,7 +148,9 @@ public class AuthController : ControllerBase
         var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "");
         var command = request.ToCommand(userId);
 
-        var result = await _changePasswordHandler.HandleAsync(command, cancellationToken);
+        var result = await _mediator.SendAsync<ChangePasswordCommand, Unit>(
+            request: command, 
+            cancellationToken: cancellationToken);
 
         if (result.IsSuccess)
             return Ok();

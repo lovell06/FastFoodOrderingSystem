@@ -4,7 +4,8 @@ using Microsoft.Extensions.Logging;
 
 namespace FastFoodOrderingSystem.Application.Common.Cqrs.Decorators.Handlers;
 
-public sealed class PerformanceHandlerDecorator<TRequest, TResponse> : HandlerDecorator<TRequest, TResponse>
+public sealed class PerformanceHandlerDecorator<TRequest, TResponse> 
+    : HandlerDecorator<TRequest, TResponse> where TRequest : IRequest<TResponse>
 {
     private readonly ILogger<PerformanceHandlerDecorator<TRequest, TResponse>> _logger;
     public PerformanceHandlerDecorator(IHandler<TRequest, TResponse> handler, ILogger<PerformanceHandlerDecorator<TRequest, TResponse>> logger) : base(handler)

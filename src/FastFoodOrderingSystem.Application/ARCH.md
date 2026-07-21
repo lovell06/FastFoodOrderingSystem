@@ -87,6 +87,9 @@ FastFoodOrderingSystem.Application
 │   │   ├── IEmailSender.cs
 │   │   └── ...
 │   │   
+│   ├── Mediator/
+│   │   └── IMediator.cs
+│   │   
 │   ├── Persistence/
 │   │   ├── IUnitWork.cs
 │   │   ├── IUserRepository.cs
@@ -117,8 +120,11 @@ FastFoodOrderingSystem.Application
 │   │   │       ├── QueryHandlerDecorator.cs
 │   │   │       └── ...
 │   │   │
-│   │   ├── ICommandHandler.cs
+│   │   ├── IRequest.cs
+│   │   ├── ICommand.cs
+│   │   ├── IQuery.cs
 │   │   ├── IHandler.cs
+│   │   ├── ICommandHandler.cs
 │   │   ├── IQueryHandler.cs
 │   │   └── Unit.cs
 │   │  
@@ -202,3 +208,4 @@ FastFoodOrderingSystem.Application
 
 - CQRS
 - Decorator
+- Mediator

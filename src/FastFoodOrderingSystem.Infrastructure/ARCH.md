@@ -77,7 +77,7 @@ FastFoodOrderingSystem.Infrastructure/
 │       │  
 │       └── RedisKeyProvider.cs
 │  
-├── Configurations
+├── Configurations/
 │   ├── DependencyInjection.cs
 │   ├── ...
 │   ├── AccessTokenConfiguration.cs
@@ -85,37 +85,42 @@ FastFoodOrderingSystem.Infrastructure/
 │   ├── OtpConfiguration.cs
 │   └── RefreshTokenConfiguration.cs
 │
-├── Emails
+├── Emails/
 │   ├── DependencyInjection.cs
 │   ├── ...
 │   └── GmailSender.cs
 │   
-├── Eventing
-│   ├── Abstractions
+├── Eventing/
+│   ├── Abstractions/
 │   │   ├── IEvent.cs
 │   │   ├── IEventDispatcher.cs
 │   │   └── IEventHandler.cs
-│   ├── EventMappers
+│   ├── EventMappers/
 │   │   └── DomainEventMappers.cs
-│   ├── IntegrationEventDispatchers
+│   ├── IntegrationEventDispatchers/
 │   │   ├── DependencyInjection.cs
 │   │   └── EventDispatcher.cs
-│   ├── IntegrationEventHandlers
-│   │   ├── Customers
+│   ├── IntegrationEventHandlers/
+│   │   ├── Customers/
 │   │   │   ├── ...
 │   │   │   └── SendWelcomeEmailHandler.cs
 │   │   └── DependencyInjection.cs
-│   ├── IntegrationEvents
-│   │   └── Customers
+│   ├── IntegrationEvents/
+│   │   └── Customers/
 │   │       ├── ...
 │   │       └── IntegrationUserRegisteredEvent.cs
-│   ├── JsonSerializers
+│   ├── JsonSerializers/
 │   │   ├── ...
 │   │   └── OutboxMessagePayloadSerializer.cs
 │   │  
 │   └── DependencyInjection.cs
 │
-├── Options
+├── Mediator/
+│   ├── DependencyInjection.cs
+│   ├── ...
+│   └── Mediator.cs
+│
+├── Options/
 │   ├── DependencyInjection.cs
 │   ├── ...
 │   ├── EmailOption.cs
@@ -127,37 +132,37 @@ FastFoodOrderingSystem.Infrastructure/
 │   ├── RedisOption.cs
 │   └── RefreshTokenOption.cs
 │
-├── Persistence
-│   ├── Database
+├── Persistence/
+│   ├── Database/
 │   │   ├── ApplicationDbContext.cs
 │   │   │
-│   │   ├── Configurations
+│   │   ├── Configurations/
 │   │   │   ├── OutboxMessageConfiguration.cs
 │   │   │   ├── UserConfiguration.cs
 │   │   │   └── ...
-│   │   ├── Entities
+│   │   ├── Entities/
 │   │   │   ├── OutboxMessage.cs
 │   │   │   └── ...
-│   │   └── Migrations
+│   │   └── Migrations/
 │   │       └── ...
-│   ├── Repositories
+│   ├── Repositories/
 │   │   ├── UnitWork.cs
 │   │   ├── ...
 │   │   └── UserRepository.cs
 │   │
 │   └── DependencyInjection.cs
 │
-├── Storage
+├── Storage/
 │   ├── DependencyInjection.cs
 │   ├── ...
 │   └── LocalFileStorage.cs
 │
-├── Time
+├── Time/
 │   ├── DateTimeProvider.cs
 │   ├── ...
 │   └── DependencyInjection.cs
 │
-├── Workers
+├── Workers/
 │   ├── DependencyInjection.cs
 │   ├── ...
 │   ├── OutboxWorker.cs

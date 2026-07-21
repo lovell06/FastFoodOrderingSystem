@@ -7,11 +7,12 @@ Architecture: Modular monolith (Clean architecture + DDD + CQRS)
 Design pattern: 
 - Repository Pattern
 - Decorator Pattern
+- Mediator Pattern
 - Outbox Pattern
 - Observer Pattern
 - Facade Pattern (Dependency injection composition)
 
-## Compile-time Dependencies between layers
+## Compile-time Dependencies betweXen layers
 ```
                 
 

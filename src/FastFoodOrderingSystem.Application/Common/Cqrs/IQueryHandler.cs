@@ -1,3 +1,4 @@
 namespace FastFoodOrderingSystem.Application.Common.Cqrs;
 
-public interface IQueryHandler<TQuery, TResult> : IHandler<TQuery, TResult> where TQuery : IQuery;
+public interface IQueryHandler<in TQuery, TResult> 
+    : IHandler<TQuery, TResult> where TQuery : IQuery<TResult>;

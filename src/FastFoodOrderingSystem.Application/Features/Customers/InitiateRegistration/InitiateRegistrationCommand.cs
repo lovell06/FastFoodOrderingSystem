@@ -5,4 +5,4 @@ namespace FastFoodOrderingSystem.Application.Features.Customers.InitiateRegistra
 public sealed record InitiateRegistrationCommand(string FullName,
     string Email,
     string Password,
-    string PhoneNumber) : ICommand;
+    string PhoneNumber) : ICommand<Unit>;
