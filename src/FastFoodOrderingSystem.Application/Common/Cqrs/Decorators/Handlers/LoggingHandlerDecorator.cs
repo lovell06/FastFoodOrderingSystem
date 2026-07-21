@@ -1,17 +1,18 @@
+using FastFoodOrderingSystem.Application.Common.Results;
 using Microsoft.Extensions.Logging;
 
 namespace FastFoodOrderingSystem.Application.Common.Cqrs.Decorators.Handlers;
 
-public class LoggingHandlerDecorator<TRequest, TResult> : HandlerDecorator<TRequest, TResult>
+public class LoggingHandlerDecorator<TRequest, TResponse> : HandlerDecorator<TRequest, TResponse>
 {
-    private readonly ILogger<LoggingHandlerDecorator<TRequest, TResult>> _logger;
+    private readonly ILogger<LoggingHandlerDecorator<TRequest, TResponse>> _logger;
     public LoggingHandlerDecorator(
-        IHandler<TRequest, TResult> handler, ILogger<LoggingHandlerDecorator<TRequest, TResult>> logger) : base(handler)
+        IHandler<TRequest, TResponse> handler, ILogger<LoggingHandlerDecorator<TRequest, TResponse>> logger) : base(handler)
     {
         _logger = logger;
     }
 
-    public override async Task<TResult> HandleAsync(TRequest request, CancellationToken cancellationToken)
+    public override async Task<Result<TResponse>> HandleAsync(TRequest request, CancellationToken cancellationToken)
     {
         _logger.LogInformation($"Handling {typeof(TRequest).Name}...");
 

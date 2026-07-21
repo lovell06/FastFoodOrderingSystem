@@ -3,7 +3,7 @@ using FastFoodOrderingSystem.Application.Common.Results;
 
 namespace FastFoodOrderingSystem.Application.Features.Users.GetProfile;
 
-public class GetProfileHandler : IHandler<GetProfileQuery, Result<GetProfileResponse>>
+public class GetProfileHandler : IQueryHandler<GetProfileQuery, GetProfileResponse>
 {
     public Task<Result<GetProfileResponse>> HandleAsync(GetProfileQuery request, CancellationToken cancellationToken)
     {

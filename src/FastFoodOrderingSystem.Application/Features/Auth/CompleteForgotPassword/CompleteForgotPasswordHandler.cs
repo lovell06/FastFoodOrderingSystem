@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FastFoodOrderingSystem.Application.Features.Auth.CompleteForgotPassword;
 
-public class CompleteForgotPasswordHandler : IHandler<CompleteForgotPasswordCommand, Result<Unit>>
+public class CompleteForgotPasswordHandler : IHandler<CompleteForgotPasswordCommand, Unit>
 {
     private readonly IForgotPasswordOtpStore _forgotPasswordOtpStore;
     private readonly ILogger<CompleteForgotPasswordHandler> _logger;

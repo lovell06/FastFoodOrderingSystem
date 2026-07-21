@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FastFoodOrderingSystem.Application.Features.Customers.CompleteRegistration;
 
-public sealed class CompleteRegistrationHandler : ICommandHandler<CompleteRegistrationCommand, Result<Unit>>
+public sealed class CompleteRegistrationHandler : ICommandHandler<CompleteRegistrationCommand, Unit>
 {
     private readonly IPendingRegistrationStore _pendingRegistrationStore;
     private readonly IUserRepository _userRepository;

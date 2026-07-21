@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FastFoodOrderingSystem.Application.Features.Auth.Login;
 
-public class LoginHandler : ICommandHandler<LoginCommand, Result<LoginResponse>>
+public class LoginHandler : ICommandHandler<LoginCommand, LoginResponse>
 {
     private readonly IUserRepository _userRepository;
     private readonly ILogger<LoginHandler> _logger;

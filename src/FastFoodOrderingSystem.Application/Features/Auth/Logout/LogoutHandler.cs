@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FastFoodOrderingSystem.Application.Features.Auth.Logout;
 
-public sealed class LogoutHandler : ICommandHandler<LogoutCommand, Result<Unit>>
+public sealed class LogoutHandler : ICommandHandler<LogoutCommand, Unit>
 {
     private readonly IRefreshTokenStore _refreshTokenStore;
     private readonly ILogger<LogoutHandler> _logger;

@@ -21,20 +21,20 @@ internal static class DependencyInjection
         services.AddScoped<LoginHandler>();
         services.AddScoped(sp =>
         {
-            IHandler<LoginCommand, Result<LoginResponse>> handler = sp.GetRequiredService<LoginHandler>();
+            IHandler<LoginCommand, LoginResponse> handler = sp.GetRequiredService<LoginHandler>();
 
-            handler = new TransactionCommandDecorator<LoginCommand, Result<LoginResponse>>(
+            handler = new TransactionCommandDecorator<LoginCommand, LoginResponse>(
                 handler,
                 sp.GetRequiredService<IUnitWork>(),
-                sp.GetRequiredService<ILogger<TransactionCommandDecorator<LoginCommand, Result<LoginResponse>>>>());
+                sp.GetRequiredService<ILogger<TransactionCommandDecorator<LoginCommand, LoginResponse>>>());
 
-            handler = new PerformanceHandlerDecorator<LoginCommand, Result<LoginResponse>>(
+            handler = new PerformanceHandlerDecorator<LoginCommand, LoginResponse>(
                 handler,
-                sp.GetRequiredService<ILogger<PerformanceHandlerDecorator<LoginCommand, Result<LoginResponse>>>>());
+                sp.GetRequiredService<ILogger<PerformanceHandlerDecorator<LoginCommand, LoginResponse>>>());
 
-            handler = new LoggingHandlerDecorator<LoginCommand, Result<LoginResponse>>(
+            handler = new LoggingHandlerDecorator<LoginCommand, LoginResponse>(
                 handler,
-                sp.GetRequiredService<ILogger<LoggingHandlerDecorator<LoginCommand, Result<LoginResponse>>>>());
+                sp.GetRequiredService<ILogger<LoggingHandlerDecorator<LoginCommand, LoginResponse>>>());
 
             return handler;
         });
@@ -42,20 +42,20 @@ internal static class DependencyInjection
         services.AddScoped<LogoutHandler>();
         services.AddScoped(sp =>
         {
-            IHandler<LogoutCommand, Result<Unit>> handler = sp.GetRequiredService<LogoutHandler>();
+            IHandler<LogoutCommand, Unit> handler = sp.GetRequiredService<LogoutHandler>();
 
-            handler = new TransactionCommandDecorator<LogoutCommand, Result<Unit>>(
+            handler = new TransactionCommandDecorator<LogoutCommand, Unit>(
                 handler,
                 sp.GetRequiredService<IUnitWork>(),
-                sp.GetRequiredService<ILogger<TransactionCommandDecorator<LogoutCommand, Result<Unit>>>>());
+                sp.GetRequiredService<ILogger<TransactionCommandDecorator<LogoutCommand, Unit>>>());
 
-            handler = new PerformanceHandlerDecorator<LogoutCommand, Result<Unit>>(
+            handler = new PerformanceHandlerDecorator<LogoutCommand, Unit>(
                 handler,
-                sp.GetRequiredService<ILogger<PerformanceHandlerDecorator<LogoutCommand, Result<Unit>>>>());
+                sp.GetRequiredService<ILogger<PerformanceHandlerDecorator<LogoutCommand, Unit>>>());
 
-            handler = new LoggingHandlerDecorator<LogoutCommand, Result<Unit>>(
+            handler = new LoggingHandlerDecorator<LogoutCommand, Unit>(
                 handler,
-                sp.GetRequiredService<ILogger<LoggingHandlerDecorator<LogoutCommand, Result<Unit>>>>());
+                sp.GetRequiredService<ILogger<LoggingHandlerDecorator<LogoutCommand, Unit>>>());
 
             return handler;
         });
@@ -63,21 +63,21 @@ internal static class DependencyInjection
         services.AddScoped<RefreshTokenHandler>();
         services.AddScoped(sp =>
         {
-            IHandler<RefreshTokenCommand, Result<RefreshTokenResponse>> handler =
+            IHandler<RefreshTokenCommand, RefreshTokenResponse> handler =
                 sp.GetRequiredService<RefreshTokenHandler>();
 
-            handler = new TransactionCommandDecorator<RefreshTokenCommand, Result<RefreshTokenResponse>>(
+            handler = new TransactionCommandDecorator<RefreshTokenCommand, RefreshTokenResponse>(
                 handler,
                 sp.GetRequiredService<IUnitWork>(),
-                sp.GetRequiredService<ILogger<TransactionCommandDecorator<RefreshTokenCommand, Result<RefreshTokenResponse>>>>());
+                sp.GetRequiredService<ILogger<TransactionCommandDecorator<RefreshTokenCommand, RefreshTokenResponse>>>());
 
-            handler = new PerformanceHandlerDecorator<RefreshTokenCommand, Result<RefreshTokenResponse>>(
+            handler = new PerformanceHandlerDecorator<RefreshTokenCommand, RefreshTokenResponse>(
                 handler,
-                sp.GetRequiredService<ILogger<PerformanceHandlerDecorator<RefreshTokenCommand, Result<RefreshTokenResponse>>>>());
+                sp.GetRequiredService<ILogger<PerformanceHandlerDecorator<RefreshTokenCommand, RefreshTokenResponse>>>());
 
-            handler = new LoggingHandlerDecorator<RefreshTokenCommand, Result<RefreshTokenResponse>>(
+            handler = new LoggingHandlerDecorator<RefreshTokenCommand, RefreshTokenResponse>(
                 handler,
-                sp.GetRequiredService<ILogger<LoggingHandlerDecorator<RefreshTokenCommand, Result<RefreshTokenResponse>>>>());
+                sp.GetRequiredService<ILogger<LoggingHandlerDecorator<RefreshTokenCommand, RefreshTokenResponse>>>());
 
             return handler;
         });
@@ -85,21 +85,21 @@ internal static class DependencyInjection
         services.AddScoped<InitiateForgotPasswordHandler>();
         services.AddScoped(sp =>
         {
-            IHandler<InitiateForgotPasswordCommand, Result<Unit>> handler =
+            IHandler<InitiateForgotPasswordCommand, Unit> handler =
                 sp.GetRequiredService<InitiateForgotPasswordHandler>();
 
-            handler = new TransactionCommandDecorator<InitiateForgotPasswordCommand, Result<Unit>>(
+            handler = new TransactionCommandDecorator<InitiateForgotPasswordCommand, Unit>(
                 handler,
                 sp.GetRequiredService<IUnitWork>(),
-                sp.GetRequiredService<ILogger<TransactionCommandDecorator<InitiateForgotPasswordCommand, Result<Unit>>>>());
+                sp.GetRequiredService<ILogger<TransactionCommandDecorator<InitiateForgotPasswordCommand, Unit>>>());
 
-            handler = new PerformanceHandlerDecorator<InitiateForgotPasswordCommand, Result<Unit>>(
+            handler = new PerformanceHandlerDecorator<InitiateForgotPasswordCommand, Unit>(
                 handler,
-                sp.GetRequiredService<ILogger<PerformanceHandlerDecorator<InitiateForgotPasswordCommand, Result<Unit>>>>());
+                sp.GetRequiredService<ILogger<PerformanceHandlerDecorator<InitiateForgotPasswordCommand, Unit>>>());
 
-            handler = new LoggingHandlerDecorator<InitiateForgotPasswordCommand, Result<Unit>>(
+            handler = new LoggingHandlerDecorator<InitiateForgotPasswordCommand, Unit>(
                 handler,
-                sp.GetRequiredService<ILogger<LoggingHandlerDecorator<InitiateForgotPasswordCommand, Result<Unit>>>>());
+                sp.GetRequiredService<ILogger<LoggingHandlerDecorator<InitiateForgotPasswordCommand, Unit>>>());
 
             return handler;
         });
@@ -107,21 +107,21 @@ internal static class DependencyInjection
         services.AddScoped<CompleteForgotPasswordHandler>();
         services.AddScoped(sp =>
         {
-            IHandler<CompleteForgotPasswordCommand, Result<Unit>> handler =
+            IHandler<CompleteForgotPasswordCommand, Unit> handler =
                 sp.GetRequiredService<CompleteForgotPasswordHandler>();
 
-            handler = new TransactionCommandDecorator<CompleteForgotPasswordCommand, Result<Unit>>(
+            handler = new TransactionCommandDecorator<CompleteForgotPasswordCommand, Unit>(
                 handler,
                 sp.GetRequiredService<IUnitWork>(),
-                sp.GetRequiredService<ILogger<TransactionCommandDecorator<CompleteForgotPasswordCommand, Result<Unit>>>>());
+                sp.GetRequiredService<ILogger<TransactionCommandDecorator<CompleteForgotPasswordCommand, Unit>>>());
 
-            handler = new PerformanceHandlerDecorator<CompleteForgotPasswordCommand, Result<Unit>>(
+            handler = new PerformanceHandlerDecorator<CompleteForgotPasswordCommand, Unit>(
                 handler,
-                sp.GetRequiredService<ILogger<PerformanceHandlerDecorator<CompleteForgotPasswordCommand, Result<Unit>>>>());
+                sp.GetRequiredService<ILogger<PerformanceHandlerDecorator<CompleteForgotPasswordCommand, Unit>>>());
 
-            handler = new LoggingHandlerDecorator<CompleteForgotPasswordCommand, Result<Unit>>(
+            handler = new LoggingHandlerDecorator<CompleteForgotPasswordCommand, Unit>(
                 handler,
-                sp.GetRequiredService<ILogger<LoggingHandlerDecorator<CompleteForgotPasswordCommand, Result<Unit>>>>());
+                sp.GetRequiredService<ILogger<LoggingHandlerDecorator<CompleteForgotPasswordCommand, Unit>>>());
 
             return handler;
         });
@@ -129,20 +129,20 @@ internal static class DependencyInjection
         services.AddScoped<ChangePasswordHandler>();
         services.AddScoped(sp =>
         {
-            IHandler<ChangePasswordCommand, Result<Unit>> handler = sp.GetRequiredService<ChangePasswordHandler>();
+            IHandler<ChangePasswordCommand, Unit> handler = sp.GetRequiredService<ChangePasswordHandler>();
 
-            handler = new TransactionCommandDecorator<ChangePasswordCommand, Result<Unit>>(
+            handler = new TransactionCommandDecorator<ChangePasswordCommand, Unit>(
                 handler,
                 sp.GetRequiredService<IUnitWork>(),
-                sp.GetRequiredService<ILogger<TransactionCommandDecorator<ChangePasswordCommand, Result<Unit>>>>());
+                sp.GetRequiredService<ILogger<TransactionCommandDecorator<ChangePasswordCommand, Unit>>>());
 
-            handler = new PerformanceHandlerDecorator<ChangePasswordCommand, Result<Unit>>(
+            handler = new PerformanceHandlerDecorator<ChangePasswordCommand, Unit>(
                 handler,
-                sp.GetRequiredService<ILogger<PerformanceHandlerDecorator<ChangePasswordCommand, Result<Unit>>>>());
+                sp.GetRequiredService<ILogger<PerformanceHandlerDecorator<ChangePasswordCommand, Unit>>>());
 
-            handler = new LoggingHandlerDecorator<ChangePasswordCommand, Result<Unit>>(
+            handler = new LoggingHandlerDecorator<ChangePasswordCommand, Unit>(
                 handler,
-                sp.GetRequiredService<ILogger<LoggingHandlerDecorator<ChangePasswordCommand, Result<Unit>>>>());
+                sp.GetRequiredService<ILogger<LoggingHandlerDecorator<ChangePasswordCommand, Unit>>>());
 
             return handler;
         });

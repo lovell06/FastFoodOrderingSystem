@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FastFoodOrderingSystem.Application.Features.Auth.InitiateForgotPassword;
 
-public sealed class InitiateForgotPasswordHandler : IHandler<InitiateForgotPasswordCommand, Result<Unit>>
+public sealed class InitiateForgotPasswordHandler : IHandler<InitiateForgotPasswordCommand, Unit>
 {
     private readonly IUserRepository _userRepository;
     private readonly IEmailSender _emailSender;

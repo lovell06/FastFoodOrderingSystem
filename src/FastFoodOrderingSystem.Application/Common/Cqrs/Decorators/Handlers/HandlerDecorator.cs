@@ -1,11 +1,13 @@
+using FastFoodOrderingSystem.Application.Common.Results;
+
 namespace FastFoodOrderingSystem.Application.Common.Cqrs.Decorators.Handlers;
 
-public abstract class HandlerDecorator<TRequest, TResult> : IHandler<TRequest, TResult>
+public abstract class HandlerDecorator<TRequest, TResponse> : IHandler<TRequest, TResponse>
 {
-    protected readonly IHandler<TRequest, TResult> Handler;
-    protected HandlerDecorator(IHandler<TRequest, TResult> handler)
+    protected readonly IHandler<TRequest, TResponse> Handler;
+    protected HandlerDecorator(IHandler<TRequest, TResponse> handler)
     {
         Handler = handler;
     }
-    public abstract Task<TResult> HandleAsync(TRequest request, CancellationToken cancellationToken);
+    public abstract Task<Result<TResponse>> HandleAsync(TRequest request, CancellationToken cancellationToken);
 }

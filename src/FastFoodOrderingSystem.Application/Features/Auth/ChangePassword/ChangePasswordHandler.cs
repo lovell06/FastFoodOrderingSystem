@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FastFoodOrderingSystem.Application.Features.Auth.ChangePassword;
 
-public sealed class ChangePasswordHandler : IHandler<ChangePasswordCommand, Result<Unit>>
+public sealed class ChangePasswordHandler : IHandler<ChangePasswordCommand, Unit>
 {
     private readonly IDateTimeProvider _clock;
     private readonly ILogger<ChangePasswordHandler> _logger;

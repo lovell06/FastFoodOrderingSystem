@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FastFoodOrderingSystem.Application.Features.Auth.Refresh;
 
-public sealed class RefreshTokenHandler : IHandler<RefreshTokenCommand, Result<RefreshTokenResponse>>
+public sealed class RefreshTokenHandler : IHandler<RefreshTokenCommand, RefreshTokenResponse>
 {
     private readonly IRefreshTokenStore _refreshTokenStore;
     private readonly ILogger<RefreshTokenHandler> _logger;

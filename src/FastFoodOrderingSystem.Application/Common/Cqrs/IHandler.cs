@@ -1,6 +1,8 @@
+using FastFoodOrderingSystem.Application.Common.Results;
+
 namespace FastFoodOrderingSystem.Application.Common.Cqrs;
 
-public interface IHandler<TRequest, TResult>
+public interface IHandler<TRequest, TResponse>
 {
-    public Task<TResult> HandleAsync(TRequest request, CancellationToken cancellationToken);
+    public Task<Result<TResponse>> HandleAsync(TRequest request, CancellationToken cancellationToken);
 }

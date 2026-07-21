@@ -1,16 +1,17 @@
 using System.Diagnostics;
+using FastFoodOrderingSystem.Application.Common.Results;
 using Microsoft.Extensions.Logging;
 
 namespace FastFoodOrderingSystem.Application.Common.Cqrs.Decorators.Handlers;
 
-public sealed class PerformanceHandlerDecorator<TRequest, TResult> : HandlerDecorator<TRequest, TResult>
+public sealed class PerformanceHandlerDecorator<TRequest, TResponse> : HandlerDecorator<TRequest, TResponse>
 {
-    private readonly ILogger<PerformanceHandlerDecorator<TRequest, TResult>> _logger;
-    public PerformanceHandlerDecorator(IHandler<TRequest, TResult> handler, ILogger<PerformanceHandlerDecorator<TRequest, TResult>> logger) : base(handler)
+    private readonly ILogger<PerformanceHandlerDecorator<TRequest, TResponse>> _logger;
+    public PerformanceHandlerDecorator(IHandler<TRequest, TResponse> handler, ILogger<PerformanceHandlerDecorator<TRequest, TResponse>> logger) : base(handler)
     {
         _logger = logger;
     }
-    public override async Task<TResult> HandleAsync(TRequest request, CancellationToken cancellationToken)
+    public override async Task<Result<TResponse>> HandleAsync(TRequest request, CancellationToken cancellationToken)
     {
         var sw = new Stopwatch();
         try

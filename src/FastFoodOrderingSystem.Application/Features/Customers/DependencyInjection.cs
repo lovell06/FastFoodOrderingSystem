@@ -17,18 +17,18 @@ internal static class DependencyInjection
         services.AddScoped<InitiateRegistrationHandler>();
         services.AddScoped(sp =>
         {
-            IHandler<InitiateRegistrationCommand, Result<Unit>> handler = sp.GetRequiredService<InitiateRegistrationHandler>();
+            IHandler<InitiateRegistrationCommand, Unit> handler = sp.GetRequiredService<InitiateRegistrationHandler>();
 
-            handler = new TransactionCommandDecorator<InitiateRegistrationCommand, Result<Unit>>(
+            handler = new TransactionCommandDecorator<InitiateRegistrationCommand, Unit>(
                 handler,
                 sp.GetRequiredService<IUnitWork>(),
-                sp.GetRequiredService<ILogger<TransactionCommandDecorator<InitiateRegistrationCommand, Result<Unit>>>>());
-            handler = new PerformanceHandlerDecorator<InitiateRegistrationCommand, Result<Unit>>(
+                sp.GetRequiredService<ILogger<TransactionCommandDecorator<InitiateRegistrationCommand, Unit>>>());
+            handler = new PerformanceHandlerDecorator<InitiateRegistrationCommand, Unit>(
                 handler,
-                sp.GetRequiredService<ILogger<PerformanceHandlerDecorator<InitiateRegistrationCommand, Result<Unit>>>>());
-            handler = new LoggingHandlerDecorator<InitiateRegistrationCommand, Result<Unit>>(
+                sp.GetRequiredService<ILogger<PerformanceHandlerDecorator<InitiateRegistrationCommand, Unit>>>());
+            handler = new LoggingHandlerDecorator<InitiateRegistrationCommand, Unit>(
                 handler,
-                sp.GetRequiredService<ILogger<LoggingHandlerDecorator<InitiateRegistrationCommand, Result<Unit>>>>());
+                sp.GetRequiredService<ILogger<LoggingHandlerDecorator<InitiateRegistrationCommand, Unit>>>());
 
             return handler;
         });
@@ -36,18 +36,18 @@ internal static class DependencyInjection
         services.AddScoped<CompleteRegistrationHandler>();
         services.AddScoped(sp =>
         {
-            IHandler<CompleteRegistrationCommand, Result<Unit>> handler = sp.GetRequiredService<CompleteRegistrationHandler>();
+            IHandler<CompleteRegistrationCommand, Unit> handler = sp.GetRequiredService<CompleteRegistrationHandler>();
 
-            handler = new TransactionCommandDecorator<CompleteRegistrationCommand, Result<Unit>>(
+            handler = new TransactionCommandDecorator<CompleteRegistrationCommand, Unit>(
                 handler,
                 sp.GetRequiredService<IUnitWork>(),
-                sp.GetRequiredService<ILogger<TransactionCommandDecorator<CompleteRegistrationCommand, Result<Unit>>>>());
-            handler = new PerformanceHandlerDecorator<CompleteRegistrationCommand, Result<Unit>>(
+                sp.GetRequiredService<ILogger<TransactionCommandDecorator<CompleteRegistrationCommand, Unit>>>());
+            handler = new PerformanceHandlerDecorator<CompleteRegistrationCommand, Unit>(
                 handler,
-                sp.GetRequiredService<ILogger<PerformanceHandlerDecorator<CompleteRegistrationCommand, Result<Unit>>>>());
-            handler = new LoggingHandlerDecorator<CompleteRegistrationCommand, Result<Unit>>(
+                sp.GetRequiredService<ILogger<PerformanceHandlerDecorator<CompleteRegistrationCommand, Unit>>>());
+            handler = new LoggingHandlerDecorator<CompleteRegistrationCommand, Unit>(
                 handler,
-                sp.GetRequiredService<ILogger<LoggingHandlerDecorator<CompleteRegistrationCommand, Result<Unit>>>>());
+                sp.GetRequiredService<ILogger<LoggingHandlerDecorator<CompleteRegistrationCommand, Unit>>>());
 
             return handler;
         });

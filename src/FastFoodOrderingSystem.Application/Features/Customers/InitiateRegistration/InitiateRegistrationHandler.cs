@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FastFoodOrderingSystem.Application.Features.Customers.InitiateRegistration;
 
-public sealed class InitiateRegistrationHandler : ICommandHandler<InitiateRegistrationCommand, Result<Unit>>
+public sealed class InitiateRegistrationHandler : ICommandHandler<InitiateRegistrationCommand, Unit>
 {
     private readonly IUserRepository _userRepository;
     private readonly IPendingRegistrationStore _pendingRegistrationStore;

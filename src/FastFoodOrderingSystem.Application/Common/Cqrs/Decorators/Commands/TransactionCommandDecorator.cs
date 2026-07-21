@@ -1,22 +1,23 @@
 using FastFoodOrderingSystem.Application.Abstractions.Persistence;
+using FastFoodOrderingSystem.Application.Common.Results;
 using FastFoodOrderingSystem.Domain.Common.Abstractions;
 using Microsoft.Extensions.Logging;
 
 namespace FastFoodOrderingSystem.Application.Common.Cqrs.Decorators.Commands;
 
-public class TransactionCommandDecorator<TCommand, TResult> : CommandHandlerDecorator<TCommand, TResult>
+public class TransactionCommandDecorator<TCommand, TResponse> : CommandHandlerDecorator<TCommand, TResponse>
 {
     private readonly IUnitWork _unitWork;
-    private readonly ILogger<TransactionCommandDecorator<TCommand, TResult>> _logger;
+    private readonly ILogger<TransactionCommandDecorator<TCommand, TResponse>> _logger;
     public TransactionCommandDecorator(
-        IHandler<TCommand, TResult> handler,
+        IHandler<TCommand, TResponse> handler,
         IUnitWork unitWork, 
-        ILogger<TransactionCommandDecorator<TCommand, TResult>> logger) : base(handler)
+        ILogger<TransactionCommandDecorator<TCommand, TResponse>> logger) : base(handler)
     {
         _unitWork = unitWork;
         _logger = logger;
     }
-    public override async Task<TResult> HandleAsync(TCommand command, CancellationToken cancellationToken)
+    public override async Task<Result<TResponse>> HandleAsync(TCommand command, CancellationToken cancellationToken)
     {
         try
         {

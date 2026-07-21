@@ -1,12 +1,14 @@
+using FastFoodOrderingSystem.Application.Common.Results;
+
 namespace FastFoodOrderingSystem.Application.Common.Cqrs.Decorators.Commands;
 
-public abstract class CommandHandlerDecorator<TCommand, TResult> : ICommandHandler<TCommand, TResult>
+public abstract class CommandHandlerDecorator<TCommand, TResponse> : ICommandHandler<TCommand, TResponse>
 {
-    protected readonly IHandler<TCommand, TResult> Handler;
+    protected readonly IHandler<TCommand, TResponse> Handler;
 
-    public CommandHandlerDecorator(IHandler<TCommand, TResult> handler)
+    public CommandHandlerDecorator(IHandler<TCommand, TResponse> handler)
     {
         Handler = handler;
     }
-    public abstract Task<TResult> HandleAsync(TCommand command, CancellationToken cancellationToken);
+    public abstract Task<Result<TResponse>> HandleAsync(TCommand command, CancellationToken cancellationToken);
 }
