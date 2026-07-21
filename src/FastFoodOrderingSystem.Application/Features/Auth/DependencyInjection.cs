@@ -2,7 +2,6 @@ using FastFoodOrderingSystem.Application.Abstractions.Persistence;
 using FastFoodOrderingSystem.Application.Common.Cqrs;
 using FastFoodOrderingSystem.Application.Common.Cqrs.Decorators.Commands;
 using FastFoodOrderingSystem.Application.Common.Cqrs.Decorators.Handlers;
-using FastFoodOrderingSystem.Application.Common.Results;
 using FastFoodOrderingSystem.Application.Features.Auth.ChangePassword;
 using FastFoodOrderingSystem.Application.Features.Auth.CompleteForgotPassword;
 using FastFoodOrderingSystem.Application.Features.Auth.InitiateForgotPassword;

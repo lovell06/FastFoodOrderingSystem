@@ -2,7 +2,8 @@ using FastFoodOrderingSystem.Application.Common.Results;
 
 namespace FastFoodOrderingSystem.Application.Common.Cqrs.Decorators.Queries;
 
-public abstract class QueryHandlerDecorator<TQuery, TResponse> : IQueryHandler<TQuery, TResponse>
+public abstract class QueryHandlerDecorator<TQuery, TResponse> 
+    : IQueryHandler<TQuery, TResponse> where TQuery : IQuery
 {
     protected readonly IHandler<TQuery, TResponse> Handler;
 
