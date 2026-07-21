@@ -5,5 +5,8 @@
     <Project Path="src/FastFoodOrderingSystem.Domain/FastFoodOrderingSystem.Domain.csproj" />
     <Project Path="src/FastFoodOrderingSystem.Infrastructure/FastFoodOrderingSystem.Infrastructure.csproj" />
   </Folder>
-  <Folder Name="/test/" />
+  <Folder Name="/test/">
+    <Project Path="test/FastFoodOrderingSystem.Application.Tests/FastFoodOrderingSystem.Application.Tests.csproj" />
+    <Project Path="test/FastFoodOrderingSystem.Domain.Tests/FastFoodOrderingSystem.Domain.Tests.csproj" />
+  </Folder>
 </Solution>
