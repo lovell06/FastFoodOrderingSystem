@@ -52,7 +52,9 @@ dotnet user-secrets set "EmailOption:Password" "your-password" --project src/*.A
 
 #### Migration Command
 ```bash
-dotnet ef database update --project src/*.Infrastructure/*.csproj
+dotnet ef database update \
+--project src/*.Infrastructure/*.csproj \
+--startup-project src/*.Api/*.csproj
 ```
 
 #### Cache Service Command (This project use Redis, Ensure redis server is installed)
