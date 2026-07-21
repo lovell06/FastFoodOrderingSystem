@@ -8,6 +8,20 @@ Architecture: Modular monolith (Clean architecture + DDD + CQRS)
 
 Design pattern: Repository Pattern, Decorator Pattern
 
+## Compile-time Dependencies between layers
+```
+                
+
+Api ───────────────► Application ───────────────► Domain
+                             ▲
+                             │
+                  implemented by
+                             │
+                      Infrastructure
+                             │
+                             └──────────────► Domain
+```
+
 ## Implementation
 
 #### Required dotnet sdk 10.0

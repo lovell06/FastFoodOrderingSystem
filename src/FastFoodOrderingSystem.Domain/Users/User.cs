@@ -89,7 +89,7 @@ public class User : AggregateRoot<Guid>
             role: UserRole.Customer,
             createdAt: createdAt);
         
-        user.RegisterDomainEvent(new UserRegisteredDomainEvent
+        user.PublishDomainEvent(new UserRegisteredDomainEvent
         {
             OccurredAtUtc = createdAt,
             UserEmail = user.Email,

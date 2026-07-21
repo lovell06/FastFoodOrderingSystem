@@ -13,7 +13,7 @@ public abstract class AggregateRoot<TId> : Entity<TId>, IHasDomainEvent
     {
     }
 
-    public void RegisterDomainEvent(IDomainEvent domainEvent)
+    public void PublishDomainEvent(IDomainEvent domainEvent)
     {
         _domainEvents.Add(domainEvent);
     }
