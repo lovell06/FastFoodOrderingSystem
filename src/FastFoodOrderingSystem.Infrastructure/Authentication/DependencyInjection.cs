@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FastFoodOrderingSystem.Infrastructure.Authentication;
 
-public static class DependencyInjection
+internal static class DependencyInjection
 {
     public static IServiceCollection AddAuthenticationServices(this IServiceCollection services)
     {

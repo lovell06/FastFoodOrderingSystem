@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FastFoodOrderingSystem.Infrastructure.Time;
 
-public static class DependencyInjection
+internal static class DependencyInjection
 {
     public static IServiceCollection AddDateTimeProvider(this IServiceCollection services)
     {

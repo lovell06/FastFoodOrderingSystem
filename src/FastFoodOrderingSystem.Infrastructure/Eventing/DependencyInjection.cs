@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FastFoodOrderingSystem.Infrastructure.Eventing;
 
-public static class DependencyInjection
+internal static class DependencyInjection
 {
     public static IServiceCollection AddEventsDispatcher(this IServiceCollection services)
     {

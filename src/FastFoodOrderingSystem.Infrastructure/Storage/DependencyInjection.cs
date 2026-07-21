@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FastFoodOrderingSystem.Infrastructure.Storage;
 
-public static class DependencyInjection
+internal static class DependencyInjection
 {
     public static IServiceCollection AddStorageServices(this IServiceCollection services)
     {

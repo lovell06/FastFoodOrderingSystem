@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FastFoodOrderingSystem.Infrastructure.Emails;
 
-public static class DependencyInjection
+internal static class DependencyInjection
 {
     public static IServiceCollection AddEmailServices(this IServiceCollection services)
     {

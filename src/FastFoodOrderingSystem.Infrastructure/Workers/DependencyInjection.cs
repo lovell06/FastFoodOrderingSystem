@@ -2,7 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FastFoodOrderingSystem.Infrastructure.Workers;
 
-public static class DependencyInjection
+internal static class DependencyInjection
 {
     public static IServiceCollection AddWorkers(this IServiceCollection services)
     {

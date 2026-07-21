@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FastFoodOrderingSystem.Application.Features.Auth;
 
-public static class DependencyInjection
+internal static class DependencyInjection
 {
     public static IServiceCollection AddAuthenticationHandlers(this IServiceCollection services)
     {

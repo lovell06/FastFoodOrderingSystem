@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FastFoodOrderingSystem.Application.Features.Customers;
 
-public static class DependencyInjection
+internal static class DependencyInjection
 {
     public static IServiceCollection AddCustomerHandlers(this IServiceCollection services)
     {

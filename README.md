@@ -1,12 +1,15 @@
 # Fast Food Ordering System
 
-
-
 ## Architecture
 
 Architecture: Modular monolith (Clean architecture + DDD + CQRS)
 
-Design pattern: Repository Pattern, Decorator Pattern, Outbox Pattern, Observer Pattern
+Design pattern: 
+- Repository Pattern
+- Decorator Pattern
+- Outbox Pattern
+- Observer Pattern
+- Facade Pattern (Dependency injection composition)
 
 ## Compile-time Dependencies between layers
 ```

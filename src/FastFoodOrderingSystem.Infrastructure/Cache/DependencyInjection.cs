@@ -12,7 +12,7 @@ using StackExchange.Redis;
 
 namespace FastFoodOrderingSystem.Infrastructure.Cache;
 
-public static class DependencyInjection
+internal static class DependencyInjection
 {
     public static IServiceCollection AddCacheService(this IServiceCollection services)
     {

@@ -1,5 +1,6 @@
 using FastFoodOrderingSystem.Application.Features.Auth;
 using FastFoodOrderingSystem.Application.Features.Customers;
+using FastFoodOrderingSystem.Application.Features.Users;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FastFoodOrderingSystem.Application;
@@ -10,6 +11,7 @@ public static class DependencyInjection
     {
         services.AddAuthenticationHandlers();
         services.AddCustomerHandlers();
+        services.AddUserHandlers();
         return services;
     }
 }

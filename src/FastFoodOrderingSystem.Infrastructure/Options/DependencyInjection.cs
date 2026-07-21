@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FastFoodOrderingSystem.Infrastructure.Options;
 
-public static class DependencyInjection
+internal static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructureOptions(this IServiceCollection services, IConfiguration configuration)
     {
