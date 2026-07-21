@@ -5,8 +5,8 @@ namespace FastFoodOrderingSystem.Application.Common.Cqrs.Decorators.Handlers;
 
 public sealed class PerformanceHandlerDecorator<TRequest, TResult> : HandlerDecorator<TRequest, TResult>
 {
-    private readonly ILogger<IHandler<TRequest, TResult>> _logger;
-    public PerformanceHandlerDecorator(IHandler<TRequest, TResult> handler, ILogger<IHandler<TRequest, TResult>> logger) : base(handler)
+    private readonly ILogger<PerformanceHandlerDecorator<TRequest, TResult>> _logger;
+    public PerformanceHandlerDecorator(IHandler<TRequest, TResult> handler, ILogger<PerformanceHandlerDecorator<TRequest, TResult>> logger) : base(handler)
     {
         _logger = logger;
     }

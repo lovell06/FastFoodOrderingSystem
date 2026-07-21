@@ -6,7 +6,6 @@ using FastFoodOrderingSystem.Application.Abstractions.Time;
 using FastFoodOrderingSystem.Application.Common.Cqrs;
 using FastFoodOrderingSystem.Application.Common.Results;
 using FastFoodOrderingSystem.Application.Features.Auth.Login.Dtos;
-using FastFoodOrderingSystem.Domain.RefreshTokens;
 using FastFoodOrderingSystem.Domain.Users.ValueObjects;
 using Microsoft.Extensions.Logging;
 
@@ -19,7 +18,7 @@ public class LoginHandler : ICommandHandler<LoginCommand, Result<LoginResponse>>
     private readonly IDateTimeProvider _clock;
     private readonly IPasswordHashService _passwordHashService;
     private readonly IAccessTokenProvider _accessTokenProvider;
-    private readonly IRefreshTokenGenerator _refreshToken;
+    private readonly IRefreshTokenGenerator _refreshTokenGenerator;
     private readonly IRefreshTokenStore _refreshTokenStore;
     private readonly IRefreshTokenConfiguration _refreshTokenConfiguration;
 
@@ -29,7 +28,7 @@ public class LoginHandler : ICommandHandler<LoginCommand, Result<LoginResponse>>
         IDateTimeProvider dateTimeProvider,
         IPasswordHashService passwordHashService,
         IAccessTokenProvider jwtProvider,
-        IRefreshTokenGenerator refreshToken,
+        IRefreshTokenGenerator refreshTokenGenerator,
         IRefreshTokenStore refreshTokenStore,
         IRefreshTokenConfiguration refreshTokenConfiguration)
     {
@@ -38,7 +37,7 @@ public class LoginHandler : ICommandHandler<LoginCommand, Result<LoginResponse>>
         _clock = dateTimeProvider;
         _passwordHashService = passwordHashService;
         _accessTokenProvider = jwtProvider;
-        _refreshToken = refreshToken;
+        _refreshTokenGenerator = refreshTokenGenerator;
         _refreshTokenStore = refreshTokenStore;
         _refreshTokenConfiguration = refreshTokenConfiguration;
     }
@@ -84,25 +83,28 @@ public class LoginHandler : ICommandHandler<LoginCommand, Result<LoginResponse>>
 
         var refreshToken = RefreshToken.Create(
             userId: user.Id,
-            token: _refreshToken.Generate(),
+            token: _refreshTokenGenerator.Generate(),
             now.AddDays(_refreshTokenConfiguration.ExpireDays));
 
-        await _refreshTokenStore.SaveAsync(refreshToken, _clock, cancellationToken);
+        await _refreshTokenStore.StoreAsync(
+            refreshToken,
+            _clock,
+            cancellationToken);
 
-        _logger.LogInformation($"Store refresh token successful. Ocurred at: {now}");
+        _logger.LogInformation($"Store refresh token successful. Occurred at: {now}");
 
         var response = new LoginResponse(
             AccessToken: accessToken,
             RefreshTokenInfo: new RefreshTokenDto(
-                UserId: refreshToken.UserId,
-                Token: refreshToken.Token.Value,
+                UserId: user.Id,
+                Token: refreshToken.Token,
                 ExpiresAt: refreshToken.ExpiresAt),
             UserInfo: new UserDto(
                 FullName: user.FullName.Value,
                 Email: user.Email.Value,
                 PhoneNumber: user.PhoneNumber.Value));
 
-        _logger.LogInformation($"User {user.Email.Value} login succesful. {now}");
+        _logger.LogInformation($"User {user.Email.Value} login successful. {now}");
         return Result<LoginResponse>.Success(response);
     }
 }

@@ -4,9 +4,9 @@ namespace FastFoodOrderingSystem.Application.Common.Cqrs.Decorators.Handlers;
 
 public class LoggingHandlerDecorator<TRequest, TResult> : HandlerDecorator<TRequest, TResult>
 {
-    private readonly ILogger<IHandler<TRequest, TResult>> _logger;
+    private readonly ILogger<LoggingHandlerDecorator<TRequest, TResult>> _logger;
     public LoggingHandlerDecorator(
-        IHandler<TRequest, TResult> handler, ILogger<IHandler<TRequest, TResult>> logger) : base(handler)
+        IHandler<TRequest, TResult> handler, ILogger<LoggingHandlerDecorator<TRequest, TResult>> logger) : base(handler)
     {
         _logger = logger;
     }

@@ -25,6 +25,9 @@ public static class DependencyInjection
         services.AddOptions<RandomPasswordOption>()
             .Bind(configuration.GetSection(RandomPasswordOption.SectionName))
             .ValidateOnStart();
+        
+        services.AddOptions<OutboxWorkerOption>();
+        services.AddOptions<OutboxCleanupWorkerOption>();
 
         return services;
     }

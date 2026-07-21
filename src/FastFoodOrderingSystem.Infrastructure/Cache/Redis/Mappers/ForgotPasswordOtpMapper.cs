@@ -22,7 +22,7 @@ public static class ForgotPasswordOtpMapper
     public static ForgotPasswordOtpSnapshot ToSnapshot(ForgotPasswordOtpCache.ForgotPasswordOtp forgotPasswordOtp)
     {
         return new ForgotPasswordOtpSnapshot(
-            Email: forgotPasswordOtp.Id.Value, 
+            Email: forgotPasswordOtp.Email.Value, 
             OtpCodeHash: forgotPasswordOtp.CodeHash.Value,
             ExpiresAt: forgotPasswordOtp.ExpiresAt);
     }

@@ -1,15 +1,16 @@
-using FastFoodOrderingSystem.Domain.Common.Abstractions;
 using FastFoodOrderingSystem.Domain.Users.ValueObjects;
 
 namespace FastFoodOrderingSystem.Application.Abstractions.Cache.ForgotPasswordOtp;
 
-public class ForgotPasswordOtp : Entity<Email>
+public class ForgotPasswordOtp
 {
+    public Email Email { get; init; }
     public OtpCodeHash CodeHash { get; init; }
     public DateTime ExpiresAt { get; init; }
 
-    private ForgotPasswordOtp(Email email, OtpCodeHash codeHash, DateTime expiresAt) : base(email)
+    private ForgotPasswordOtp(Email email, OtpCodeHash codeHash, DateTime expiresAt)
     {
+        Email = email;
         CodeHash = codeHash;
         ExpiresAt = expiresAt;
     }

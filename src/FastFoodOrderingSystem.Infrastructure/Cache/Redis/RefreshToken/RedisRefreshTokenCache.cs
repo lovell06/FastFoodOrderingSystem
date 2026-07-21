@@ -1,7 +1,6 @@
 using System.Text.Json;
 using FastFoodOrderingSystem.Application.Abstractions.Cache.RefreshToken;
 using FastFoodOrderingSystem.Application.Abstractions.Time;
-using FastFoodOrderingSystem.Domain.RefreshTokens;
 using FastFoodOrderingSystem.Infrastructure.Cache.Redis.Mappers;
 using FastFoodOrderingSystem.Infrastructure.Cache.Redis.Snapshots;
 using StackExchange.Redis;
@@ -20,8 +19,10 @@ public sealed class RedisRefreshTokenCache : IRefreshTokenStore
         _keyProvider = keyProvider;
     }
 
-    public async Task<Domain.RefreshTokens.RefreshToken?> GetByIdAsync(TokenId id, CancellationToken cancellationToken)
+    public async Task<Application.Abstractions.Cache.RefreshToken.RefreshToken?> GetAsync(string token, CancellationToken cancellationToken)
     {
+        var id = Application.Abstractions.Cache.RefreshToken.RefreshToken.GenerateId(token);
+        
         var key = _keyProvider.RefreshToken(id);
 
         var json = await _database.StringGetAsync(key);
@@ -33,21 +34,24 @@ public sealed class RedisRefreshTokenCache : IRefreshTokenStore
 
         if (snapshot is null)
             throw new InvalidOperationException(
-                $"Cannot parse RedisValue to RefreshTokenSnapshot. TokenId: {id.Value}.");
+                $"Cannot parse RedisValue to RefreshTokenSnapshot. TokenId: {id}.");
         
         var result = RefreshTokenMapper.ToEntity(snapshot);
 
         return result;
     }
 
-    public async Task<bool> RemoveByIdAsync(TokenId id, CancellationToken cancellationToken)
+    public async Task<bool> RevokeAsync(string token, CancellationToken cancellationToken)
     {
+        var id = Application.Abstractions.Cache.RefreshToken.RefreshToken.GenerateId(token);
         var key = _keyProvider.RefreshToken(id);
         var result = await _database.KeyDeleteAsync(key);
         return result;
     }
 
-    public async Task<bool> SaveAsync(Domain.RefreshTokens.RefreshToken token, IDateTimeProvider clock,
+    public async Task<bool> StoreAsync(
+        Application.Abstractions.Cache.RefreshToken.RefreshToken token, 
+        IDateTimeProvider clock,
         CancellationToken cancellationToken)
     {
         var ttl = token.ExpiresAt - clock.UtcNow;

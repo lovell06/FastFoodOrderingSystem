@@ -55,7 +55,7 @@ public class RedisForgotPasswordOtpCache : IForgotPasswordOtpStore
         
         var snapshot = ForgotPasswordOtpMapper.ToSnapshot(forgotPasswordOtp);
 
-        var key = _keyProvider.ForgotPasswordOtp(forgotPasswordOtp.Id);
+        var key = _keyProvider.ForgotPasswordOtp(forgotPasswordOtp.Email);
 
         var json = JsonSerializer.Serialize(snapshot);
         

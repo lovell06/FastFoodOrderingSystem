@@ -56,7 +56,7 @@ public class RedisPendingRegistrationCache : IPendingRegistrationStore
 
         var snapshot = PendingRegistrationMapper.ToSnapshot(pendingRegistration);
 
-        var key = _redisKeyProvider.PendingRegistration(pendingRegistration.Id);
+        var key = _redisKeyProvider.PendingRegistration(pendingRegistration.Email);
 
         var json = JsonSerializer.Serialize(snapshot);
         

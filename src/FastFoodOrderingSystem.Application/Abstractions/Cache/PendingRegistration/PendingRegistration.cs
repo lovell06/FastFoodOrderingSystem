@@ -5,8 +5,9 @@ using FastFoodOrderingSystem.Domain.Users.ValueObjects;
 
 namespace FastFoodOrderingSystem.Application.Abstractions.Cache.PendingRegistration;
 
-public class PendingRegistration : Entity<Email>
+public class PendingRegistration
 {
+    public Email Email { get; init; }
     public FullName FullName { get; init; }
     public PasswordHash PasswordHash { get; init; }
     public PhoneNumber PhoneNumber { get; init; }
@@ -21,8 +22,9 @@ public class PendingRegistration : Entity<Email>
         PhoneNumber phone,
         OtpCodeHash otpCodeHash,
         DateTime expiresAt,
-        int attemptCount) : base(email)
+        int attemptCount)
     {
+        Email = email;
         FullName = fullName;
         PasswordHash = passwordHash;
         PhoneNumber = phone;

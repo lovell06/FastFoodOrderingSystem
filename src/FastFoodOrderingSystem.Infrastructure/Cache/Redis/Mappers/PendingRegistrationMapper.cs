@@ -35,7 +35,7 @@ public static class PendingRegistrationMapper
     public static PendingRegistrationSnapshot ToSnapshot(Application.Abstractions.Cache.PendingRegistration.PendingRegistration pending)
     {
         return new PendingRegistrationSnapshot(
-            Id: pending.Id.Value,
+            Id: pending.Email.Value,
             FullName: pending.FullName.Value,
             PasswordHash: pending.PasswordHash.Value,
             PhoneNumber: pending.PhoneNumber.Value,

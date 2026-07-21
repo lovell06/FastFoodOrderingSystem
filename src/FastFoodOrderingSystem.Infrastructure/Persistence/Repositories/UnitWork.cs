@@ -1,10 +1,13 @@
 using FastFoodOrderingSystem.Application.Abstractions.Persistence;
+using FastFoodOrderingSystem.Domain.Common.Abstractions;
+using FastFoodOrderingSystem.Infrastructure.Eventing.EventMappers;
 using FastFoodOrderingSystem.Infrastructure.Persistence.Database;
+using FastFoodOrderingSystem.Infrastructure.Persistence.Database.Entities;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace FastFoodOrderingSystem.Infrastructure.Persistence.Repositories;
 
-public class UnitWork : IUnitWork
+public sealed class UnitWork : IUnitWork
 {
     private readonly ApplicationDbContext _context;
     private IDbContextTransaction? _transaction;
@@ -29,7 +32,7 @@ public class UnitWork : IUnitWork
                 "No active transaction.");
 
         await _context.SaveChangesAsync(cancellationToken);
-
+        
         await _transaction.CommitAsync(cancellationToken);
 
         await _transaction.DisposeAsync();
@@ -48,8 +51,34 @@ public class UnitWork : IUnitWork
         _transaction = null;
     }
 
-    public async Task<int> SaveChangeAsync(CancellationToken cancellationToken = default)
+    public IReadOnlyCollection<IDomainEvent> DequeueDomainEvents()
     {
+        var entities = _context.ChangeTracker
+            .Entries<IHasDomainEvent>()
+            .Select(entry => entry.Entity)
+            .ToList();
+
+        var events = entities
+            .SelectMany(e => e.DomainEvents)
+            .ToList()
+            .AsReadOnly();
+
+        foreach (var e in entities)
+        {
+            e.ClearDomainEvent();
+        }
+        
+        return events;
+    }
+
+    public async Task<int> SaveEventsAsync(CancellationToken cancellationToken)
+    {
+        var domainEvents = DequeueDomainEvents();
+
+        var outboxMessages = domainEvents
+            .Select(e => OutboxMessage.Create(e.ToIntegration()));
+
+        await _context.OutboxMessages.AddRangeAsync(outboxMessages, cancellationToken);
         return await _context.SaveChangesAsync(cancellationToken);
     }
 }

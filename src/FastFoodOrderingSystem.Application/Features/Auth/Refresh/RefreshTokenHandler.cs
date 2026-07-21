@@ -6,7 +6,6 @@ using FastFoodOrderingSystem.Application.Abstractions.Time;
 using FastFoodOrderingSystem.Application.Common.Cqrs;
 using FastFoodOrderingSystem.Application.Common.Results;
 using FastFoodOrderingSystem.Application.Features.Auth.Refresh.Dtos;
-using FastFoodOrderingSystem.Domain.RefreshTokens;
 using Microsoft.Extensions.Logging;
 
 namespace FastFoodOrderingSystem.Application.Features.Auth.Refresh;
@@ -45,15 +44,11 @@ public sealed class RefreshTokenHandler : IHandler<RefreshTokenCommand, Result<R
     {
         var now = _clock.UtcNow;
 
-        var token = Token.Create(command.RefreshToken);
-
-        var tokenId = TokenId.Create(token);
-
-        var result = await _refreshTokenStore.GetByIdAsync(tokenId, cancellationToken);
+        var result = await _refreshTokenStore.GetAsync(command.RefreshToken, cancellationToken);
 
         if (result is null)
         {
-            _logger.LogError($"Refresh failed. Refresh token with id: {tokenId} was been revoked. Occured at: {now}");
+            _logger.LogError($"Refresh failed. Refresh token with id: {command.RefreshToken} was been revoked. Occured at: {now}");
             return Result<RefreshTokenResponse>.Failure(RefreshTokenError.Failure);
         }
 
@@ -66,9 +61,9 @@ public sealed class RefreshTokenHandler : IHandler<RefreshTokenCommand, Result<R
         }
 
         _logger.LogInformation(
-            await _refreshTokenStore.RemoveByIdAsync(tokenId, cancellationToken) ?
-                $"Revoke successful. Old refresh token with id: {tokenId.Value} was been revoked. Occurred at {now}" :
-                $"Revoke failed. Old refresh token with id: {tokenId.Value} cannot revoke or not found. Occured at {now}");
+            await _refreshTokenStore.RevokeAsync(command.RefreshToken, cancellationToken) ?
+                $"Revoke successful. Old refresh token with id: {command.RefreshToken} was been revoked. Occurred at {now}" :
+                $"Revoke failed. Old refresh token with id: {command.RefreshToken} cannot revoke or not found. Occured at {now}");
 
         var accessToken = _accessTokenProvider.Generate(user);
         var refreshToken = RefreshToken.Create(
@@ -76,12 +71,12 @@ public sealed class RefreshTokenHandler : IHandler<RefreshTokenCommand, Result<R
             token: _refreshTokenGenerator.Generate(),
             expiresAt: now.AddDays(_refreshTokenConfiguration.ExpireDays));
 
-        await _refreshTokenStore.SaveAsync(refreshToken, _clock, cancellationToken);
+        await _refreshTokenStore.StoreAsync(refreshToken, _clock, cancellationToken);
         
-        _logger.LogInformation($"Store successful. Store new refresh token successful. Ocurred at: {now}");
+        _logger.LogInformation($"Store successful. Store new refresh token successful. Occurred at: {now}");
         
         return Result<RefreshTokenResponse>.Success(new(
             new AccessTokenDto(accessToken, now.AddMinutes(_accessTokenConfiguration.ExpireMinutes)),
-            new RefreshTokenDto(refreshToken.Token.Value, refreshToken.ExpiresAt)));
+            new RefreshTokenDto(refreshToken.Token, refreshToken.ExpiresAt)));
     }
 }

@@ -1,0 +1,3 @@
+namespace FastFoodOrderingSystem.Application.Features.Auth.InitiateForgotPassword;
+
+public record InitiateForgotPasswordCommand(string Email);

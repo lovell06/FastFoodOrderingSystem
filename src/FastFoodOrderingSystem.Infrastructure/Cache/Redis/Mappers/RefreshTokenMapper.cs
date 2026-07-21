@@ -1,26 +1,25 @@
+using FastFoodOrderingSystem.Application.Abstractions.Cache.RefreshToken;
 using FastFoodOrderingSystem.Infrastructure.Cache.Redis.Snapshots;
-using DomainAggregateRoot = FastFoodOrderingSystem.Domain.RefreshTokens;
 
 namespace FastFoodOrderingSystem.Infrastructure.Cache.Redis.Mappers;
 
 public static class RefreshTokenMapper
 {
-    public static DomainAggregateRoot.RefreshToken ToEntity(RefreshTokenSnapshot snapshot)
+    public static Application.Abstractions.Cache.RefreshToken.RefreshToken ToEntity(RefreshTokenSnapshot snapshot)
     {
         ArgumentNullException.ThrowIfNull(snapshot, "RefreshTokenSnapshot is null.");
 
-        var token = DomainAggregateRoot.Token.Create(snapshot.Token);
-        return DomainAggregateRoot.RefreshToken.Create(
+        return Application.Abstractions.Cache.RefreshToken.RefreshToken.Create(
             userId: snapshot.UserId,
-            token: token,
+            token: snapshot.Token,
             expiresAt: snapshot.ExpiresAt);
     }
 
-    public static RefreshTokenSnapshot ToSnapshot(DomainAggregateRoot.RefreshToken refreshToken)
+    public static RefreshTokenSnapshot ToSnapshot(Application.Abstractions.Cache.RefreshToken.RefreshToken refreshToken)
     {
         return new RefreshTokenSnapshot(
             UserId: refreshToken.UserId,
-            Token: refreshToken.Token.Value,
+            Token: refreshToken.Token,
             ExpiresAt: refreshToken.ExpiresAt);
     }
 }

@@ -1,4 +1,3 @@
-using FastFoodOrderingSystem.Domain.RefreshTokens;
 using FastFoodOrderingSystem.Domain.Users.ValueObjects;
 using FastFoodOrderingSystem.Infrastructure.Options;
 using Microsoft.Extensions.Options;
@@ -17,8 +16,8 @@ public sealed class RedisKeyProvider
     public string PendingRegistration(Email email)
         => $"{_prefixKey}:PendingRegistration:{email.Value}";
 
-    public string RefreshToken(TokenId id)
-        => $"{_prefixKey}:RefreshToken:{id.Value}";
+    public string RefreshToken(string id)
+        => $"{_prefixKey}:RefreshToken:{id}";
 
     public string ForgotPasswordOtp(Email email)
         => $"{_prefixKey}:ForgotPasswordOtp:{email.Value}";
