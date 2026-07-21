@@ -6,7 +6,7 @@
 
 Architecture: Modular monolith (Clean architecture + DDD + CQRS)
 
-Design pattern: Repository Pattern, Decorator Pattern
+Design pattern: Repository Pattern, Decorator Pattern, Outbox Pattern, Observer Pattern
 
 ## Compile-time Dependencies between layers
 ```
