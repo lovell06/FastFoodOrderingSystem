@@ -12,19 +12,11 @@ Design pattern:
 - Observer Pattern
 - Facade Pattern (Dependency injection composition)
 
-## Compile-time Dependencies betweXen layers
-```
-                
+## Compile-time Dependencies between layers
 
-Api ───────────────► Application ───────────────► Domain
-                             ▲
-                             │
-                  implemented by
-                             │
-                      Infrastructure
-                             │
-                             └──────────────► Domain
-```
+<p align="center">
+    <img src="./images/layer-dependencies.png" width="800" alt="Layer Dependencies">
+</p>
 
 ## Implementation
 
