@@ -73,38 +73,6 @@ public class AuthController : ControllerBase
         return result.Error!.ToActionResult(this);
     }
 
-    [HttpPost("registrations/initiate")]
-    public async Task<IActionResult> InitiateRegistration(
-        InitiateRegistrationRequest request,
-        CancellationToken cancellationToken)
-    {
-        var command = request.ToCommand();
-        var result = await _mediator.SendAsync<InitiateRegistrationCommand, Unit>(
-            request: command, 
-            cancellationToken: cancellationToken);
-
-        if (result.IsSuccess)
-            return Ok();
-
-        return result.Error!.ToActionResult(this);
-    }
-
-    [HttpPost("registrations/complete")]
-    public async Task<IActionResult> CompleteRegistration(
-        CompleteRegistrationRequest request, 
-        CancellationToken cancellationToken)
-    {
-        var command = request.ToCommand();
-        var result = await _mediator.SendAsync<CompleteRegistrationCommand, Unit>(
-            request: command, 
-            cancellationToken: cancellationToken);
-
-        if (result.IsSuccess)
-            return Created();
-
-        return result.Error!.ToActionResult(this);
-    }
-
     [HttpPost("forgot-password/initiate")]
     public async Task<IActionResult> InitiateForgotPassword(
         InitiateForgotPasswordRequest request,

@@ -13,11 +13,16 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.2" />
     <PackageReference Include="Scalar.AspNetCore" Version="2.16.9" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\FastFoodOrderingSystem.Infrastructure\FastFoodOrderingSystem.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\Customers\" />
   </ItemGroup>
 
 </Project>
