@@ -12,60 +12,36 @@ using Microsoft.Extensions.Logging;
 
 namespace FastFoodOrderingSystem.Application.Features.Customers.InitiateRegistration;
 
-public sealed class InitiateRegistrationHandler : ICommandHandler<InitiateRegistrationCommand, Unit>
+public sealed class InitiateRegistrationHandler(
+    IUserRepository userRepository,
+    IPendingRegistrationStore pendingRegistrationStore,
+    IPasswordHashService passwordHashService,
+    IOtpService otpService,
+    IOtpHashService otpHashService,
+    IOtpConfiguration otpConfiguration,
+    ILogger<InitiateRegistrationHandler> logger,
+    IEmailSender emailSender,
+    IEmailConfiguration emailConfiguration,
+    IDateTimeProvider clock)
+    : ICommandHandler<InitiateRegistrationCommand, Unit>
 {
-    private readonly IUserRepository _userRepository;
-    private readonly IPendingRegistrationStore _pendingRegistrationStore;
-    private readonly IPasswordHashService _passwordHashService;
-    private readonly IOtpService _otpService;
-    private readonly IOtpHashService _otpHashService;
-    private readonly IOtpConfiguration _otpConfiguration;
-    private readonly IEmailConfiguration _emailConfiguration;
-    private readonly ILogger<InitiateRegistrationHandler> _logger;
-    private readonly IEmailSender _emailSender;
-    private readonly IDateTimeProvider _clock;
-
-    public InitiateRegistrationHandler(
-        IUserRepository userRepository,
-        IPendingRegistrationStore pendingRegistrationStore,
-        IPasswordHashService passwordHashService,
-        IOtpService otpService,
-        IOtpHashService otpHashService,
-        IOtpConfiguration otpConfiguration,
-        ILogger<InitiateRegistrationHandler> logger,
-        IEmailSender emailSender,
-        IEmailConfiguration emailConfiguration,
-        IDateTimeProvider clock)
-    {
-        _userRepository = userRepository;
-        _pendingRegistrationStore = pendingRegistrationStore;
-        _passwordHashService = passwordHashService;
-        _otpService = otpService;
-        _otpHashService = otpHashService;
-        _otpConfiguration = otpConfiguration;
-        _logger = logger;
-        _emailSender = emailSender;
-        _emailConfiguration = emailConfiguration;
-        _clock = clock;
-    }
-
     public async Task<Result<Unit>> HandleAsync(InitiateRegistrationCommand command,
         CancellationToken cancellationToken)
     {
-        var now = _clock.UtcNow;
+        var now = clock.UtcNow;
 
         var emailResult = Email.Create(command.Email);
         if (emailResult.IsFailure)
         {
-            var err = Error.Validation(emailResult.Error!.Code, emailResult.Error.Message);
-            _logger.LogError($"Code: {err.Code} | Message: {err.Message} | Occured at: {now}");
+            var err = Error.Validation(emailResult.Error.Code, emailResult.Error.Message);
+            logger.LogError($"{err.Type}. {err.Code}.{err.Message}. {now}");
             return Result<Unit>.Failure(err);
         }
 
-        if (await _userRepository.EmailAlreadyExistedAsync(emailResult.Value!, cancellationToken))
+        if (await userRepository.EmailAlreadyExistedAsync(emailResult.Value, cancellationToken))
         {
-            var err = InitiateRegistrationError.EmailAlreadyExisted(emailResult.Value!);
-            _logger.LogError($"Code: {err.Code} | Message: {err.Message} | Occured at: {now}.");
+            var err = InitiateRegistrationError.EmailAlreadyExisted(emailResult.Value);
+            logger.LogError($"{err.Type}. {err.Code}. {err.Message}. {now}");
             return Result<Unit>.Failure(err);
         }
 
@@ -73,60 +49,60 @@ public sealed class InitiateRegistrationHandler : ICommandHandler<InitiateRegist
         if (fullNameResult.IsFailure)
         {
             var err = Error.Validation(fullNameResult.Error!.Code, fullNameResult.Error.Message);
-            _logger.LogError($"Code: {err.Code} | Message: {err.Message} | Occured at: {now}");
+            logger.LogError($"{err.Type}. {err.Code}. {err.Message}. {now}");
             return Result<Unit>.Failure(err);
         }
 
         var passwordResult = Password.Create(command.Password);
         if (passwordResult.IsFailure)
         {
-            var err = Error.Validation(passwordResult.Error!.Code, passwordResult.Error.Message);
-            _logger.LogError($"Code: {err.Code} | Message: {err.Message} | Occured at: {now}");
+            var err = Error.Validation(passwordResult.Error.Code, passwordResult.Error.Message);
+            logger.LogError($"{err.Type}. {err.Code}. {err.Message}. {now}");
             return Result<Unit>.Failure(err);
         }
 
-        var passwordHash = _passwordHashService.Hash(null!, passwordResult.Value!);
+        var passwordHash = passwordHashService.Hash(null!, passwordResult.Value);
         var phoneNumberResult = PhoneNumber.Create(command.PhoneNumber);
         if (phoneNumberResult.IsFailure)
         {
-            var err = Error.Validation(phoneNumberResult.Error!.Code, phoneNumberResult.Error.Message);
-            _logger.LogError($"Code: {err.Code} | Message: {err.Message} | Occured at: {now}");
+            var err = Error.Validation(phoneNumberResult.Error.Code, phoneNumberResult.Error.Message);
+            logger.LogError($"{err.Type}. {err.Code}. {err.Message}. {now}");
             return Result<Unit>.Failure(err);
         }
 
-        FullName fullName = fullNameResult.Value!;
-        Email email = emailResult.Value!;
-        PhoneNumber phoneNumber = phoneNumberResult.Value!;
+        var fullName = fullNameResult.Value;
+        var email = emailResult.Value;
+        var phoneNumber = phoneNumberResult.Value;
 
-        var otpCode = _otpService.GenerateCode(_otpConfiguration.Length);
-        var otpCodeHash = _otpHashService.Hash(otpCode);
+        var otpCode = otpService.GenerateCode(otpConfiguration.Length);
+        var otpCodeHash = otpHashService.Hash(otpCode);
         var pending = PendingRegistration.Create(
             fullName: fullName,
             email: email,
             passwordHash: passwordHash,
             phone: phoneNumber,
             otpCodeHash: otpCodeHash,
-            expiresAt: now.AddMinutes(_otpConfiguration.Expiration)
+            expiresAt: now.AddMinutes(otpConfiguration.Expiration)
         );
 
-        await _pendingRegistrationStore.SaveAsync(pendingRegistration: pending, _clock,
+        await pendingRegistrationStore.SaveAsync(pendingRegistration: pending, clock,
             cancellationToken: cancellationToken);
 
-        _logger.LogInformation($"Pending registration store {email.Value} successful {now}.");
+        logger.LogInformation($"Pending registration store {email.Value} successful {now}.");
 
-        var senderAddressResult = Email.Create(_emailConfiguration.SenderAddress);
+        var senderAddressResult = Email.Create(emailConfiguration.SenderAddress);
         if (senderAddressResult.IsFailure)
             throw new InvalidOperationException(
-                $"Code: {senderAddressResult.Error?.Code}. Message: {senderAddressResult.Error?.Message}. Email sender address invalid.");
+                $"{senderAddressResult.Error.Code}. {senderAddressResult.Error.Message}. Email sender address invalid.");
         
         var emailContent = EmailContent.Create(
-            from: senderAddressResult.Value!,
+            from: senderAddressResult.Value,
             to: email,
             "Verify email",
-            $"This is OTP verification code: {otpCode.Value}. Expiration after {_otpConfiguration.Expiration} minutes.");
+            $"This is OTP verification code: {otpCode.Value}. Expiration after {otpConfiguration.Expiration} minutes.");
         
-        await _emailSender.SendAsync(emailContent);
-        _logger.LogInformation(
+        await emailSender.SendAsync(emailContent);
+        logger.LogInformation(
             $"Send OTP code from {emailContent.From.Value} to {emailContent.To.Value} successful {now}.");
         return Result<Unit>.Success(Unit.Value);
     }

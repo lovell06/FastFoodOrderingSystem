@@ -32,7 +32,7 @@ public class CustomersController : ControllerBase
         if (result.IsSuccess)
             return Ok();
 
-        return result.Error!.ToActionResult(this);
+        return result.Error.ToActionResult(this);
     }
 
     [HttpPost("registrations/complete")]
@@ -48,6 +48,6 @@ public class CustomersController : ControllerBase
         if (result.IsSuccess)
             return Created();
 
-        return result.Error!.ToActionResult(this);
+        return result.Error.ToActionResult(this);
     }
 }

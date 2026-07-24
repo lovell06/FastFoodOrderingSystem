@@ -6,31 +6,23 @@ using Microsoft.Extensions.Logging;
 
 namespace FastFoodOrderingSystem.Application.Features.Auth.Logout;
 
-public sealed class LogoutHandler : ICommandHandler<LogoutCommand, Unit>
+public sealed class LogoutHandler(
+    IRefreshTokenStore refreshTokenStore,
+    ILogger<LogoutHandler> logger,
+    IDateTimeProvider clock)
+    : ICommandHandler<LogoutCommand, Unit>
 {
-    private readonly IRefreshTokenStore _refreshTokenStore;
-    private readonly ILogger<LogoutHandler> _logger;
-    private readonly IDateTimeProvider _clock;
-    public LogoutHandler(IRefreshTokenStore refreshTokenStore, 
-        ILogger<LogoutHandler> logger, 
-        IDateTimeProvider clock)
-    {
-        _refreshTokenStore = refreshTokenStore;
-        _logger = logger;
-        _clock = clock;
-    }
-
     public async Task<Result<Unit>> HandleAsync(LogoutCommand command, CancellationToken cancellationToken)
     {
-        var now = _clock.UtcNow;
+        var now = clock.UtcNow;
 
-        var isSuccess = await _refreshTokenStore.RevokeAsync(
+        var isSuccess = await refreshTokenStore.RevokeAsync(
             command.Token, 
             cancellationToken);
 
-        _logger.LogInformation(!isSuccess
-            ? $"Refresh token with id: {command.Token} was already revoked."
-            : $"Refresh token with id: {command.Token} has been revoked. Occured at: {now}");
+        logger.LogInformation(isSuccess
+            ? $"Refresh token with id: {command.Token} has been revoked. Occured at: {now}" 
+            : $"Refresh token with id: {command.Token} was already revoked.");
 
         return Result<Unit>.Success(Unit.Value);
     }

@@ -10,73 +10,54 @@ using Microsoft.Extensions.Logging;
 
 namespace FastFoodOrderingSystem.Application.Features.Auth.Refresh;
 
-public sealed class RefreshTokenHandler : ICommandHandler<RefreshTokenCommand, RefreshTokenResponse>
+public sealed class RefreshTokenHandler(
+    IRefreshTokenStore refreshTokenStore,
+    ILogger<RefreshTokenHandler> logger,
+    IDateTimeProvider dateTimeProvider,
+    IAccessTokenProvider accessTokenProvider,
+    IUserRepository userRepository,
+    IRefreshTokenGenerator refreshTokenGenerator,
+    IRefreshTokenConfiguration refreshTokenConfiguration,
+    IAccessTokenConfiguration accessTokenConfiguration)
+    : ICommandHandler<RefreshTokenCommand, RefreshTokenResponse>
 {
-    private readonly IRefreshTokenStore _refreshTokenStore;
-    private readonly ILogger<RefreshTokenHandler> _logger;
-    private readonly IDateTimeProvider _clock;
-    private readonly IAccessTokenProvider _accessTokenProvider;
-    private readonly IUserRepository _userRepository;
-    private readonly IRefreshTokenGenerator _refreshTokenGenerator;
-    private readonly IRefreshTokenConfiguration _refreshTokenConfiguration;
-    private readonly IAccessTokenConfiguration _accessTokenConfiguration;
-    public RefreshTokenHandler(
-        IRefreshTokenStore refreshTokenStore, 
-        ILogger<RefreshTokenHandler> logger, 
-        IDateTimeProvider dateTimeProvider, 
-        IAccessTokenProvider accessTokenProvider, 
-        IUserRepository userRepository, 
-        IRefreshTokenGenerator refreshTokenGenerator, 
-        IRefreshTokenConfiguration refreshTokenConfiguration, 
-        IAccessTokenConfiguration accessTokenConfiguration)
-    {
-        _refreshTokenStore = refreshTokenStore;
-        _logger = logger;
-        _clock = dateTimeProvider;
-        _accessTokenProvider = accessTokenProvider;
-        _userRepository = userRepository;
-        _refreshTokenGenerator = refreshTokenGenerator;
-        _refreshTokenConfiguration = refreshTokenConfiguration;
-        _accessTokenConfiguration = accessTokenConfiguration;
-    }
-
     public async Task<Result<RefreshTokenResponse>> HandleAsync(RefreshTokenCommand command, CancellationToken cancellationToken)
     {
-        var now = _clock.UtcNow;
+        var now = dateTimeProvider.UtcNow;
 
-        var result = await _refreshTokenStore.GetAsync(command.RefreshToken, cancellationToken);
+        var result = await refreshTokenStore.GetAsync(command.RefreshToken, cancellationToken);
 
         if (result is null)
         {
-            _logger.LogError($"Refresh failed. Refresh token with id: {command.RefreshToken} was been revoked. Occured at: {now}");
-            return Result<RefreshTokenResponse>.Failure(RefreshTokenError.Failure);
+            logger.LogError($"Refresh failed. Refresh token with id: {command.RefreshToken} was been revoked. Occured at: {now}");
+            return Result<RefreshTokenResponse>.Failure(RefreshTokenError.Unauthorized);
         }
 
-        var user = await _userRepository.GetByIdAsync(command.UserId, cancellationToken);
+        var user = await userRepository.GetByIdAsync(command.UserId, cancellationToken);
 
         if (user is null)
         {
-            _logger.LogError($"Refresh failed. User with id: {command.UserId} not found. Occured at: {now}");
-            return Result<RefreshTokenResponse>.Failure(RefreshTokenError.Failure);
+            logger.LogError($"Refresh failed. User with id: {command.UserId} not found. Occured at: {now}");
+            return Result<RefreshTokenResponse>.Failure(RefreshTokenError.Unauthorized);
         }
 
-        _logger.LogInformation(
-            await _refreshTokenStore.RevokeAsync(command.RefreshToken, cancellationToken) ?
+        logger.LogInformation(
+            await refreshTokenStore.RevokeAsync(command.RefreshToken, cancellationToken) ?
                 $"Revoke successful. Old refresh token with id: {command.RefreshToken} was been revoked. Occurred at {now}" :
                 $"Revoke failed. Old refresh token with id: {command.RefreshToken} cannot revoke or not found. Occured at {now}");
 
-        var accessToken = _accessTokenProvider.Generate(user);
+        var accessToken = accessTokenProvider.Generate(user);
         var refreshToken = RefreshToken.Create(
             userId: user.Id,
-            token: _refreshTokenGenerator.Generate(),
-            expiresAt: now.AddDays(_refreshTokenConfiguration.ExpireDays));
+            token: refreshTokenGenerator.Generate(),
+            expiresAt: now.AddDays(refreshTokenConfiguration.ExpireDays));
 
-        await _refreshTokenStore.StoreAsync(refreshToken, _clock, cancellationToken);
+        await refreshTokenStore.StoreAsync(refreshToken, dateTimeProvider, cancellationToken);
         
-        _logger.LogInformation($"Store successful. Store new refresh token successful. Occurred at: {now}");
+        logger.LogInformation($"Store successful. Store new refresh token successful. Occurred at: {now}");
         
-        return Result<RefreshTokenResponse>.Success(new(
-            new AccessTokenDto(accessToken, now.AddMinutes(_accessTokenConfiguration.ExpireMinutes)),
+        return Result<RefreshTokenResponse>.Success(new RefreshTokenResponse(
+            new AccessTokenDto(accessToken, now.AddMinutes(accessTokenConfiguration.ExpireMinutes)),
             new RefreshTokenDto(refreshToken.Token, refreshToken.ExpiresAt)));
     }
 }

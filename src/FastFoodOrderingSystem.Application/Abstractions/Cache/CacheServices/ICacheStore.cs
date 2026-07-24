@@ -1,15 +1,16 @@
 namespace FastFoodOrderingSystem.Application.Abstractions.Cache.CacheServices;
 
-public interface ICacheStore<in TQuery, TData>
+public interface ICacheStore<TData>
 {
     Task<bool> StoreAsync(
-        TQuery query, 
+        string key, 
         TData data, 
+        TimeSpan ttl,
         CancellationToken cancellationToken);
     Task<bool> RemoveAsync(
-        TQuery query, 
+        string key, 
         CancellationToken cancellationToken);
     Task<TData?> GetAsync(
-        TQuery query, 
+        string key, 
         CancellationToken cancellationToken);
 }

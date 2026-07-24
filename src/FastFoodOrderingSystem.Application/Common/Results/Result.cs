@@ -5,12 +5,18 @@ public sealed class Result<T>
     public bool IsSuccess { get; }
     public bool IsFailure => !IsSuccess;
 
-    public T? Value { get; }
-    public Error? Error { get; }
+    private readonly T? _value;
+    private readonly Error? _error;
+
+    public T Value
+        => _value ?? throw new InvalidOperationException("Cannot access Value of a failed result.");
+
+    public Error Error
+        => _error ?? throw new InvalidOperationException("Cannot access a Error of a successful result.");
 
     private Result(T value)
     {
-        Value = value;
+        _value = value;
         IsSuccess = true;
     }
 
@@ -18,7 +24,7 @@ public sealed class Result<T>
     {
         ArgumentNullException.ThrowIfNull(error);
 
-        Error = error;
+        _error = error;
         IsSuccess = false;
     }
 

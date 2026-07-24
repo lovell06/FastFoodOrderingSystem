@@ -27,7 +27,7 @@ public class GetProfileHandler : IQueryHandler<GetProfileQuery, UserProfileRespo
         if (user is null)
         {
             var err = GetProfileError.UserNotFound;
-            _logger.LogError($"{err.Code}. {err.Message}. {now}");
+            _logger.LogError($"{err.Type}. {err.Code}. {err.Message}. {now}");
             return Result<UserProfileResponse>.Failure(err);
         }
         

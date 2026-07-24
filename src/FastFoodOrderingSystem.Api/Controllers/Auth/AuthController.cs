@@ -3,15 +3,12 @@ using FastFoodOrderingSystem.Api.Contracts.Authentication;
 using FastFoodOrderingSystem.Api.Mapping;
 using FastFoodOrderingSystem.Application.Abstractions.Mediator;
 using FastFoodOrderingSystem.Application.Common.Cqrs;
-using FastFoodOrderingSystem.Application.Common.Results;
 using FastFoodOrderingSystem.Application.Features.Auth.ChangePassword;
 using FastFoodOrderingSystem.Application.Features.Auth.CompleteForgotPassword;
 using FastFoodOrderingSystem.Application.Features.Auth.InitiateForgotPassword;
 using FastFoodOrderingSystem.Application.Features.Auth.Login;
 using FastFoodOrderingSystem.Application.Features.Auth.Logout;
 using FastFoodOrderingSystem.Application.Features.Auth.Refresh;
-using FastFoodOrderingSystem.Application.Features.Customers.CompleteRegistration;
-using FastFoodOrderingSystem.Application.Features.Customers.InitiateRegistration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -40,7 +37,7 @@ public class AuthController : ControllerBase
         if (result.IsSuccess)
             return Ok(result.Value);
 
-        return result.Error!.ToActionResult(this);
+        return result.Error.ToActionResult(this);
     }
 
     [Authorize]
@@ -56,7 +53,7 @@ public class AuthController : ControllerBase
         if (result.IsSuccess)
             return NoContent();
 
-        return result.Error!.ToActionResult(this);
+        return result.Error.ToActionResult(this);
     }
 
     [HttpPost("refresh")]
@@ -70,7 +67,7 @@ public class AuthController : ControllerBase
         if (result.IsSuccess)
             return Ok(result.Value);
 
-        return result.Error!.ToActionResult(this);
+        return result.Error.ToActionResult(this);
     }
 
     [HttpPost("forgot-password/initiate")]
@@ -87,7 +84,7 @@ public class AuthController : ControllerBase
         if (result.IsSuccess)
             return Ok();
 
-        return result.Error!.ToActionResult(this);
+        return result.Error.ToActionResult(this);
     }
 
     [HttpPost("forgot-password/complete")]
@@ -104,7 +101,7 @@ public class AuthController : ControllerBase
         if (result.IsSuccess)
             return Ok();
 
-        return result.Error!.ToActionResult(this);
+        return result.Error.ToActionResult(this);
     }
 
     [HttpPost("change-password")]
@@ -123,6 +120,6 @@ public class AuthController : ControllerBase
         if (result.IsSuccess)
             return Ok();
 
-        return result.Error!.ToActionResult(this);
+        return result.Error.ToActionResult(this);
     }
 }

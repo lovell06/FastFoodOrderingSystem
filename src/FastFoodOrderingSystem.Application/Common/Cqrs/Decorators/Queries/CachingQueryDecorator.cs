@@ -1,46 +1,50 @@
+using FastFoodOrderingSystem.Application.Abstractions.Cache;
 using FastFoodOrderingSystem.Application.Abstractions.Cache.CacheServices;
 using FastFoodOrderingSystem.Application.Common.Results;
 using Microsoft.Extensions.Logging;
 
 namespace FastFoodOrderingSystem.Application.Common.Cqrs.Decorators.Queries;
 
-public class CachingQueryDecorator<TQuery, TResponse> : QueryHandlerDecorator<TQuery, TResponse> 
+public class CachingQueryDecorator<TQuery, TResponse>(
+    IHandler<TQuery, TResponse> handler,
+    ICacheStore<TResponse> cacheStore,
+    ILogger<CachingQueryDecorator<TQuery, TResponse>> logger,
+    ICachePolicy<TQuery> policy)
+    : QueryHandlerDecorator<TQuery, TResponse>(handler)
     where TQuery : IQuery<TResponse>
 {
-    private readonly ICacheStore<TQuery, TResponse> _cacheStore;
-    private readonly ILogger<CachingQueryDecorator<TQuery, TResponse>> _logger;
-    
-    public CachingQueryDecorator(IHandler<TQuery, TResponse> handler, ICacheStore<TQuery, TResponse> cacheStore, ILogger<CachingQueryDecorator<TQuery, TResponse>> logger) : base(handler)
-    {
-        _cacheStore = cacheStore;
-        _logger = logger;
-    }
-
     public override async Task<Result<TResponse>> HandleAsync(TQuery query, CancellationToken cancellationToken)
     {
-        var response = await _cacheStore.GetAsync(query, cancellationToken);
+        var key = policy.GetKey(query);
+        var ttl = policy.GetTtl();
+        
+        var response = await cacheStore.GetAsync(key, cancellationToken);
 
         if (response is not null)
         {
-            _logger.LogInformation("Data has been exists in cache.");
+            logger.LogInformation("Data has been exists in cache.");
             return Result<TResponse>.Success(response);
         }
         
-        _logger.LogInformation("Data not exists in cache. Loading from persistence ...");
+        logger.LogInformation("Data not exists in cache. Loading from persistence ...");
 
         var result = await Handler.HandleAsync(query, cancellationToken);
 
         if (result.IsFailure)
         {
-            _logger.LogInformation("Loading failed.");
+            logger.LogInformation("Loading failed.");
             return Result<TResponse>.Failure(result.Error!);
         }
         
-        _logger.LogInformation("Data loaded from persistence. Loading to cache.");
+        logger.LogInformation("Data loaded from persistence. Loading to cache.");
 
-        await _cacheStore.StoreAsync(query, result.Value!, cancellationToken);
+        await cacheStore.StoreAsync(
+            key: key, 
+            data: result.Value!, 
+            ttl: ttl,
+            cancellationToken: cancellationToken);
         
-        _logger.LogInformation("Data loaded to cache.");
+        logger.LogInformation("Data loaded to cache.");
         
         return Result<TResponse>.Success(result.Value!);
     }

@@ -11,87 +11,67 @@ using Microsoft.Extensions.Logging;
 
 namespace FastFoodOrderingSystem.Application.Features.Auth.Login;
 
-public class LoginHandler : ICommandHandler<LoginCommand, LoginResponse>
+public class LoginHandler(
+    IUserRepository userRepository,
+    ILogger<LoginHandler> logger,
+    IDateTimeProvider dateTimeProvider,
+    IPasswordHashService passwordHashService,
+    IAccessTokenProvider jwtProvider,
+    IRefreshTokenGenerator refreshTokenGenerator,
+    IRefreshTokenStore refreshTokenStore,
+    IRefreshTokenConfiguration refreshTokenConfiguration)
+    : ICommandHandler<LoginCommand, LoginResponse>
 {
-    private readonly IUserRepository _userRepository;
-    private readonly ILogger<LoginHandler> _logger;
-    private readonly IDateTimeProvider _clock;
-    private readonly IPasswordHashService _passwordHashService;
-    private readonly IAccessTokenProvider _accessTokenProvider;
-    private readonly IRefreshTokenGenerator _refreshTokenGenerator;
-    private readonly IRefreshTokenStore _refreshTokenStore;
-    private readonly IRefreshTokenConfiguration _refreshTokenConfiguration;
-
-    public LoginHandler(
-        IUserRepository userRepository,
-        ILogger<LoginHandler> logger,
-        IDateTimeProvider dateTimeProvider,
-        IPasswordHashService passwordHashService,
-        IAccessTokenProvider jwtProvider,
-        IRefreshTokenGenerator refreshTokenGenerator,
-        IRefreshTokenStore refreshTokenStore,
-        IRefreshTokenConfiguration refreshTokenConfiguration)
-    {
-        _userRepository = userRepository;
-        _logger = logger;
-        _clock = dateTimeProvider;
-        _passwordHashService = passwordHashService;
-        _accessTokenProvider = jwtProvider;
-        _refreshTokenGenerator = refreshTokenGenerator;
-        _refreshTokenStore = refreshTokenStore;
-        _refreshTokenConfiguration = refreshTokenConfiguration;
-    }
-
     public async Task<Result<LoginResponse>> HandleAsync(LoginCommand command, CancellationToken cancellationToken)
     {
-        var now = _clock.UtcNow;
+        var now = dateTimeProvider.UtcNow;
 
         var emailResult = Email.Create(command.Email);
         if (emailResult.IsFailure)
         {
-            var err = Error.Validation(emailResult.Error!.Code, emailResult.Error.Message);
-            _logger.LogError($"Code: {err.Code}. Message: {err.Message}. Occured at {now}");
+            var err = Error.Validation(emailResult.Error.Code, emailResult.Error.Message);
+            logger.LogError($"{err.Type}. {err.Code}. {err.Message}. {now}");
             return Result<LoginResponse>.Failure(err);
         }
 
         var passwordResult = Password.Create(command.Password);
         if (passwordResult.IsFailure)
         {
-            var err = Error.Validation(passwordResult.Error!.Code, passwordResult.Error.Message);
-            _logger.LogError($"Code: {err.Code}. Message: {err.Message}. Occured at {now}");
+            var err = Error.Validation(passwordResult.Error.Code, passwordResult.Error.Message);
+            logger.LogError($"{err.Type}. {err.Code}. {err.Message}. {now}");
             return Result<LoginResponse>.Failure(err);
         }
 
-        Email email = emailResult.Value!;
-        Password password = passwordResult.Value!;
+        var email = emailResult.Value;
+        var password = passwordResult.Value;
 
-        var user = await _userRepository.GetByEmailAsync(email, cancellationToken);
+        var user = await userRepository.GetByEmailAsync(email, cancellationToken);
 
         if (user is null)
         {
-            _logger.LogError($"Email not found. Email {email.Value} not existed. Occurred at: {now}");
+            logger.LogError($"Email not found. Email {email.Value} not existed. Occurred at: {now}");
             return Result<LoginResponse>.Failure(LoginError.Unauthorized);
         }
 
-        if (!_passwordHashService.Verify(user, password, user.PasswordHash))
+        if (!passwordHashService.Verify(user, password, user.PasswordHash))
         {
-            _logger.LogError($"Password incorrect. Occurred at: {now}");
+            logger.LogError($"Password incorrect. Occurred at: {now}");
             return Result<LoginResponse>.Failure(LoginError.Unauthorized);
         }
 
-        var accessToken = _accessTokenProvider.Generate(user);
+        var accessToken = jwtProvider.Generate(user);
 
         var refreshToken = RefreshToken.Create(
             userId: user.Id,
-            token: _refreshTokenGenerator.Generate(),
-            now.AddDays(_refreshTokenConfiguration.ExpireDays));
+            token: refreshTokenGenerator.Generate(),
+            now.AddDays(refreshTokenConfiguration.ExpireDays));
 
-        await _refreshTokenStore.StoreAsync(
+        await refreshTokenStore.StoreAsync(
             refreshToken,
-            _clock,
+            dateTimeProvider,
             cancellationToken);
 
-        _logger.LogInformation($"Store refresh token successful. Occurred at: {now}");
+        logger.LogInformation($"Store refresh token successful. Occurred at: {now}");
 
         var response = new LoginResponse(
             AccessToken: accessToken,
@@ -104,7 +84,7 @@ public class LoginHandler : ICommandHandler<LoginCommand, LoginResponse>
                 Email: user.Email.Value,
                 PhoneNumber: user.PhoneNumber.Value));
 
-        _logger.LogInformation($"User {user.Email.Value} login successful. {now}");
+        logger.LogInformation($"User {user.Email.Value} login successful. {now}");
         return Result<LoginResponse>.Success(response);
     }
 }

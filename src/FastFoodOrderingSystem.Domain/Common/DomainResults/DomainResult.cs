@@ -5,8 +5,15 @@ public class DomainResult<T>
     public bool IsSuccess { get; }
     public bool IsFailure => !IsSuccess;
 
-    public T? Value { get; }
-    public DomainError? Error { get; }
+    private readonly T? _value;
+
+    private readonly DomainError? _error;
+
+    public T Value => 
+        _value ?? throw new InvalidOperationException("Cannot access Value of a failed result.");
+
+    public DomainError Error =>
+        _error ?? throw new InvalidOperationException("Cannot access Error of a successful result.");
 
     private DomainResult(bool isSuccess = true)
     {
@@ -15,13 +22,13 @@ public class DomainResult<T>
 
     private DomainResult(T value)
     {
-        Value = value;
+        _value = value;
         IsSuccess = true;
     }
 
     private DomainResult(DomainError error)
     {
-        Error = error;
+        _error = error;
         IsSuccess = false;
     }
 
@@ -33,7 +40,6 @@ public class DomainResult<T>
     {
         return new DomainResult<T>(value);
     }
-
 
     public static DomainResult<T> Failure()
     {
