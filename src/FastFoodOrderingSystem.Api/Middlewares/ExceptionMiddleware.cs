@@ -18,7 +18,7 @@ public class ExceptionMiddleware : IMiddleware
         }
         catch(Exception exception)
         {
-            _logger.LogError(exception.Message);
+            _logger.LogError(exception, SystemError.Unexpected.Message);
             context.Response.StatusCode = 500;
             await context.Response.WriteAsJsonAsync(new
             {

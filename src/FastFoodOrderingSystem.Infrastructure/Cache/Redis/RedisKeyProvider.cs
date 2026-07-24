@@ -21,4 +21,7 @@ public sealed class RedisKeyProvider
 
     public string ForgotPasswordOtp(Email email)
         => $"{_prefixKey}:ForgotPasswordOtp:{email.Value}";
+
+    public string UserProfile(string key)
+        => $"{_prefixKey}:User:{key}:Profile";
 }

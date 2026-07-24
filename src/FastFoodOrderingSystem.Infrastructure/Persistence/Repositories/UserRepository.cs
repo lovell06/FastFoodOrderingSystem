@@ -43,12 +43,12 @@ public class UserRepository : IUserRepository
     {
         return await _context.Users
             .Include(u => u.ShippingAddresses)
-            .SingleAsync(u => u.Id == id, cancellationToken);
+            .SingleOrDefaultAsync(u => u.Id == id, cancellationToken);
     }
 
     public async Task<User?> GetByEmailAsync(Email email, CancellationToken cancellationToken)
     {
-        return await _context.Users.SingleAsync(u => u.Email == email, cancellationToken);
+        return await _context.Users.SingleOrDefaultAsync(u => u.Email == email, cancellationToken);
     }
 
     public async Task<User?> GetWithPasswordHistoriesAsync(Guid id, CancellationToken cancellationToken)
@@ -56,7 +56,7 @@ public class UserRepository : IUserRepository
         return await _context.Users
             .Include(u => u.PasswordHistories
                 .OrderByDescending(h => h.ChangedAt))
-            .SingleAsync(u => u.Id == id, cancellationToken);
+            .SingleOrDefaultAsync(u => u.Id == id, cancellationToken);
     }
 
     public async Task<User?> GetWithPasswordHistoriesByEmailAsync(Email email, CancellationToken cancellationToken)
@@ -64,6 +64,6 @@ public class UserRepository : IUserRepository
         return await _context.Users
             .Include(u => u.PasswordHistories
                 .OrderByDescending(h => h.ChangedAt))
-            .SingleAsync(u => u.Email == email, cancellationToken);
+            .SingleOrDefaultAsync(u => u.Email == email, cancellationToken);
     }
 }
