@@ -1,8 +1,12 @@
+using FastFoodOrderingSystem.Application.Abstractions.Cache;
 using FastFoodOrderingSystem.Application.Abstractions.Cache.CacheServices;
+using FastFoodOrderingSystem.Application.Abstractions.Persistence;
 using FastFoodOrderingSystem.Application.Common.Cqrs;
+using FastFoodOrderingSystem.Application.Common.Cqrs.Decorators.Commands;
 using FastFoodOrderingSystem.Application.Common.Cqrs.Decorators.Handlers;
 using FastFoodOrderingSystem.Application.Common.Cqrs.Decorators.Queries;
 using FastFoodOrderingSystem.Application.Features.Users.GetProfile;
+using FastFoodOrderingSystem.Application.Features.Users.UpdateProfile;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -19,8 +23,9 @@ internal static class DependencyInjection
 
             handler = new CachingQueryDecorator<GetProfileQuery, UserProfileResponse>(
                 handler,
-                sp.GetRequiredService<ICacheStore<GetProfileQuery, UserProfileResponse>>(),
-                sp.GetRequiredService<ILogger<CachingQueryDecorator<GetProfileQuery, UserProfileResponse>>>());
+                sp.GetRequiredService<ICacheStore<UserProfileResponse>>(),
+                sp.GetRequiredService<ILogger<CachingQueryDecorator<GetProfileQuery, UserProfileResponse>>>(),
+                sp.GetRequiredService<ICachePolicy<GetProfileQuery>>());
 
             handler = new PerformanceHandlerDecorator<GetProfileQuery, UserProfileResponse>(
                 handler,
@@ -30,6 +35,28 @@ internal static class DependencyInjection
             handler = new LoggingHandlerDecorator<GetProfileQuery, UserProfileResponse>(
                 handler,
                 sp.GetRequiredService<ILogger<LoggingHandlerDecorator<GetProfileQuery, UserProfileResponse>>>());
+            
+            return handler;
+        });
+        
+        services.AddScoped<UpdateProfileHandler>();
+        services.AddScoped(sp =>
+        {
+            IHandler<UpdateProfileCommand, Unit> handler = sp.GetRequiredService<UpdateProfileHandler>();
+
+            handler = new TransactionCommandDecorator<UpdateProfileCommand, Unit>(
+                handler,
+                sp.GetRequiredService<IUnitWork>(),
+                sp.GetRequiredService<ILogger<TransactionCommandDecorator<UpdateProfileCommand, Unit>>>());
+
+            handler = new PerformanceHandlerDecorator<UpdateProfileCommand, Unit>(
+                handler,
+                sp.GetRequiredService<
+                    ILogger<PerformanceHandlerDecorator<UpdateProfileCommand, Unit>>>());
+
+            handler = new LoggingHandlerDecorator<UpdateProfileCommand, Unit>(
+                handler,
+                sp.GetRequiredService<ILogger<LoggingHandlerDecorator<UpdateProfileCommand, Unit>>>());
             
             return handler;
         });

@@ -5,42 +5,37 @@ using StackExchange.Redis;
 
 namespace FastFoodOrderingSystem.Infrastructure.Cache.Redis.UserProfile;
 
-public sealed class RedisUserProfileCache : ICacheStore<GetProfileQuery, UserProfileResponse>
+public sealed class RedisUserProfileCache(IConnectionMultiplexer multiplexer)
+    : ICacheStore<UserProfileResponse>
 {
-    private readonly RedisKeyProvider _keyProvider;
-    private readonly IDatabase _database;
+    private readonly IDatabase _database = multiplexer.GetDatabase();
 
-    public RedisUserProfileCache(IConnectionMultiplexer multiplexer, RedisKeyProvider keyProvider)
-    {
-        _keyProvider = keyProvider;
-        _database = multiplexer.GetDatabase();
-    }
-    
     public async Task<bool> StoreAsync(
-        GetProfileQuery query, 
+        string key, 
         UserProfileResponse data, 
+        TimeSpan ttl,
         CancellationToken cancellationToken)
     {
         var json = JsonSerializer.Serialize(data);
         
         return await _database.StringSetAsync(
-            key: _keyProvider.UserProfile(query.UserId.ToString()),
+            key: key,
             value: json,
-            expiry: CacheTtls.UseProfile);
+            expiry: ttl);
     }
 
     public async Task<bool> RemoveAsync(
-        GetProfileQuery query, 
+        string key, 
         CancellationToken cancellationToken)
     {
-        return await _database.KeyDeleteAsync(_keyProvider.UserProfile(query.UserId.ToString()));
+        return await _database.KeyDeleteAsync(key: key);
     }
 
     public async Task<UserProfileResponse?> GetAsync(
-        GetProfileQuery query, 
+        string key, 
         CancellationToken cancellationToken)
     {
-        var json = await _database.StringGetAsync(_keyProvider.UserProfile(query.UserId.ToString()));
+        var json = await _database.StringGetAsync(key: key);
         
         if (!json.HasValue)
             return null;
