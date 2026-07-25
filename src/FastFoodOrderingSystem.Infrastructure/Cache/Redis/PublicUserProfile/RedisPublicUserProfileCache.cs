@@ -1,18 +1,18 @@
 using System.Text.Json;
 using FastFoodOrderingSystem.Application.Abstractions.Cache.CacheServices;
-using FastFoodOrderingSystem.Application.Features.Users.GetProfile;
+using FastFoodOrderingSystem.Application.Features.Users.GetUserProfile;
 using StackExchange.Redis;
 
-namespace FastFoodOrderingSystem.Infrastructure.Cache.Redis.UserProfile;
+namespace FastFoodOrderingSystem.Infrastructure.Cache.Redis.PublicUserProfile;
 
-public sealed class RedisUserProfileCache(IConnectionMultiplexer multiplexer)
-    : ICacheStore<UserProfileResponse>
+public sealed class RedisPublicUserProfileCache(IConnectionMultiplexer multiplexer)
+    : ICacheStore<PublicUserProfileResponse>
 {
     private readonly IDatabase _database = multiplexer.GetDatabase();
 
     public async Task<bool> StoreAsync(
         string key, 
-        UserProfileResponse data, 
+        PublicUserProfileResponse data, 
         TimeSpan ttl,
         CancellationToken cancellationToken)
     {
@@ -31,7 +31,7 @@ public sealed class RedisUserProfileCache(IConnectionMultiplexer multiplexer)
         return await _database.KeyDeleteAsync(key: key);
     }
 
-    public async Task<UserProfileResponse?> GetAsync(
+    public async Task<PublicUserProfileResponse?> GetAsync(
         string key, 
         CancellationToken cancellationToken)
     {
@@ -40,6 +40,6 @@ public sealed class RedisUserProfileCache(IConnectionMultiplexer multiplexer)
         if (!json.HasValue)
             return null;
 
-        return JsonSerializer.Deserialize<UserProfileResponse>(json: json!);
+        return JsonSerializer.Deserialize<PublicUserProfileResponse>(json: json!);
     }
 }

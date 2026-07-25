@@ -4,7 +4,8 @@ using FastFoodOrderingSystem.Application.Abstractions.Persistence;
 using FastFoodOrderingSystem.Application.Abstractions.Time;
 using FastFoodOrderingSystem.Application.Common.Cqrs;
 using FastFoodOrderingSystem.Application.Common.Results;
-using FastFoodOrderingSystem.Application.Features.Users.GetProfile;
+using FastFoodOrderingSystem.Application.Features.Users.GetCurrentUserProfile;
+using FastFoodOrderingSystem.Application.Features.Users.GetUserProfile;
 using FastFoodOrderingSystem.Domain.Common.ValueObjects;
 using Microsoft.Extensions.Logging;
 
@@ -12,8 +13,10 @@ namespace FastFoodOrderingSystem.Application.Features.Users.UpdateProfile;
 
 public sealed class UpdateProfileHandler(
     IUserRepository userRepository,
-    ICachePolicy<UpdateProfileCommand> cachePolicy,
-    ICacheStore<UserProfileResponse> cacheStore,
+    ICachePolicy<GetUserProfileQuery> publicProfileCachePolicy,
+    ICachePolicy<GetCurrentUserProfileQuery> privateProfileCachePolicy,
+    ICacheStore<PublicUserProfileResponse> publicProfileCache,
+    ICacheStore<PrivateUserProfileResponse> privateProfileCache,
     ILogger<UpdateProfileHandler> logger,
     IDateTimeProvider clock) : ICommandHandler<UpdateProfileCommand, Unit>
 {
@@ -44,6 +47,12 @@ public sealed class UpdateProfileHandler(
             }
 
             user.ChangeFullName(result.Value);
+            
+            logger.LogInformation($"The full name is changed. User: {userId}. {now}");
+        }
+        else
+        {
+            logger.LogInformation($"The full name remains unchanged. User: {userId}. {now}");
         }
 
         if (command.PhoneNumber is not null)
@@ -59,9 +68,25 @@ public sealed class UpdateProfileHandler(
             }
 
             user.ChangePhoneNumber(result.Value);
+            
+            logger.LogInformation($"The phone number is changed. User: {userId}. {now}");
+        }
+        else
+        {
+            logger.LogInformation($"The phone number remains unchanged. User: {userId}. {now}");
         }
 
-        await cacheStore.RemoveAsync(cachePolicy.GetKey(command), cancellationToken);
+        logger.LogInformation("Removing old data in public profile cache service ...");
+        await publicProfileCache.RemoveAsync(
+            key: publicProfileCachePolicy.GetKey(new GetUserProfileQuery(command.UserId)), 
+            cancellationToken: cancellationToken);
+        logger.LogInformation($"Data removed in public profile cache service. {now}");
+        
+        logger.LogInformation("Removing old data in private profile cache service ... ");
+        await privateProfileCache.RemoveAsync(
+            key: privateProfileCachePolicy.GetKey(new GetCurrentUserProfileQuery(command.UserId)),
+            cancellationToken: cancellationToken);
+        logger.LogInformation($"Data removed in private profile cache service. {now}");
 
         return Result<Unit>.Success(Unit.Value);
     }

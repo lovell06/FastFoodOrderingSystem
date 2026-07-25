@@ -3,14 +3,16 @@ using FastFoodOrderingSystem.Application.Abstractions.Cache.CacheServices;
 using FastFoodOrderingSystem.Application.Abstractions.Cache.ForgotPasswordOtp;
 using FastFoodOrderingSystem.Application.Abstractions.Cache.PendingRegistration;
 using FastFoodOrderingSystem.Application.Abstractions.Cache.RefreshToken;
-using FastFoodOrderingSystem.Application.Features.Users.GetProfile;
-using FastFoodOrderingSystem.Application.Features.Users.UpdateProfile;
+using FastFoodOrderingSystem.Application.Features.Users.GetCurrentUserProfile;
+using FastFoodOrderingSystem.Application.Features.Users.GetUserProfile;
 using FastFoodOrderingSystem.Infrastructure.Cache.Redis;
 using FastFoodOrderingSystem.Infrastructure.Cache.Redis.ForgotPasswordOtp;
 using FastFoodOrderingSystem.Infrastructure.Cache.Redis.PendingRegistration;
+using FastFoodOrderingSystem.Infrastructure.Cache.Redis.PrivateUserProfile;
+using FastFoodOrderingSystem.Infrastructure.Cache.Redis.PrivateUserProfile.Policies;
+using FastFoodOrderingSystem.Infrastructure.Cache.Redis.PublicUserProfile;
+using FastFoodOrderingSystem.Infrastructure.Cache.Redis.PublicUserProfile.Policies;
 using FastFoodOrderingSystem.Infrastructure.Cache.Redis.RefreshToken;
-using FastFoodOrderingSystem.Infrastructure.Cache.Redis.UserProfile;
-using FastFoodOrderingSystem.Infrastructure.Cache.Redis.UserProfile.Policies;
 using FastFoodOrderingSystem.Infrastructure.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -32,12 +34,12 @@ internal static class DependencyInjection
         services.AddScoped<IRefreshTokenStore, RedisRefreshTokenCache>();
         services.AddScoped<IForgotPasswordOtpStore, RedisForgotPasswordOtpCache>();
 
-        services.AddScoped<ICacheStore<UserProfileResponse>, RedisUserProfileCache>();
+        services.AddScoped<ICacheStore<PublicUserProfileResponse>, RedisPublicUserProfileCache>();
+        services.AddScoped<ICacheStore<PrivateUserProfileResponse>, RedisPrivateUserProfileCache>();
         
         // Register policies
-        services.AddScoped<ICachePolicy<GetProfileQuery>, GetProfileQueryPolicy>();
-        services.AddScoped<ICachePolicy<UpdateProfileCommand>, UpdateProfileCommandPolicy>();
-        
+        services.AddScoped<ICachePolicy<GetUserProfileQuery>, GetUserProfileQueryPolicy>();
+        services.AddScoped<ICachePolicy<GetCurrentUserProfileQuery>, GetCurrentUserQueryPolicy>();
         return services;
     }
 }

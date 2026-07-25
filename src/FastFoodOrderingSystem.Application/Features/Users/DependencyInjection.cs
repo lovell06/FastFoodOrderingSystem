@@ -5,7 +5,8 @@ using FastFoodOrderingSystem.Application.Common.Cqrs;
 using FastFoodOrderingSystem.Application.Common.Cqrs.Decorators.Commands;
 using FastFoodOrderingSystem.Application.Common.Cqrs.Decorators.Handlers;
 using FastFoodOrderingSystem.Application.Common.Cqrs.Decorators.Queries;
-using FastFoodOrderingSystem.Application.Features.Users.GetProfile;
+using FastFoodOrderingSystem.Application.Features.Users.GetUserProfile;
+using FastFoodOrderingSystem.Application.Features.Users.GetCurrentUserProfile;
 using FastFoodOrderingSystem.Application.Features.Users.UpdateProfile;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -16,25 +17,48 @@ internal static class DependencyInjection
 {
     public static IServiceCollection AddUserHandlers(this IServiceCollection services)
     {
-        services.AddScoped<GetProfileHandler>();
+        services.AddScoped<GetUserProfileHandler>();
         services.AddScoped(sp =>
         {
-            IHandler<GetProfileQuery, UserProfileResponse> handler = sp.GetRequiredService<GetProfileHandler>();
+            IHandler<GetUserProfileQuery, PublicUserProfileResponse> handler = sp.GetRequiredService<GetUserProfileHandler>();
 
-            handler = new CachingQueryDecorator<GetProfileQuery, UserProfileResponse>(
+            handler = new CachingQueryDecorator<GetUserProfileQuery, PublicUserProfileResponse>(
                 handler,
-                sp.GetRequiredService<ICacheStore<UserProfileResponse>>(),
-                sp.GetRequiredService<ILogger<CachingQueryDecorator<GetProfileQuery, UserProfileResponse>>>(),
-                sp.GetRequiredService<ICachePolicy<GetProfileQuery>>());
+                sp.GetRequiredService<ICacheStore<PublicUserProfileResponse>>(),
+                sp.GetRequiredService<ILogger<CachingQueryDecorator<GetUserProfileQuery, PublicUserProfileResponse>>>(),
+                sp.GetRequiredService<ICachePolicy<GetUserProfileQuery>>());
 
-            handler = new PerformanceHandlerDecorator<GetProfileQuery, UserProfileResponse>(
+            handler = new PerformanceHandlerDecorator<GetUserProfileQuery, PublicUserProfileResponse>(
                 handler,
                 sp.GetRequiredService<
-                    ILogger<PerformanceHandlerDecorator<GetProfileQuery, UserProfileResponse>>>());
+                    ILogger<PerformanceHandlerDecorator<GetUserProfileQuery, PublicUserProfileResponse>>>());
 
-            handler = new LoggingHandlerDecorator<GetProfileQuery, UserProfileResponse>(
+            handler = new LoggingHandlerDecorator<GetUserProfileQuery, PublicUserProfileResponse>(
                 handler,
-                sp.GetRequiredService<ILogger<LoggingHandlerDecorator<GetProfileQuery, UserProfileResponse>>>());
+                sp.GetRequiredService<ILogger<LoggingHandlerDecorator<GetUserProfileQuery, PublicUserProfileResponse>>>());
+            
+            return handler;
+        });
+        
+        services.AddScoped<GetCurrentUserProfileHandler>();
+        services.AddScoped(sp =>
+        {
+            IHandler<GetCurrentUserProfileQuery, PrivateUserProfileResponse> handler = sp.GetRequiredService<GetCurrentUserProfileHandler>();
+
+            handler = new CachingQueryDecorator<GetCurrentUserProfileQuery, PrivateUserProfileResponse>(
+                handler,
+                sp.GetRequiredService<ICacheStore<PrivateUserProfileResponse>>(),
+                sp.GetRequiredService<ILogger<CachingQueryDecorator<GetCurrentUserProfileQuery, PrivateUserProfileResponse>>>(),
+                sp.GetRequiredService<ICachePolicy<GetCurrentUserProfileQuery>>());
+
+            handler = new PerformanceHandlerDecorator<GetCurrentUserProfileQuery, PrivateUserProfileResponse>(
+                handler,
+                sp.GetRequiredService<
+                    ILogger<PerformanceHandlerDecorator<GetCurrentUserProfileQuery, PrivateUserProfileResponse>>>());
+
+            handler = new LoggingHandlerDecorator<GetCurrentUserProfileQuery, PrivateUserProfileResponse>(
+                handler,
+                sp.GetRequiredService<ILogger<LoggingHandlerDecorator<GetCurrentUserProfileQuery, PrivateUserProfileResponse>>>());
             
             return handler;
         });

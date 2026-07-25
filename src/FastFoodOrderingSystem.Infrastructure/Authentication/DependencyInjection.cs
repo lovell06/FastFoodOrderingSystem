@@ -16,6 +16,7 @@ internal static class DependencyInjection
         services.AddScoped<IRefreshTokenGenerator, RefreshTokenGenerator>();
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
         services.AddScoped<IPasswordGenerator, PasswordRandomStringGenerator>();
+        services.AddScoped<ICurrentUser, CurrentUser>();
 
         return services;
     }

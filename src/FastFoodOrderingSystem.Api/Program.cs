@@ -6,6 +6,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddInfrastructure(builder.Configuration)
     .AddApplication()
     .AddPresentation();
