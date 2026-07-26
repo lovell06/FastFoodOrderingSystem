@@ -8,7 +8,8 @@ public sealed class RefreshTokenGenerator : IRefreshTokenGenerator
     public string Generate()
     {
         var randomString = RandomNumberGenerator.GetHexString(256);
-        return Convert.ToHexString(
-            System.Text.Encoding.UTF8.GetBytes(randomString));
+        
+        return Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(randomString))
+            .TrimEnd('=');
     }
 }

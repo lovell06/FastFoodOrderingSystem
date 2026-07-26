@@ -4,8 +4,8 @@ namespace FastFoodOrderingSystem.Api.Contracts.Authentication;
 
 public record LogoutRequest(string RefreshToken)
 {
-    public LogoutCommand ToCommand()
+    public LogoutCommand ToCommand(Guid userId)
     {
-        return new LogoutCommand(RefreshToken);
+        return new LogoutCommand(userId, RefreshToken);
     }
 }

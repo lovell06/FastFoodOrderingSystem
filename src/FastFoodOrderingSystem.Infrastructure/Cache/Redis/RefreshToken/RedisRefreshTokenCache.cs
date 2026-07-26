@@ -7,23 +7,34 @@ using StackExchange.Redis;
 
 namespace FastFoodOrderingSystem.Infrastructure.Cache.Redis.RefreshToken;
 
-public sealed class RedisRefreshTokenCache : IRefreshTokenStore
+public sealed class RedisRefreshTokenCache(
+    IConnectionMultiplexer connectionMultiplexer,
+    RedisKeyProvider keyProvider)
+    : IRefreshTokenStore
 {
-    private readonly IDatabase _database;
-    private readonly RedisKeyProvider _keyProvider;
-    public RedisRefreshTokenCache(
-        IConnectionMultiplexer connectionMultiplexer, 
-        RedisKeyProvider keyProvider)
+    private readonly IDatabase _database = connectionMultiplexer.GetDatabase();
+
+    public async Task<long> RevokeByUserAsync(Guid userId, CancellationToken cancellationToken)
     {
-        _database = connectionMultiplexer.GetDatabase();
-        _keyProvider = keyProvider;
+        var userRefreshTokenKey = keyProvider.RefreshTokenByUser(userId);
+
+        var keys = (await _database.SetMembersAsync(userRefreshTokenKey))
+            .Where(t => t.HasValue)
+            .Select(t => new RedisKey(keyProvider.RefreshToken(id: t!))).ToList();
+
+        keys.Add(userRefreshTokenKey);
+        
+        return await _database.KeyDeleteAsync([.. keys]);
     }
 
-    public async Task<Application.Abstractions.Cache.RefreshToken.RefreshToken?> GetAsync(string token, CancellationToken cancellationToken)
+    public async Task<Application.Abstractions.Cache.RefreshToken.RefreshToken?> GetAsync(
+        Guid userId,
+        string token, 
+        CancellationToken cancellationToken)
     {
         var id = Application.Abstractions.Cache.RefreshToken.RefreshToken.GenerateId(token);
         
-        var key = _keyProvider.RefreshToken(id);
+        var key = keyProvider.RefreshToken(id);
 
         var json = await _database.StringGetAsync(key);
 
@@ -41,15 +52,21 @@ public sealed class RedisRefreshTokenCache : IRefreshTokenStore
         return result;
     }
 
-    public async Task<bool> RevokeAsync(string token, CancellationToken cancellationToken)
+    public async Task<bool> RevokeAsync(
+        Guid userId,
+        string token, 
+        CancellationToken cancellationToken)
     {
-        var id = Application.Abstractions.Cache.RefreshToken.RefreshToken.GenerateId(token);
-        var key = _keyProvider.RefreshToken(id);
-        var result = await _database.KeyDeleteAsync(key);
-        return result;
+        var tokenId = Application.Abstractions.Cache.RefreshToken.RefreshToken.GenerateId(token);
+        var refreshTokenKey = keyProvider.RefreshToken(tokenId);
+        await _database.KeyDeleteAsync(refreshTokenKey);
+
+        var userRefreshTokenKey = keyProvider.RefreshTokenByUser(userId);
+        return await _database.SetRemoveAsync(userRefreshTokenKey, tokenId);
     }
 
     public async Task<bool> StoreAsync(
+        Guid userId,
         Application.Abstractions.Cache.RefreshToken.RefreshToken token, 
         IDateTimeProvider clock,
         CancellationToken cancellationToken)
@@ -60,13 +77,19 @@ public sealed class RedisRefreshTokenCache : IRefreshTokenStore
         
         var snapshot = RefreshTokenMapper.ToSnapshot(token);
 
-        var key = _keyProvider.RefreshToken(token.Id);
+        var key = keyProvider.RefreshToken(token.Id);
 
         var json = JsonSerializer.Serialize(snapshot);
 
-        return await _database.StringSetAsync(
+        var transaction = _database.CreateTransaction();
+
+        _ = transaction.StringSetAsync(
             key: key,
             value: json,
             expiry: ttl);
+
+        _ = transaction.SetAddAsync(keyProvider.RefreshTokenByUser(userId), token.Id);
+
+        return await transaction.ExecuteAsync();
     }
 }

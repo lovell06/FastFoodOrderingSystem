@@ -17,6 +17,7 @@ public sealed class LogoutHandler(
         var now = clock.UtcNow;
 
         var isSuccess = await refreshTokenStore.RevokeAsync(
+            command.UserId,
             command.Token, 
             cancellationToken);
 

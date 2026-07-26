@@ -7,6 +7,7 @@ using FastFoodOrderingSystem.Application.Features.Auth.CompleteForgotPassword;
 using FastFoodOrderingSystem.Application.Features.Auth.InitiateForgotPassword;
 using FastFoodOrderingSystem.Application.Features.Auth.Login;
 using FastFoodOrderingSystem.Application.Features.Auth.Logout;
+using FastFoodOrderingSystem.Application.Features.Auth.LogoutAllDevices;
 using FastFoodOrderingSystem.Application.Features.Auth.Refresh;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -23,6 +24,7 @@ internal static class DependencyInjection
         services.AddCommandHandler<InitiateForgotPasswordCommand, Unit, InitiateForgotPasswordHandler>();
         services.AddCommandHandler<CompleteForgotPasswordCommand, Unit, CompleteForgotPasswordHandler>();
         services.AddCommandHandler<ChangePasswordCommand, Unit, ChangePasswordHandler>();
+        services.AddCommandHandler<LogoutAllDevicesCommand, Unit, LogoutAllDevicesHandler>();
 
         return services;
     }

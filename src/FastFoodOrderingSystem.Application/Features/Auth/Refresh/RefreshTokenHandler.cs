@@ -25,7 +25,10 @@ public sealed class RefreshTokenHandler(
     {
         var now = dateTimeProvider.UtcNow;
 
-        var result = await refreshTokenStore.GetAsync(command.RefreshToken, cancellationToken);
+        var result = await refreshTokenStore.GetAsync(
+            userId: command.UserId,
+            token: command.RefreshToken, 
+            cancellationToken: cancellationToken);
 
         if (result is null)
         {
@@ -42,7 +45,10 @@ public sealed class RefreshTokenHandler(
         }
 
         logger.LogInformation(
-            await refreshTokenStore.RevokeAsync(command.RefreshToken, cancellationToken) ?
+            await refreshTokenStore.RevokeAsync(
+                userId: command.UserId,
+                token: command.RefreshToken, 
+                cancellationToken: cancellationToken) ? 
                 $"Revoke successful. Old refresh token with id: {command.RefreshToken} was been revoked. Occurred at {now}" :
                 $"Revoke failed. Old refresh token with id: {command.RefreshToken} cannot revoke or not found. Occured at {now}");
 
@@ -52,7 +58,11 @@ public sealed class RefreshTokenHandler(
             token: refreshTokenGenerator.Generate(),
             expiresAt: now.AddDays(refreshTokenConfiguration.ExpireDays));
 
-        await refreshTokenStore.StoreAsync(refreshToken, dateTimeProvider, cancellationToken);
+        await refreshTokenStore.StoreAsync(
+            userId: command.UserId,
+            token: refreshToken, 
+            clock: dateTimeProvider, 
+            cancellationToken: cancellationToken);
         
         logger.LogInformation($"Store successful. Store new refresh token successful. Occurred at: {now}");
         

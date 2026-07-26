@@ -67,9 +67,10 @@ public class LoginHandler(
             now.AddDays(refreshTokenConfiguration.ExpireDays));
 
         await refreshTokenStore.StoreAsync(
-            refreshToken,
-            dateTimeProvider,
-            cancellationToken);
+            userId: user.Id,
+            token: refreshToken,
+            clock: dateTimeProvider,
+            cancellationToken: cancellationToken);
 
         logger.LogInformation($"Store refresh token successful. Occurred at: {now}");
 
