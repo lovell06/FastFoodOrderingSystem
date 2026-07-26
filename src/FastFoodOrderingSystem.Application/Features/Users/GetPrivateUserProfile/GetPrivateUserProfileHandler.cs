@@ -4,21 +4,21 @@ using FastFoodOrderingSystem.Application.Common.Cqrs;
 using FastFoodOrderingSystem.Application.Common.Results;
 using Microsoft.Extensions.Logging;
 
-namespace FastFoodOrderingSystem.Application.Features.Users.GetCurrentUserProfile;
+namespace FastFoodOrderingSystem.Application.Features.Users.GetPrivateUserProfile;
 
-public sealed class GetCurrentUserProfileHandler(
-    ILogger<GetCurrentUserProfileHandler> logger,
+public sealed class GetPrivateUserProfileHandler(
+    ILogger<GetPrivateUserProfileHandler> logger,
     IUserRepository userRepository,
-    IDateTimeProvider clock) : IQueryHandler<GetCurrentUserProfileQuery, PrivateUserProfileResponse>
+    IDateTimeProvider clock) : IQueryHandler<GetPrivateUserProfileQuery, PrivateUserProfileResponse>
 {
-    public async Task<Result<PrivateUserProfileResponse>> HandleAsync(GetCurrentUserProfileQuery query, CancellationToken cancellationToken)
+    public async Task<Result<PrivateUserProfileResponse>> HandleAsync(GetPrivateUserProfileQuery query, CancellationToken cancellationToken)
     {
         var now = clock.UtcNow;
         var user = await userRepository.GetWithShippingAddressesAsync(query.UserId, cancellationToken);
 
         if (user is null)
         {
-            var err = GetCurrentUserProfileError.UserNotFound;
+            var err = GetPrivateUserProfileError.UserNotFound;
             logger.LogError($"{err.Type}. {err.Code}. {err.Message}. {now}");
             return Result<PrivateUserProfileResponse>.Failure(err);
         }

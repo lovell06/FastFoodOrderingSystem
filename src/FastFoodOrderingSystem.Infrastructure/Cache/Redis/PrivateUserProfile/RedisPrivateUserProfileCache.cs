@@ -1,6 +1,6 @@
 using System.Text.Json;
 using FastFoodOrderingSystem.Application.Abstractions.Cache.CacheServices;
-using FastFoodOrderingSystem.Application.Features.Users.GetCurrentUserProfile;
+using FastFoodOrderingSystem.Application.Features.Users.GetPrivateUserProfile;
 using StackExchange.Redis;
 
 namespace FastFoodOrderingSystem.Infrastructure.Cache.Redis.PrivateUserProfile;

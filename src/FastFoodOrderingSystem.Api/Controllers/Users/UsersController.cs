@@ -3,8 +3,8 @@ using FastFoodOrderingSystem.Api.Mapping;
 using FastFoodOrderingSystem.Application.Abstractions.Authentication;
 using FastFoodOrderingSystem.Application.Abstractions.Mediator;
 using FastFoodOrderingSystem.Application.Common.Cqrs;
-using FastFoodOrderingSystem.Application.Features.Users.GetCurrentUserProfile;
-using FastFoodOrderingSystem.Application.Features.Users.GetUserProfile;
+using FastFoodOrderingSystem.Application.Features.Users.GetPrivateUserProfile;
+using FastFoodOrderingSystem.Application.Features.Users.GetPublicUserProfile;
 using FastFoodOrderingSystem.Application.Features.Users.UpdateProfile;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,8 +21,8 @@ public class UsersController(
     [HttpGet("profile/{id:guid}")]
     public async Task<IActionResult> Profile(System.Guid id, CancellationToken cancellationToken = default)
     {
-        var result = await mediator.SendAsync<GetUserProfileQuery, PublicUserProfileResponse>(
-            request: new GetUserProfileQuery(id),
+        var result = await mediator.SendAsync<GetPublicUserProfileQuery, PublicUserProfileResponse>(
+            request: new GetPublicUserProfileQuery(id),
             cancellationToken: cancellationToken);
 
         if (result.IsSuccess)
@@ -36,8 +36,8 @@ public class UsersController(
     public async Task<IActionResult> CurrentUserProfile(CancellationToken cancellationToken)
     {
         var result =
-            await mediator.SendAsync<GetCurrentUserProfileQuery, PrivateUserProfileResponse>(
-                request: new GetCurrentUserProfileQuery(currentUser.Id), 
+            await mediator.SendAsync<GetPrivateUserProfileQuery, PrivateUserProfileResponse>(
+                request: new GetPrivateUserProfileQuery(currentUser.Id), 
                 cancellationToken: cancellationToken);
     
         if (result.IsSuccess)

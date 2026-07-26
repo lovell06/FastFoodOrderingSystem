@@ -1,11 +1,11 @@
 using FastFoodOrderingSystem.Application.Abstractions.Cache;
-using FastFoodOrderingSystem.Application.Features.Users.GetUserProfile;
+using FastFoodOrderingSystem.Application.Features.Users.GetPublicUserProfile;
 
 namespace FastFoodOrderingSystem.Infrastructure.Cache.Redis.PublicUserProfile.Policies;
 
-public sealed class GetUserProfileQueryPolicy(RedisKeyProvider keyProvider) : ICachePolicy<GetUserProfileQuery>
+public sealed class GetUserProfileQueryPolicy(RedisKeyProvider keyProvider) : ICachePolicy<GetPublicUserProfileQuery>
 {
-    public string GetKey(GetUserProfileQuery query)
+    public string GetKey(GetPublicUserProfileQuery query)
     {
         return keyProvider.PublicUserProfile(query.UserId.ToString());
     }

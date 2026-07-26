@@ -3,8 +3,8 @@ using FastFoodOrderingSystem.Application.Abstractions.Cache.CacheServices;
 using FastFoodOrderingSystem.Application.Abstractions.Cache.ForgotPasswordOtp;
 using FastFoodOrderingSystem.Application.Abstractions.Cache.PendingRegistration;
 using FastFoodOrderingSystem.Application.Abstractions.Cache.RefreshToken;
-using FastFoodOrderingSystem.Application.Features.Users.GetCurrentUserProfile;
-using FastFoodOrderingSystem.Application.Features.Users.GetUserProfile;
+using FastFoodOrderingSystem.Application.Features.Users.GetPrivateUserProfile;
+using FastFoodOrderingSystem.Application.Features.Users.GetPublicUserProfile;
 using FastFoodOrderingSystem.Infrastructure.Cache.Redis;
 using FastFoodOrderingSystem.Infrastructure.Cache.Redis.ForgotPasswordOtp;
 using FastFoodOrderingSystem.Infrastructure.Cache.Redis.PendingRegistration;
@@ -38,8 +38,8 @@ internal static class DependencyInjection
         services.AddScoped<ICacheStore<PrivateUserProfileResponse>, RedisPrivateUserProfileCache>();
         
         // Register policies
-        services.AddScoped<ICachePolicy<GetUserProfileQuery>, GetUserProfileQueryPolicy>();
-        services.AddScoped<ICachePolicy<GetCurrentUserProfileQuery>, GetCurrentUserQueryPolicy>();
+        services.AddScoped<ICachePolicy<GetPublicUserProfileQuery>, GetUserProfileQueryPolicy>();
+        services.AddScoped<ICachePolicy<GetPrivateUserProfileQuery>, GetCurrentUserQueryPolicy>();
         return services;
     }
 }

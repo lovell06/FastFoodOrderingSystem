@@ -1,7 +1,6 @@
 using FastFoodOrderingSystem.Domain.Common.ValueObjects;
-using FastFoodOrderingSystem.Domain.Users;
 
-namespace FastFoodOrderingSystem.Application.Features.Users.GetCurrentUserProfile;
+namespace FastFoodOrderingSystem.Application.Features.Users.GetPrivateUserProfile;
 
 public sealed record PrivateUserProfileResponse(
     string FullName,

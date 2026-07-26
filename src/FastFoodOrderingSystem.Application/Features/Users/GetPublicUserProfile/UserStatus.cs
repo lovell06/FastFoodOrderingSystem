@@ -1,4 +1,4 @@
-namespace FastFoodOrderingSystem.Application.Features.Users.GetCurrentUserProfile;
+namespace FastFoodOrderingSystem.Application.Features.Users.GetPublicUserProfile;
 
 public static class UserStatus
 {

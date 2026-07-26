@@ -4,8 +4,8 @@ using FastFoodOrderingSystem.Application.Abstractions.Persistence;
 using FastFoodOrderingSystem.Application.Abstractions.Time;
 using FastFoodOrderingSystem.Application.Common.Cqrs;
 using FastFoodOrderingSystem.Application.Common.Results;
-using FastFoodOrderingSystem.Application.Features.Users.GetCurrentUserProfile;
-using FastFoodOrderingSystem.Application.Features.Users.GetUserProfile;
+using FastFoodOrderingSystem.Application.Features.Users.GetPrivateUserProfile;
+using FastFoodOrderingSystem.Application.Features.Users.GetPublicUserProfile;
 using FastFoodOrderingSystem.Domain.Common.ValueObjects;
 using Microsoft.Extensions.Logging;
 
@@ -13,8 +13,8 @@ namespace FastFoodOrderingSystem.Application.Features.Users.UpdateProfile;
 
 public sealed class UpdateProfileHandler(
     IUserRepository userRepository,
-    ICachePolicy<GetUserProfileQuery> publicProfileCachePolicy,
-    ICachePolicy<GetCurrentUserProfileQuery> privateProfileCachePolicy,
+    ICachePolicy<GetPublicUserProfileQuery> publicProfileCachePolicy,
+    ICachePolicy<GetPrivateUserProfileQuery> privateProfileCachePolicy,
     ICacheStore<PublicUserProfileResponse> publicProfileCache,
     ICacheStore<PrivateUserProfileResponse> privateProfileCache,
     ILogger<UpdateProfileHandler> logger,
@@ -78,13 +78,13 @@ public sealed class UpdateProfileHandler(
 
         logger.LogInformation("Removing old data in public profile cache service ...");
         await publicProfileCache.RemoveAsync(
-            key: publicProfileCachePolicy.GetKey(new GetUserProfileQuery(command.UserId)), 
+            key: publicProfileCachePolicy.GetKey(new GetPublicUserProfileQuery(command.UserId)), 
             cancellationToken: cancellationToken);
         logger.LogInformation($"Data removed in public profile cache service. {now}");
         
         logger.LogInformation("Removing old data in private profile cache service ... ");
         await privateProfileCache.RemoveAsync(
-            key: privateProfileCachePolicy.GetKey(new GetCurrentUserProfileQuery(command.UserId)),
+            key: privateProfileCachePolicy.GetKey(new GetPrivateUserProfileQuery(command.UserId)),
             cancellationToken: cancellationToken);
         logger.LogInformation($"Data removed in private profile cache service. {now}");
 
