@@ -4,7 +4,7 @@ using FastFoodOrderingSystem.Domain.Users.ValueObjects.Errors;
 
 namespace FastFoodOrderingSystem.Domain.Users.ValueObjects;
 
-public sealed record OtpCode
+public record struct OtpCode
 {
     public const int Length = 6;
     public string Value { get; init; }

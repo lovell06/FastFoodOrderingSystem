@@ -6,7 +6,7 @@ using FastFoodOrderingSystem.Domain.Users.ValueObjects.Errors;
 
 namespace FastFoodOrderingSystem.Domain.Users.ValueObjects;
 
-public sealed record Email
+public record struct Email
 {
     public const int MaxLength = 255;
     public string Value { get; init; }

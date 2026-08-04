@@ -3,7 +3,7 @@ using FastFoodOrderingSystem.Domain.Common.ValueObjects.Errors;
 
 namespace FastFoodOrderingSystem.Domain.Common.ValueObjects;
 
-public sealed record Address
+public record struct Address
 {
     public const int MaxLength = 300;
     public string ProvinceCity { get; init; }

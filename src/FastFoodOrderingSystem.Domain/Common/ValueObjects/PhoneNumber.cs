@@ -5,7 +5,7 @@ using FastFoodOrderingSystem.Domain.Common.ValueObjects.Errors;
 
 namespace FastFoodOrderingSystem.Domain.Common.ValueObjects;
 
-public sealed record PhoneNumber
+public record struct PhoneNumber
 {
     public const int MaxLength = 10;
     public string Value { get; init; }

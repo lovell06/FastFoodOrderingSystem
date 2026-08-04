@@ -4,7 +4,7 @@ using FastFoodOrderingSystem.Domain.Users.ValueObjects.Errors;
 
 namespace FastFoodOrderingSystem.Domain.Users.ValueObjects;
 
-public sealed record Password
+public record struct Password
 {
     public const int MinLength = 8;
     public string Value { get; init; }

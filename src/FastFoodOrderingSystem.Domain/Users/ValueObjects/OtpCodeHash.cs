@@ -4,7 +4,7 @@ using FastFoodOrderingSystem.Domain.Users.ValueObjects.Errors;
 
 namespace FastFoodOrderingSystem.Domain.Users.ValueObjects;
 
-public sealed record OtpCodeHash
+public record struct OtpCodeHash
 {
     public const int MaxLength = 256;
     public string Value { get; init; }

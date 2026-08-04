@@ -5,7 +5,7 @@ using FastFoodOrderingSystem.Domain.Users.ValueObjects.Errors;
 
 namespace FastFoodOrderingSystem.Domain.Users.ValueObjects;
 
-public record AvatarImagePath
+public record struct AvatarImagePath
 {
     public const int MaxLength = 255;
 
