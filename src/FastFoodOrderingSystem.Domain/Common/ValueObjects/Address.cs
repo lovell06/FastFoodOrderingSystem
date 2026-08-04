@@ -34,16 +34,16 @@ public record struct Address
     private static DomainError? Validate(string provinceCity, string wardCommune, string detail)
     {
         if (string.IsNullOrWhiteSpace(provinceCity))
-            return AddressError.ProvinceOrCityEmpty();
+            return InvalidAddressError.ProvinceOrCityEmpty();
 
         if (string.IsNullOrWhiteSpace(wardCommune))
-            return AddressError.WardOrCommuneEmpty();
+            return InvalidAddressError.WardOrCommuneEmpty();
 
         if (string.IsNullOrWhiteSpace(detail))
-            return AddressError.DetailEmpty();
+            return InvalidAddressError.DetailEmpty();
 
         if (provinceCity.Length + wardCommune.Length + detail.Length > MaxLength)
-            return AddressError.ExceedsMaxLength(MaxLength);
+            return InvalidAddressError.ExceedsMaxLength(MaxLength);
 
         return null;
     }

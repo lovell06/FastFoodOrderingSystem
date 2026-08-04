@@ -16,22 +16,22 @@ public record struct Password
     private static DomainError? Validate(string raw)
     {
         if (string.IsNullOrWhiteSpace(raw))
-            return PasswordError.Empty();
+            return InvalidPasswordError.Empty();
         
         if (raw.Length < MinLength)
-            return PasswordError.PasswordLengthBelowMinimum(MinLength);
+            return InvalidPasswordError.PasswordLengthBelowMinimum(MinLength);
 
         if (!raw.Any(char.IsUpper))
-            return PasswordError.PasswordRequiresUppercase();
+            return InvalidPasswordError.PasswordRequiresUppercase();
 
         if (!raw.Any(char.IsLower))
-            return PasswordError.PasswordRequiresLowercase();
+            return InvalidPasswordError.PasswordRequiresLowercase();
 
         if (!raw.Any(char.IsDigit))
-            return PasswordError.PasswordRequiresDigit();
+            return InvalidPasswordError.PasswordRequiresDigit();
 
         if (raw.All(char.IsLetterOrDigit))
-            return PasswordError.PasswordRequiresSpecialCharacter();
+            return InvalidPasswordError.PasswordRequiresSpecialCharacter();
 
         return null;
     }

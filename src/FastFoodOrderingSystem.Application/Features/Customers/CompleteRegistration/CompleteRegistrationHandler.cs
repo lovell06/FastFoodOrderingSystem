@@ -73,7 +73,7 @@ public sealed class CompleteRegistrationHandler(
             email: pending.Email,
             passwordHash: pending.PasswordHash,
             phoneNumber: pending.PhoneNumber,
-            avatarImagePath: AvatarImagePath.Default(),
+            avatarImagePath: AvatarImagePath.Default,
             now);
         
         await userRepository.InsertAsync(user, cancellationToken);

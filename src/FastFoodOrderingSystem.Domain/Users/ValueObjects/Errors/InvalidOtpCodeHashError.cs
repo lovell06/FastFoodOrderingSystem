@@ -2,19 +2,19 @@ using FastFoodOrderingSystem.Domain.Common.DomainResults;
 
 namespace FastFoodOrderingSystem.Domain.Users.ValueObjects.Errors;
 
-public sealed class OtpCodeHashError
+public static class InvalidOtpCodeHashError
 {
     public static DomainError Empty()
     {
         return new(
-            Code: "otp_code_hash.empty",
+            Code: "invalid_otp_code_hash_error.empty",
             Message: "Otp code hash must not be empty.");
     }
 
     public static DomainError ExceedsMaxLength(int maxLength)
     {
         return new(
-            Code: "otp_code_hash.exceeds_max_length",
+            Code: "invalid_otp_code_hash_error.exceeds_max_length",
             Message: $"Otp code hash must not exceed {maxLength} characters.");
     }
 }

@@ -17,10 +17,10 @@ public record struct OtpCodeHash
     private static DomainError? Validate(string raw)
     {
         if (string.IsNullOrWhiteSpace(raw))
-            return OtpCodeHashError.Empty();
+            return InvalidOtpCodeHashError.Empty();
         
         if (raw.Length > MaxLength)
-            return OtpCodeHashError.ExceedsMaxLength(MaxLength);
+            return InvalidOtpCodeHashError.ExceedsMaxLength(MaxLength);
 
         return null;
     }

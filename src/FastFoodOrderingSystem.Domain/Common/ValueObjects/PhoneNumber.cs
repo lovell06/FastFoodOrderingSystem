@@ -27,17 +27,17 @@ public record struct PhoneNumber
     private static DomainError? Validate(string phone)
     {
         if (string.IsNullOrWhiteSpace(phone))
-            return PhoneNumberError.Empty();
+            return InvalidPhoneNumberError.Empty();
 
         phone = phone.Trim();
         if (phone.Length > MaxLength)
-            return PhoneNumberError.ExceedsMaxLength(MaxLength);
+            return InvalidPhoneNumberError.ExceedsMaxLength(MaxLength);
 
         if (Regex.IsMatch(phone, ValidationPatterns.PhoneNumber))
-            return PhoneNumberError.ContainsNonDigitCharacters();
+            return InvalidPhoneNumberError.ContainsNonDigitCharacters();
 
         if (phone.Any(char.IsWhiteSpace))
-            return PhoneNumberError.ContainsWhitespace();
+            return InvalidPhoneNumberError.ContainsWhitespace();
 
         return null;
     }

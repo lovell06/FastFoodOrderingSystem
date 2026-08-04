@@ -29,17 +29,17 @@ public record struct Email
     private static DomainError? Validate(string email)
     {
         if (string.IsNullOrWhiteSpace(email))
-            return EmailError.Empty();
+            return InvalidEmailError.Empty();
 
         email = email.Trim();
         if (email.Length > MaxLength)
-            return EmailError.ExceedsMaxLength(MaxLength);
+            return InvalidEmailError.ExceedsMaxLength(MaxLength);
 
         if (email.Any(char.IsWhiteSpace))
-            return EmailError.ContainsWhitespace();
+            return InvalidEmailError.ContainsWhitespace();
 
         if (!Regex.IsMatch(email, ValidationPatterns.Email))
-            return EmailError.InvalidFormat();
+            return InvalidEmailError.InvalidFormat();
 
         return null;
     }

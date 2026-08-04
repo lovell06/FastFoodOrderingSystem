@@ -17,13 +17,13 @@ public record struct OtpCode
     private static DomainError? Validate(string raw)
     {
         if (string.IsNullOrWhiteSpace(raw))
-            return OtpCodeError.Empty();
+            return InvalidOtpCodeError.Empty();
         
         if (raw.Length != Length)
-            return OtpCodeError.InvalidLength(Length);
+            return InvalidOtpCodeError.InvalidLength(Length);
         
         if (!raw.All(char.IsDigit))
-            return OtpCodeError.CodeIsNotDigit();
+            return InvalidOtpCodeError.CodeIsNotDigit();
 
         return null;
     }

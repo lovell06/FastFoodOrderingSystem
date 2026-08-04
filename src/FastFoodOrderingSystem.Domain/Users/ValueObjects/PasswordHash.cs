@@ -27,10 +27,10 @@ public record struct PasswordHash
     private static DomainError? Validate(string passwordHash)
     {
         if (string.IsNullOrWhiteSpace(passwordHash))
-            return PasswordHashError.Empty();
+            return InvalidPasswordHashError.Empty();
 
         if (passwordHash.Length > MaxLength)
-            return  PasswordHashError.ExceedsMaxLength(MaxLength);
+            return  InvalidPasswordHashError.ExceedsMaxLength(MaxLength);
 
         return null;
     }

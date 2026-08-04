@@ -18,7 +18,7 @@ public class User : AggregateRoot<Guid>
     public IReadOnlyCollection<UserShippingAddress> ShippingAddresses => _shippingAddresses.AsReadOnly();
     private readonly List<UserPasswordHistory> _passwordHistories = [];
     public IReadOnlyCollection<UserPasswordHistory> PasswordHistories => _passwordHistories.ToArray();
-    public AvatarImagePath AvatarImagePath { get; private set; } = AvatarImagePath.Default();
+    public AvatarImagePath AvatarImagePath { get; private set; } = AvatarImagePath.Default;
     public UserRole Role { get; private set; } = UserRole.Customer;
     public DateTime CreatedAt { get; }
     public DateTime? UpdatedAt { get; private set; }

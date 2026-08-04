@@ -27,18 +27,18 @@ public record struct AvatarImagePath
     private static DomainError? Validate(string path)
     {
         if (string.IsNullOrWhiteSpace(path))
-            return AvatarImagePathError.Empty();
+            return InvalidAvatarImagePathError.Empty();
 
         path = path.Trim();
         if (path.Length > MaxLength)
-            return AvatarImagePathError.ExceedsMaxLength(MaxLength);
+            return InvalidAvatarImagePathError.ExceedsMaxLength(MaxLength);
 
         string extension = Path.GetExtension(path);
         if (!SupportedExtensions.Contains(extension))
-            return AvatarImagePathError.UnsupportExtension(extension);
+            return InvalidAvatarImagePathError.UnsupportedExtension(extension);
 
         if (!Regex.IsMatch(path, ValidationPatterns.ImagePath(extension)))
-            return AvatarImagePathError.InvalidImagePathFormat();
+            return InvalidAvatarImagePathError.Format();
 
         return null;
     }
@@ -53,8 +53,5 @@ public record struct AvatarImagePath
         return DomainResult<AvatarImagePath>.Success(new AvatarImagePath(path));
     }
 
-    public static AvatarImagePath Default()
-    {
-        return new AvatarImagePath("images/users/default.png");
-    }
+    public static AvatarImagePath Default => new AvatarImagePath("images/users/default.png");
 }

@@ -28,14 +28,14 @@ public record struct FullName
     private static DomainError? Validate(string fullName)
     {
         if (string.IsNullOrWhiteSpace(fullName))
-            return FullNameError.Empty();
+            return InvalidFullNameError.Empty();
 
         fullName = fullName.Trim();
         if (fullName.Length > MaxLength)
-            return FullNameError.ExceedsMaxLength(MaxLength);
+            return InvalidFullNameError.ExceedsMaxLength(MaxLength);
 
         if (Regex.IsMatch(fullName, ValidationPatterns.FullName))
-            return FullNameError.ContainsInvalidCharacters();
+            return InvalidFullNameError.ContainsInvalidCharacters();
 
         return null;
     }
